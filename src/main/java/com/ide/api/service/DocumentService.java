@@ -50,4 +50,8 @@ public class DocumentService {
     public Stream<Document> recupererToutLesDocuments(){
         return documentRepository.findAll().stream();
     }
+
+    public Document recupererUnDocument(Integer id){
+        return this.documentRepository.findById(id).get();
+    }
 }

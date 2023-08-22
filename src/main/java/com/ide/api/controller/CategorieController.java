@@ -1,6 +1,7 @@
 package com.ide.api.controller;
 
 import com.ide.api.entities.Categorie;
+import com.ide.api.entities.Document;
 import com.ide.api.service.CategorieService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,5 +33,10 @@ public class CategorieController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Categorie> findAllCategories(){
         return this.categorieService.findAllCategories();
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Categorie findCategory(@PathVariable Integer id){
+       return this.categorieService.findCategory(id);
     }
 }

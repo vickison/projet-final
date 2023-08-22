@@ -5,6 +5,7 @@ import com.ide.api.entities.Document;
 import com.ide.api.message.ResponseDocument;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.service.DocumentService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +70,13 @@ public class DocumentController {
             );
         }).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(documents);
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Document> recupererUnDocument(@PathVariable Integer id){
+        Document document = documentService.recupererUnDocument(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment, filename=\""+document.getTitre() + "\"")
+                .body(document);
     }
 }

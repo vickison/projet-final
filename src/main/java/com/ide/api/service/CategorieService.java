@@ -29,4 +29,8 @@ public class CategorieService {
     public List<Categorie> findAllCategories() {
         return categorieRepository.findAll();
     }
+
+    public Categorie findCategory(Integer id){
+        return this.categorieRepository.findById(id).get();
+    }
 }
