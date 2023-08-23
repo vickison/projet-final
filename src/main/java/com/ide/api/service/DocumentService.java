@@ -3,6 +3,7 @@ package com.ide.api.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ide.api.entities.Categorie;
 import com.ide.api.entities.Document;
+import com.ide.api.exception.FileNotFoundException;
 import com.ide.api.message.ResponseDocument;
 import com.ide.api.repository.DocumentRepository;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class DocumentService {
     }
 
     public Document recupererUnDocument(Integer id){
-        return this.documentRepository.findById(id).get();
+        return this.documentRepository.findById(id)
+                .orElseThrow(() -> new FileNotFoundException("File not found with id " + id));
     }
 }
