@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.Instant;
+import java.util.Set;
 
 
 /*
@@ -28,8 +29,7 @@ public class Document {
     //la clé primaire
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id")
-    private int file_id;
+    private Integer documentId;
 
     //Le titre du document, ici on a considéré titre comme le nom du document
     private String titre;
@@ -41,8 +41,7 @@ public class Document {
 
     //La date d'ajout du document
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private Instant date_creation;
+    private Instant creation;
 
     //Le type du document(application/pdf, image/png,...)
     private String type;
@@ -51,35 +50,46 @@ public class Document {
     @Lob
     private byte[] data;
 
-    //La categorie à laquelle appartient le document, clé étrangère
-    @ManyToOne(targetEntity = Categorie.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_cat_id")
-    private Categorie categorie;
+    private String url;
 
-    //Constructeur sans params
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "Categorie_document",
+            joinColumns = @JoinColumn(name = "documentId"),
+            inverseJoinColumns = @JoinColumn(name = "categorieId"))
+    private Set<Categorie> categories;
+
+    @ManyToMany
+    @JoinTable(
+            name = "auteur_document",
+            joinColumns = @JoinColumn(name = "documentId"),
+            inverseJoinColumns = @JoinColumn(name = "auteurId"))
+    @JsonIgnore
+    private Set<Auteur> auteurs;
+
     public Document() {
     }
 
-    //Constructeur avec params
-    public Document(Integer file_id, String titre, String description, Instant date_creation, String type, byte[] data, Categorie categorie) {
-        this.file_id = file_id;
+    public Document(int documentId, String titre, String description, Instant creation, String type, byte[] data, String url, Set<Categorie> categories, Set<Auteur> auteurs) {
+        this.documentId = documentId;
         this.titre = titre;
         this.description = description;
-        this.date_creation = date_creation;
+        this.creation = creation;
         this.type = type;
         this.data = data;
-        this.categorie = categorie;
+        this.url = url;
+        this.categories = categories;
+        this.auteurs = auteurs;
     }
 
-
-    //Setters et Getters
-
-    public Integer getFile_id() {
-        return file_id;
+    public Integer getDocumentId() {
+        return documentId;
     }
 
-    public void setFile_id(Integer file_id) {
-        this.file_id = file_id;
+    public void setDocumentId(int documentId) {
+        this.documentId = documentId;
     }
 
     public String getTitre() {
@@ -98,12 +108,12 @@ public class Document {
         this.description = description;
     }
 
-    public Instant getDate_creation() {
-        return date_creation;
+    public Instant getCreation() {
+        return creation;
     }
 
-    public void setDate_creation(Instant date_creation) {
-        this.date_creation = date_creation;
+    public void setCreation(Instant creation) {
+        this.creation = creation;
     }
 
     public String getType() {
@@ -122,14 +132,27 @@ public class Document {
         this.data = data;
     }
 
-    @ManyToOne(targetEntity = Categorie.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_cat_id", nullable = false)
-    @JsonBackReference
-    public Categorie getCategorie() {
-        return categorie;
+    public String getUrl() {
+        return url;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Set<Categorie> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Categorie> categories) {
+        this.categories = categories;
+    }
+
+    public Set<Auteur> getAuteurs() {
+        return auteurs;
+    }
+
+    public void setAuteurs(Set<Auteur> auteurs) {
+        this.auteurs = auteurs;
     }
 }

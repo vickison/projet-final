@@ -1,12 +1,14 @@
 package com.ide.api.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ide.api.entities.Auteur;
 import com.ide.api.entities.Categorie;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Set;
 
 public class ResponseDocument {
     private Integer id;
@@ -15,16 +17,28 @@ public class ResponseDocument {
     private Instant date_creation;
     private String type;
     private long size;
-    private Categorie categorie;
+    private Set<Categorie> categories;
+    private String url;
+    private Set<Auteur> auteurs;
 
-    public ResponseDocument(Integer id, String titre, String description, Instant date_creation, String type, long size, Categorie categorie) {
+    public ResponseDocument(Integer id, String titre, String description, Instant date_creation, String type, long size, Set<Categorie> categories, String url, Set<Auteur> auteurs) {
         this.id = id;
         this.titre = titre;
         this.description = description;
         this.date_creation = date_creation;
         this.type = type;
         this.size = size;
-        this.categorie = categorie;
+        this.categories = categories;
+        this.url = url;
+        this.auteurs = auteurs;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitre() {
@@ -67,11 +81,27 @@ public class ResponseDocument {
         this.size = size;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public Set<Categorie> getCategories() {
+        return categories;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategories(Set<Categorie> categories) {
+        this.categories = categories;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Set<Auteur> getAuteurs() {
+        return auteurs;
+    }
+
+    public void setAuteurs(Set<Auteur> auteurs) {
+        this.auteurs = auteurs;
     }
 }

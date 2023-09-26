@@ -1,5 +1,6 @@
 package com.ide.api.controller;
 
+import com.ide.api.entities.Auteur;
 import com.ide.api.entities.Categorie;
 import com.ide.api.entities.Document;
 import com.ide.api.message.ResponseDocument;
@@ -16,9 +17,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "documents")
 public class DocumentController {
@@ -34,10 +36,11 @@ public class DocumentController {
     //La methode qui permet d'ajouter un document, utiliser directement coté client
 
     @PostMapping(value="/ajouter", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseMessage> ajouterDocument(@RequestParam String description, @RequestParam Categorie categorie, @RequestParam("file") MultipartFile file) throws IOException{
+    public ResponseEntity<ResponseMessage> addDocument(@RequestParam String description, @RequestParam Set<Auteur> auteur, @RequestParam Set<Categorie> categorie, @RequestParam("file") MultipartFile file) throws IOException{
+
         String message = "";
         try{
-            this.documentService.ajouterDocument(description, file, categorie);
+            this.documentService.addDocument(description, auteur, file, categorie);
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -54,20 +57,22 @@ public class DocumentController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ResponseDocument>> recupererToutLesDocuments(){
-        List<ResponseDocument> documents = documentService.recupererToutLesDocuments().map(doc->{
+        List<ResponseDocument> documents = documentService.retrieveDocuments().map(doc->{
             String docDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/documents/")
-                    .path(doc.getFile_id().toString())
+                    .path(doc.getDocumentId().toString())
                     .toUriString();
             return new ResponseDocument(
-                    doc.getFile_id(),
+                    doc.getDocumentId(),
                     doc.getTitre(),
                     doc.getDescription(),
-                    doc.getDate_creation(),
+                    doc.getCreation(),
                     doc.getType(),
                     doc.getData().length,
-                    doc.getCategorie()
+                    doc.getCategories(),
+                    docDownloadUri,
+                    doc.getAuteurs()
             );
         }).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(documents);
@@ -75,7 +80,7 @@ public class DocumentController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Document> recupererUnDocument(@PathVariable Integer id){
-        Document document = documentService.recupererUnDocument(id);
+        Document document = documentService.retrieveDocument(id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment, filename=\""+document.getTitre() + "\"")
                 .body(document);

@@ -1,6 +1,7 @@
 package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
@@ -10,7 +11,9 @@ import javax.persistence.*;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /*
@@ -27,35 +30,36 @@ public class Categorie implements Serializable {
     //La clé primaire de la table
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cat_id")
-    private int cat_id;
+    private int categorId;
 
     //Le nom de la categorie
     private String nom;
 
     //Une liste permettant de stocker les différents documents qui appartiennent à une categorie
-    @OneToMany(targetEntity = Document.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="categorie")
-    @Fetch(FetchMode.JOIN)
-    private List<Document> documents;
 
-    //Contructeur sans params
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },mappedBy = "categories")
+    @JsonIgnore
+    private Set<Document> documents = new HashSet<Document>();;
+
     public Categorie() {
     }
 
-    //Constructeur avec params
-    public Categorie(Integer cat_id, String nom, List<Document> documents) {
-        this.cat_id = cat_id;
+    public Categorie(int categorId, String nom, Set<Document> documents) {
+        this.categorId = categorId;
         this.nom = nom;
         this.documents = documents;
     }
 
-    //Getters et Setters
-    public Integer getCat_id() {
-        return cat_id;
+    public int getCategorId() {
+        return categorId;
     }
 
-    public void setCat_id(Integer cat_id) {
-        this.cat_id = cat_id;
+    public void setCategorId(int id) {
+        this.categorId = categorId;
     }
 
     public String getNom() {
@@ -66,13 +70,11 @@ public class Categorie implements Serializable {
         this.nom = nom;
     }
 
-    @OneToMany(targetEntity = Document.class, fetch = FetchType.EAGER, mappedBy="categorie")
-    @JsonManagedReference
-    public List<Document> getDocuments() {
+    public Set<Document> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(List<Document> documents) {
+    public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }
 }

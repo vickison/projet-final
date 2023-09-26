@@ -1,6 +1,7 @@
 package com.ide.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ide.api.entities.Auteur;
 import com.ide.api.entities.Categorie;
 import com.ide.api.entities.Document;
 import com.ide.api.exception.FileNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 
@@ -36,23 +38,24 @@ public class DocumentService {
          "     "         "   Multipart qui permet d'ajouter un fichier, on extrait les infos de ce fichier,
          "     "         "   Categorie qui permet de référencer la categorie du document
      */
-    public Document ajouterDocument(String desc, MultipartFile file, Categorie categorie) throws IOException {
+    public Document addDocument(String desc, Set<Auteur> auteur, MultipartFile file, Set<Categorie> categorie) throws IOException {
         Document document = new Document();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         document.setTitre(fileName);
         document.setType(file.getContentType());
         document.setData(file.getBytes());
-        document.setDate_creation(Calendar.getInstance().toInstant());
+        document.setCreation(Calendar.getInstance().toInstant());
         document.setDescription(desc);
-        document.setCategorie(categorie);
+        document.setCategories(categorie);
+        document.setAuteurs(auteur);
         return this.documentRepository.save(document);
     }
 
-    public Stream<Document> recupererToutLesDocuments(){
+    public Stream<Document> retrieveDocuments(){
         return documentRepository.findAll().stream();
     }
 
-    public Document recupererUnDocument(Integer id){
+    public Document retrieveDocument(Integer id){
         return this.documentRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + id));
     }
