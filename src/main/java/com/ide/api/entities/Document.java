@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,6 +14,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,72 +30,83 @@ donc qui va nous créer, grace à des annotations, la table documents dans la ba
 @Entity
 @Table(name = "documents")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class Document {
 
-    //la clé primaire
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer documentId;
+    @Column(name = "IdDocument")
+    private Integer IdDocument;
 
-    //Le titre du document, ici on a considéré titre comme le nom du document
     private String titre;
 
     //Une briève description du document
     @Lob
-    private String description;
+    @Column(name = "resume")
+    private String resume;
 
 
     //La date d'ajout du document
-    @CreatedDate
-    private Instant creation;
 
-    //Le type du document(application/pdf, image/png,...)
-    private String type;
+    private Date dateEnregistrement = new Date();
 
-    //Le size(bytes ou kilobytes ou megabytes)
     @Lob
-    private byte[] data;
+    @Column(name = "taille")
+    private byte[] taille;
 
     private String url;
+    private Integer nombreDeTelechargements;
+    private Integer nombreDeConsultations;
+    private String formatDocument;
+    private String proprietaire;
+    private String langue;
 
-
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "Categorie_document",
-            joinColumns = @JoinColumn(name = "documentId"),
-            inverseJoinColumns = @JoinColumn(name = "categorieId"))
-    private Set<Categorie> categories;
-
-    @ManyToMany
-    @JoinTable(
-            name = "auteur_document",
-            joinColumns = @JoinColumn(name = "documentId"),
-            inverseJoinColumns = @JoinColumn(name = "auteurId"))
-    @JsonIgnore
-    private Set<Auteur> auteurs;
+    @OneToMany(mappedBy = "document")
+    private List<ContenuParCategories> contenuParCategories = new ArrayList<>();
+    @OneToMany(mappedBy = "document")
+    private List<CreationDesContenus> creationDesContenus = new ArrayList<>();
+    @OneToMany(mappedBy = "document")
+    private List<Etiquettage> etiquettages = new ArrayList<>();
+    @OneToMany(mappedBy = "document")
+    private List<GestionContenus> gestionContenus = new ArrayList<>();
+    private Double note;
+    private Integer nombreCommentaires;
 
     public Document() {
     }
 
-    public Document(int documentId, String titre, String description, Instant creation, String type, byte[] data, String url, Set<Categorie> categories, Set<Auteur> auteurs) {
-        this.documentId = documentId;
+    public Document(String titre,
+                    String resume,
+                    Date dateEnregistrement,
+                    byte[] taille, String url,
+                    Integer nombreDeTelechargements,
+                    Integer nombreDeConsultations,
+                    String formatDocument,
+                    String proprietaire,
+                    String langue,
+                    Double note,
+                    Integer nombreCommentaires) {
         this.titre = titre;
-        this.description = description;
-        this.creation = creation;
-        this.type = type;
-        this.data = data;
+        this.resume = resume;
+        this.dateEnregistrement = dateEnregistrement;
+        this.taille = taille;
         this.url = url;
-        this.categories = categories;
-        this.auteurs = auteurs;
+        this.nombreDeTelechargements = nombreDeTelechargements;
+        this.nombreDeConsultations = nombreDeConsultations;
+        this.formatDocument = formatDocument;
+        this.proprietaire = proprietaire;
+        this.langue = langue;
+        this.note = note;
+        this.nombreCommentaires = nombreCommentaires;
     }
 
-    public Integer getDocumentId() {
-        return documentId;
+
+    public Integer getIdDocument() {
+        return IdDocument;
     }
 
-    public void setDocumentId(int documentId) {
-        this.documentId = documentId;
+    public void setIdDocument(Integer idDocument) {
+        IdDocument = idDocument;
     }
 
     public String getTitre() {
@@ -100,36 +117,30 @@ public class Document {
         this.titre = titre;
     }
 
-    public String getDescription() {
-        return description;
+
+    public String getResume() {
+        return resume;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setResume(String resume) {
+        this.resume = resume;
     }
 
-    public Instant getCreation() {
-        return creation;
+    public Date getDateEnregistrement() {
+        return dateEnregistrement;
     }
 
-    public void setCreation(Instant creation) {
-        this.creation = creation;
+    public void setDateEnregistrement(Date dateEnregistrement) {
+        this.dateEnregistrement = dateEnregistrement;
     }
 
-    public String getType() {
-        return type;
+
+    public byte[] getTaille() {
+        return taille;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setTaille(byte[] taille) {
+        this.taille = taille;
     }
 
     public String getUrl() {
@@ -140,19 +151,99 @@ public class Document {
         this.url = url;
     }
 
-    public Set<Categorie> getCategories() {
-        return categories;
+    public Integer getNombreDeTelechargements() {
+        return nombreDeTelechargements;
     }
 
-    public void setCategories(Set<Categorie> categories) {
-        this.categories = categories;
+    public void setNombreDeTelechargements(Integer nombreDeTelechargements) {
+        this.nombreDeTelechargements = nombreDeTelechargements;
     }
 
-    public Set<Auteur> getAuteurs() {
-        return auteurs;
+    public Integer getNombreDeConsultations() {
+        return nombreDeConsultations;
     }
 
-    public void setAuteurs(Set<Auteur> auteurs) {
-        this.auteurs = auteurs;
+    public void setNombreDeConsultations(Integer nombreDeConsultations) {
+        this.nombreDeConsultations = nombreDeConsultations;
+    }
+
+    public String getFormatDocument() {
+        return formatDocument;
+    }
+
+    public void setFormatDocument(String formatDocument) {
+        this.formatDocument = formatDocument;
+    }
+
+    public String getProprietaire() {
+        return proprietaire;
+    }
+
+    public void setProprietaire(String proprietaire) {
+        this.proprietaire = proprietaire;
+    }
+
+    public String getLangue() {
+        return langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
+
+    public List<ContenuParCategories> getContenuParCategories() {
+        return contenuParCategories;
+    }
+
+    public void setContenuParCategories(List<ContenuParCategories> contenuParCategories) {
+        this.contenuParCategories = contenuParCategories;
+    }
+
+
+    public List<CreationDesContenus> getCreationDesContenus() {
+        return creationDesContenus;
+    }
+
+    public void setCreationDesContenus(List<CreationDesContenus> creationDesContenus) {
+        this.creationDesContenus = creationDesContenus;
+    }
+
+
+    public List<Etiquettage> getEtiquettages() {
+        return etiquettages;
+    }
+
+    public void setEtiquettages(List<Etiquettage> etiquettages) {
+        this.etiquettages = etiquettages;
+    }
+
+
+    public List<GestionContenus> getGestionContenus() {
+        return gestionContenus;
+    }
+
+    public void setGestionContenus(List<GestionContenus> gestionContenus) {
+        this.gestionContenus = gestionContenus;
+    }
+
+    public Double getNote() {
+        return note;
+    }
+
+    public void setNote(Double note) {
+        this.note = note;
+    }
+
+    public Integer getNombreCommentaires() {
+        return nombreCommentaires;
+    }
+
+    public void setNombreCommentaires(Integer nombreCommentaires) {
+        this.nombreCommentaires = nombreCommentaires;
+    }
+
+    public void addCategorie(ContenuParCategories contenuParCategorie) {
+        this.contenuParCategories.add(contenuParCategorie);
     }
 }

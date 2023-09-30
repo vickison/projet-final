@@ -1,9 +1,12 @@
 package com.ide.api.service;
 
 import com.ide.api.entities.Categorie;
+import com.ide.api.entities.GestionCategorie;
+import com.ide.api.entities.GestionContenus;
 import com.ide.api.repository.CategorieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 

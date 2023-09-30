@@ -1,107 +1,58 @@
 package com.ide.api.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ide.api.entities.Auteur;
-import com.ide.api.entities.Categorie;
+import com.ide.api.entities.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class ResponseDocument {
     private Integer id;
     private String titre;
-    private String description;
-    private Instant date_creation;
-    private String type;
-    private long size;
-    private Set<Categorie> categories;
+    private String resume;
+    private Date datePublication;
+    private String formatDocument;
+    private long taille;
     private String url;
-    private Set<Auteur> auteurs;
 
-    public ResponseDocument(Integer id, String titre, String description, Instant date_creation, String type, long size, Set<Categorie> categories, String url, Set<Auteur> auteurs) {
+    private Integer nombreDeTelechargements;
+    private Integer nombreDeConsultations;
+    private String proprietaire;
+    private String langue;
+    private Double note;
+    private Integer nombreCommentaires;
+
+    public ResponseDocument(Integer id,
+                            String titre,
+                            String resume,
+                            Date datePublication,
+                            String formatDocument,
+                            long taille,
+                            String url,
+                            Integer nombreDeTelechargements,
+                            Integer nombreDeConsultations,
+                            String proprietaire,
+                            String langue,
+                            Double note,
+                            Integer nombreCommentaires) {
         this.id = id;
         this.titre = titre;
-        this.description = description;
-        this.date_creation = date_creation;
-        this.type = type;
-        this.size = size;
-        this.categories = categories;
+        this.resume = resume;
+        this.datePublication = datePublication;
+        this.formatDocument = formatDocument;
+        this.taille = taille;
         this.url = url;
-        this.auteurs = auteurs;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitre() {
-        return titre;
-    }
-
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Instant getDate_creation() {
-        return date_creation;
-    }
-
-    public void setDate_creation(Instant date_creation) {
-        this.date_creation = date_creation;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public Set<Categorie> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Categorie> categories) {
-        this.categories = categories;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Set<Auteur> getAuteurs() {
-        return auteurs;
-    }
-
-    public void setAuteurs(Set<Auteur> auteurs) {
-        this.auteurs = auteurs;
+        this.nombreDeTelechargements = nombreDeTelechargements;
+        this.nombreDeConsultations = nombreDeConsultations;
+        this.proprietaire = proprietaire;
+        this.langue = langue;
+        this.note = note;
+        this.nombreCommentaires = nombreCommentaires;
     }
 }

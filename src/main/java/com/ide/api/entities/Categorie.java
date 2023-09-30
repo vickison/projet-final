@@ -4,77 +4,87 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
-/*
-
-On definit ici une classe Categorie, qui est une entité,
-donc qui va nous créer, grace à des annotations, la table categories dans la base avec les champs nécéssaires
-
-* */
 @Entity
 @Table(name = "categories")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Categorie implements Serializable {
 
-    //La clé primaire de la table
+public class Categorie implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int categorId;
-
-    //Le nom de la categorie
-    private String nom;
-
-    //Une liste permettant de stocker les différents documents qui appartiennent à une categorie
-
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },mappedBy = "categories")
+    @Column(name = "IdCategorie")
+    private int IdCategorie;
+    private String nomCategorie;
+    @OneToMany(mappedBy = "categorie")
+    private List<ContenuParCategories> contenuParCategories = new ArrayList<>();
     @JsonIgnore
-    private Set<Document> documents = new HashSet<Document>();;
+    @OneToMany(mappedBy = "categorie")
+    private List<GestionCategorie> gestionCategories = new ArrayList<>();
 
     public Categorie() {
     }
 
-    public Categorie(int categorId, String nom, Set<Document> documents) {
-        this.categorId = categorId;
-        this.nom = nom;
-        this.documents = documents;
+    public Categorie(String nomCategorie,
+                     List<ContenuParCategories> contenuParCategories,
+                     List<GestionCategorie> gestionCategories) {
+        this.nomCategorie = nomCategorie;
+        this.contenuParCategories = contenuParCategories;
+        this.gestionCategories = gestionCategories;
     }
 
-    public int getCategorId() {
-        return categorId;
+
+
+    public int getIdCategorie() {
+        return IdCategorie;
     }
 
-    public void setCategorId(int id) {
-        this.categorId = categorId;
+    public void setIdCategorie(int idCategorie) {
+        IdCategorie = idCategorie;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomCategorie() {
+        return nomCategorie;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomCategorie(String nomCategorie) {
+        this.nomCategorie = nomCategorie;
     }
 
-    public Set<Document> getDocuments() {
-        return documents;
+    public List<ContenuParCategories> getContenuParCategories() {
+        return contenuParCategories;
     }
 
-    public void setDocuments(Set<Document> documents) {
-        this.documents = documents;
+
+    public void setContenuParCategories(List<ContenuParCategories> contenuParCategories) {
+        this.contenuParCategories = contenuParCategories;
     }
+
+
+    public List<GestionCategorie> getGestionCategories() {
+        return gestionCategories;
+    }
+
+    public void setGestionCategories(List<GestionCategorie> gestionCategories) {
+        this.gestionCategories = gestionCategories;
+    }
+
+    public void addDocument(ContenuParCategories contenuParCategorie) {
+        this.contenuParCategories.add(contenuParCategorie);
+    }
+
+    public void addAdmin(GestionCategorie gestionCategorie) {
+        this.gestionCategories.add(gestionCategorie);
+    }
+
 }
+
