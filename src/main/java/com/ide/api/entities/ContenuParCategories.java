@@ -1,5 +1,8 @@
 package com.ide.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,9 +13,11 @@ public class ContenuParCategories {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PK_ContenuParCategories")
     private Integer id;
+    @JsonIgnoreProperties("contenuParCategories")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_IdDocument")
     private Document document;
+    @JsonIgnoreProperties("contenuParCategories")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_IdCategorie")
     private Categorie categorie;

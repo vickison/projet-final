@@ -1,8 +1,11 @@
 package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "admins")
-public class Admin {
+public class Admin implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdAdmin")
@@ -20,12 +23,17 @@ public class Admin {
     private String emailAdmin;
     private String motDePasse;
 
+    @JsonIgnoreProperties("admin")
     @OneToMany(mappedBy = "admin")
     private List<GestionContenus> gestionContenus = new ArrayList<>();
+    @JsonIgnoreProperties("admin")
     @OneToMany(mappedBy = "admin")
     private List<GestionCategorie> gestionCategories = new ArrayList<>();
+    @JsonIgnoreProperties("admin")
     @OneToMany(mappedBy = "admin")
     private List<GestionEtiquette> gestionEtiquettes = new ArrayList<>();
+
+    @JsonIgnoreProperties("admin")
     @OneToMany(mappedBy = "admin")
     private List<GestionAuteur> gestionAuteurs = new ArrayList<>();
 

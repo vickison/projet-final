@@ -1,5 +1,8 @@
 package com.ide.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,10 +13,12 @@ public class GestionContenus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PK_GestionContenus")
     private Integer id;
+    @JsonIgnoreProperties("gestionContenus")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_IdAdmin")
     private Admin admin;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("gestionContenus")
+    @ManyToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "FK_IdDocument")
     private Document document;
     private Date dateC;

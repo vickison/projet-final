@@ -55,6 +55,10 @@ public class DocumentController {
 
     @PostMapping(value="/ajouter", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseMessage> addDocument(@RequestParam  String resume,
+                                                       @RequestParam int nombreDeTelechargements,
+                                                       @RequestParam int nombreDeConsultations,
+                                                       @RequestParam String proprietaire,
+                                                       @RequestParam String langue,
                                                        @RequestParam int idCategorie,
                                                        @RequestParam int idAdmin,
                                                        @RequestParam("file") MultipartFile file) throws IOException{
@@ -65,6 +69,10 @@ public class DocumentController {
         document.setTitre(file.getOriginalFilename());
         document.setTaille(file.getBytes());
         document.setFormatDocument(file.getContentType());
+        document.setNombreDeTelechargements(nombreDeTelechargements);
+        document.setNombreDeConsultations(nombreDeConsultations);
+        document.setProprietaire(proprietaire);
+        document.setLangue(langue);
         Admin admin = new Admin();
         admin = adminService.findAdmin(idAdmin);
         Categorie categorie = new Categorie();
@@ -100,30 +108,8 @@ public class DocumentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ResponseDocument>> retrieveAllDocuments(){
-        List<ResponseDocument> documents = documentService.retrieveAllDocuments().map(doc->{
-            String docDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/documents/")
-                    .path(doc.getIdDocument().toString())
-                    .toUriString();
-            return new ResponseDocument(
-                    doc.getIdDocument(),
-                    doc.getTitre(),
-                    doc.getResume(),
-                    doc.getDateEnregistrement(),
-                    doc.getFormatDocument(),
-                    doc.getTaille().length,
-                    docDownloadUri,
-                    doc.getNombreDeTelechargements(),
-                    doc.getNombreDeConsultations(),
-                    doc.getProprietaire(),
-                    doc.getLangue(),
-                    doc.getNote(),
-                    doc.getNombreCommentaires()
-            );
-        }).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(documents);
+    public @ResponseBody List<Document> retrieveAllDocuments(){
+        return documentService.retrieveAllDocuments();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

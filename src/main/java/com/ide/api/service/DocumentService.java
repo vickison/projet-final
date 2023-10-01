@@ -35,8 +35,8 @@ public class DocumentService {
          this.documentRepository.save(document);
     }
 
-    public Stream<Document> retrieveAllDocuments(){
-        return documentRepository.findAll().stream();
+    public List<Document> retrieveAllDocuments(){
+        return documentRepository.findAll();
     }
 
     public Document retrieveDocument(Integer id){

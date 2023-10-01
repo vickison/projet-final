@@ -17,7 +17,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "categories")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class Categorie implements Serializable{
     @Id
@@ -25,9 +24,11 @@ public class Categorie implements Serializable{
     @Column(name = "IdCategorie")
     private int IdCategorie;
     private String nomCategorie;
+    @JsonIgnoreProperties("categorie")
     @OneToMany(mappedBy = "categorie")
     private List<ContenuParCategories> contenuParCategories = new ArrayList<>();
-    @JsonIgnore
+
+    @JsonIgnoreProperties("categorie")
     @OneToMany(mappedBy = "categorie")
     private List<GestionCategorie> gestionCategories = new ArrayList<>();
 

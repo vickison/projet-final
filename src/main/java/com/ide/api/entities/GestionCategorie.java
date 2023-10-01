@@ -1,5 +1,8 @@
 package com.ide.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,12 +16,15 @@ public class GestionCategorie implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PK_GestionContenu")
     private Integer id;
+    @JsonIgnoreProperties("gestionCategories")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_IdAdmin")
     private Admin admin;
+    @JsonIgnoreProperties("gestionCategories")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_IdCategorie")
     private Categorie categorie;
+
     @Column(name = "dateCreationCategorie")
     private LocalDateTime dateCat;
 

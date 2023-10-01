@@ -1,9 +1,6 @@
 package com.ide.api.entities;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
@@ -29,7 +26,6 @@ donc qui va nous créer, grace à des annotations, la table documents dans la ba
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "documents")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class Document {
 
@@ -61,12 +57,18 @@ public class Document {
     private String proprietaire;
     private String langue;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "document")
     private List<ContenuParCategories> contenuParCategories = new ArrayList<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "document")
     private List<CreationDesContenus> creationDesContenus = new ArrayList<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "document")
     private List<Etiquettage> etiquettages = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "document")
     private List<GestionContenus> gestionContenus = new ArrayList<>();
     private Double note;
