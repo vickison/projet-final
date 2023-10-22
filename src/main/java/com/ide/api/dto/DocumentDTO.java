@@ -1,80 +1,42 @@
-package com.ide.api.entities;
+package com.ide.api.dto;
 
-import com.fasterxml.jackson.annotation.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.ide.api.entities.AuteurDocument;
+import com.ide.api.entities.CategorieDocument;
+import com.ide.api.entities.DocumentTag;
+import com.ide.api.entities.UtilisateurDocument;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import java.util.*;
+import javax.persistence.OneToMany;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-
-/*
-
-On definit ici une classe Document, qui est une entité,
-donc qui va nous créer, grace à des annotations, la table documents dans la base avec les champs nécéssaires
-
-* */
-@EntityListeners(AuditingEntityListener.class)
-@Entity
-@Table(name = "document")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "documentID")
-public class Document {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "documentID")
-    private Integer documentID;
-
+public class DocumentDTO {
+    private Long documentID;
     private String titre;
-
-    //Une briève description du document
-    @Lob
-    @Column(name = "resume")
     private String resume;
-
-
-    @Column(name = "date_publication")
     private Date datePublication;
-
-    @Lob
-    @Column(name = "taille")
     private byte[] taille;
-
     private String url;
-    @Column(name = "nb_telechargements", columnDefinition = "Integer default '0'")
     private Integer nombreDeTelechargements;
-    @Column(name = "nb_consultations", columnDefinition = "Integer default '0'")
     private Integer nombreDeConsultations;
-
-    @Column(name = "nb_commentaires", columnDefinition = "Integer default '0'")
     private Integer nombreDeCommentaires;
     private String format;
     private String proprietaire;
     private String langue;
 
-    @OneToMany(mappedBy = "documentID")
-    @JsonManagedReference(value = "doc-cat")
-    private Set<CategorieDocument> categorieDocuments = new HashSet<>();
-
-    @OneToMany(mappedBy = "documentID")
-    private Set<AuteurDocument> auteurDocuments = new HashSet<>();
-
-    @OneToMany(mappedBy = "documentID")
-    @JsonManagedReference(value = "doc-ut")
-    private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
-
-    @OneToMany(mappedBy = "documentID")
-    private Set<DocumentTag> documentTags = new HashSet<>();
+    private Set<CategorieDocumentDTO> categorieDocuments = new HashSet<>();
+    private Set<AuteurDocumentDTO> auteurDocuments = new HashSet<>();
+    private Set<UtilisateurDocumentDTO> utilisateurDocuments = new HashSet<>();
+    private Set<DocumentTagDTO> documentTags = new HashSet<>();
 
 
-    public Integer getDocumentID() {
+    // Getters and setters
+
+    public Long getDocumentID() {
         return documentID;
     }
 
-    public void setDocumentID(Integer documentID) {
+    public void setDocumentID(Long documentID) {
         this.documentID = documentID;
     }
 
@@ -166,35 +128,35 @@ public class Document {
         this.langue = langue;
     }
 
-    public Set<CategorieDocument> getCategorieDocuments() {
+    public Set<CategorieDocumentDTO> getCategorieDocuments() {
         return categorieDocuments;
     }
 
-    public void setCategorieDocuments(Set<CategorieDocument> categorieDocuments) {
+    public void setCategorieDocuments(Set<CategorieDocumentDTO> categorieDocuments) {
         this.categorieDocuments = categorieDocuments;
     }
 
-    public Set<AuteurDocument> getAuteurDocuments() {
+    public Set<AuteurDocumentDTO> getAuteurDocuments() {
         return auteurDocuments;
     }
 
-    public void setAuteurDocuments(Set<AuteurDocument> auteurDocuments) {
+    public void setAuteurDocuments(Set<AuteurDocumentDTO> auteurDocuments) {
         this.auteurDocuments = auteurDocuments;
     }
 
-    public Set<UtilisateurDocument> getUtilisateurDocuments() {
+    public Set<UtilisateurDocumentDTO> getUtilisateurDocuments() {
         return utilisateurDocuments;
     }
 
-    public void setUtilisateurDocuments(Set<UtilisateurDocument> utilisateurDocuments) {
+    public void setUtilisateurDocuments(Set<UtilisateurDocumentDTO> utilisateurDocuments) {
         this.utilisateurDocuments = utilisateurDocuments;
     }
 
-    public Set<DocumentTag> getDocumentTags() {
+    public Set<DocumentTagDTO> getDocumentTags() {
         return documentTags;
     }
 
-    public void setDocumentTags(Set<DocumentTag> documentTags) {
+    public void setDocumentTags(Set<DocumentTagDTO> documentTags) {
         this.documentTags = documentTags;
     }
 }

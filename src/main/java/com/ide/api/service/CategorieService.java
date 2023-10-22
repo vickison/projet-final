@@ -1,39 +1,67 @@
 package com.ide.api.service;
 
-import com.ide.api.entities.Categorie;
-import com.ide.api.entities.GestionCategorie;
-import com.ide.api.entities.GestionContenus;
+import com.ide.api.dto.CategorieDTO;
+import com.ide.api.entities.*;
+import com.ide.api.repository.CategorieDocumentRepository;
 import com.ide.api.repository.CategorieRepository;
+import com.ide.api.repository.DocumentRepository;
+import com.ide.api.repository.UtilisateurRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 public class CategorieService {
 
-    //Injection de notre repository
     private CategorieRepository categorieRepository;
+    private CategorieDocumentRepository categorieDocumentRepository;
+    private DocumentRepository documentRepository;
+    private UtilisateurRepository utilisateurRepository;
 
-    //Le contructeur de notre classe
-    public CategorieService(CategorieRepository categorieRepository) {
+    public CategorieService(CategorieRepository categorieRepository,
+                            CategorieDocumentRepository categorieDocumentRepository,
+                            DocumentRepository documentRepository,
+                            UtilisateurRepository utilisateurRepository) {
         this.categorieRepository = categorieRepository;
+        this.categorieDocumentRepository = categorieDocumentRepository;
+        this.documentRepository = documentRepository;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
-    //La methode qui permet d'ajouter une catégorie dans la base qui prend en param l'objet categorie
-    public void createCategorie(Categorie cat) {
-         this.categorieRepository.save(cat);
+    /*private CategorieDTO convertToDTO(Categorie categorie) {
+        CategorieDTO categorieDTO = new CategorieDTO();
+        categorieDTO.setCategorieID(categorie.getCategorieID());
+        categorieDTO.setNom(categorie.getNom());
+        List<Document> documents = documentRepository.findAll();
+        List<String> documentNames = new ArrayList<>();
+        List<Integer> documentIds = new ArrayList<>();
+        for (Document document: documents){
+            do;
+        }
+        categorieDTO.setDocuments(documents);
+        for(Document document: documents)
+
+        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
+        categorieDTO.setUtlisateurs(utilisateurs);
+        return categorieDTO;
+    }*/
+
+    public void createCategorie(Categorie categorie) {
+        this.categorieRepository.save(categorie);
     }
 
-
-    //La methode qui permet de récupérer la liste des categories
     public List<Categorie> findAllCategories() {
-        return categorieRepository.findAll();
+        return this.categorieRepository.findAll();
     }
 
     public Categorie findCategory(Integer id){
-        return this.categorieRepository.findById(id).get();
+        return this.categorieRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Categorie not found with id: " + id));
     }
 }

@@ -24,9 +24,9 @@ public class DocumentDownloadController {
 
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<Resource> downloadDocument(@PathVariable Integer id, HttpServletRequest request){
-        Document document = documentService.retrieveDocument(id);
+        Document document = documentService.findDocument(id);
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(document.getFormatDocument()))
+                .contentType(MediaType.parseMediaType(document.getFormat()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getTitre() + "\"")
                 .body(new ByteArrayResource(document.getTaille()));
     }

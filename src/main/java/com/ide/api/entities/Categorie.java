@@ -1,9 +1,6 @@
 package com.ide.api.entities;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -16,76 +13,54 @@ import java.util.*;
 
 
 @Entity
-@Table(name = "categories")
-
-public class Categorie implements Serializable{
+@Table(name = "categorie")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "categorieID")
+public class Categorie{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdCategorie")
-    private int IdCategorie;
-    private String nomCategorie;
-    @JsonIgnoreProperties("categorie")
-    @OneToMany(mappedBy = "categorie")
-    private List<ContenuParCategories> contenuParCategories = new ArrayList<>();
+    private Integer categorieID;
+    private String nom;
 
-    @JsonIgnoreProperties("categorie")
-    @OneToMany(mappedBy = "categorie")
-    private List<GestionCategorie> gestionCategories = new ArrayList<>();
+    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "cat-doc")
+    private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
-    public Categorie() {
+    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "cat-ut")
+    private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
+
+    public Integer getCategorieID() {
+        return categorieID;
     }
 
-    public Categorie(String nomCategorie,
-                     List<ContenuParCategories> contenuParCategories,
-                     List<GestionCategorie> gestionCategories) {
-        this.nomCategorie = nomCategorie;
-        this.contenuParCategories = contenuParCategories;
-        this.gestionCategories = gestionCategories;
+    public void setCategorieID(Integer categorieID) {
+        this.categorieID = categorieID;
     }
 
-
-
-    public int getIdCategorie() {
-        return IdCategorie;
+    public String getNom() {
+        return nom;
     }
 
-    public void setIdCategorie(int idCategorie) {
-        IdCategorie = idCategorie;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getNomCategorie() {
-        return nomCategorie;
+    public Set<CategorieDocument> getCategorieDocuments() {
+        return categorieDocuments;
     }
 
-    public void setNomCategorie(String nomCategorie) {
-        this.nomCategorie = nomCategorie;
+    public void setCategorieDocuments(Set<CategorieDocument> categorieDocuments) {
+        this.categorieDocuments = categorieDocuments;
     }
 
-    public List<ContenuParCategories> getContenuParCategories() {
-        return contenuParCategories;
+    public Set<UtilisateurCategorie> getUtilisateurCategories() {
+        return utilisateurCategories;
     }
 
-
-    public void setContenuParCategories(List<ContenuParCategories> contenuParCategories) {
-        this.contenuParCategories = contenuParCategories;
+    public void setUtilisateurCategories(Set<UtilisateurCategorie> utilisateurCategories) {
+        this.utilisateurCategories = utilisateurCategories;
     }
-
-
-    public List<GestionCategorie> getGestionCategories() {
-        return gestionCategories;
-    }
-
-    public void setGestionCategories(List<GestionCategorie> gestionCategories) {
-        this.gestionCategories = gestionCategories;
-    }
-
-    public void addDocument(ContenuParCategories contenuParCategorie) {
-        this.contenuParCategories.add(contenuParCategorie);
-    }
-
-    public void addAdmin(GestionCategorie gestionCategorie) {
-        this.gestionCategories.add(gestionCategorie);
-    }
-
 }
 

@@ -1,6 +1,7 @@
 package com.ide.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ide.api.dto.DocumentDTO;
 import com.ide.api.entities.*;
 import com.ide.api.exception.FileNotFoundException;
 import com.ide.api.message.ResponseDocument;
@@ -35,11 +36,11 @@ public class DocumentService {
          this.documentRepository.save(document);
     }
 
-    public List<Document> retrieveAllDocuments(){
+    public List<Document> findDocuments(){
         return documentRepository.findAll();
     }
 
-    public Document retrieveDocument(Integer id){
+    public Document findDocument(Integer id){
         return this.documentRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + id));
     }

@@ -1,6 +1,7 @@
 package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,91 +14,71 @@ import java.util.Set;
 public class Auteur{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdAuteur")
-    private Integer IdAuteur;
-    private String nomAuteur;
-    private String prenomAuteur;
-    private String emailAuteur;
-    private String nationaliteAuteur;
-    @OneToMany(mappedBy = "auteur")
-    private List<CreationDesContenus> creationDesContenus = new ArrayList<>();
-    @OneToMany(mappedBy = "auteur")
-    private List<GestionAuteur> gestionAuteurs = new ArrayList<>();
+    private Integer auteurID;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String nationalite;
 
-    public Auteur() {
+    @OneToMany(mappedBy = "auteurID")
+    private Set<AuteurDocument> auteurDocuments = new HashSet<>();
+
+    @OneToMany(mappedBy = "auteurID")
+    private Set<UtilisateurAuteur> utilisateurAuteurs = new HashSet<>();
+
+    public Integer getAuteurID() {
+        return auteurID;
     }
 
-    public Auteur(String nomAuteur, String prenomAuteur, String emailAuteur, String nationaliteAuteur) {
-        this.nomAuteur = nomAuteur;
-        this.prenomAuteur = prenomAuteur;
-        this.emailAuteur = emailAuteur;
-        this.nationaliteAuteur = nationaliteAuteur;
+    public void setAuteurID(Integer auteurID) {
+        this.auteurID = auteurID;
     }
 
-
-    public Integer getIdAuteur() {
-        return IdAuteur;
+    public String getNom() {
+        return nom;
     }
 
-    public void setIdAuteur(Integer idAuteur) {
-        IdAuteur = idAuteur;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getNomAuteur() {
-        return nomAuteur;
+    public String getPrenom() {
+        return prenom;
     }
 
-    public void setNomAuteur(String nomAuteur) {
-        this.nomAuteur = nomAuteur;
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
-    public String getPrenomAuteur() {
-        return prenomAuteur;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPrenomAuteur(String prenomAuteur) {
-        this.prenomAuteur = prenomAuteur;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getEmailAuteur() {
-        return emailAuteur;
+    public String getNationalite() {
+        return nationalite;
     }
 
-    public void setEmailAuteur(String emailAuteur) {
-        this.emailAuteur = emailAuteur;
+    public void setNationalite(String nationalite) {
+        this.nationalite = nationalite;
     }
 
-    public String getNationaliteAuteur() {
-        return nationaliteAuteur;
+    public Set<AuteurDocument> getAuteurDocuments() {
+        return auteurDocuments;
     }
 
-    public void setNationaliteAuteur(String nationaliteAuteur) {
-        this.nationaliteAuteur = nationaliteAuteur;
+    public void setAuteurDocuments(Set<AuteurDocument> auteurDocuments) {
+        this.auteurDocuments = auteurDocuments;
     }
 
-    public List<CreationDesContenus> getCreationDesContenus() {
-        return creationDesContenus;
+    public Set<UtilisateurAuteur> getUtilisateurAuteurs() {
+        return utilisateurAuteurs;
     }
 
-    public void setCreationDesContenus(List<CreationDesContenus> creationDesContenus) {
-        this.creationDesContenus = creationDesContenus;
-    }
-
-
-
-    public List<GestionAuteur> getGestionAuteurs() {
-        return gestionAuteurs;
-    }
-
-    public void setGestionAuteurss(List<GestionAuteur> gestionAuteurs) {
-        this.gestionAuteurs = gestionAuteurs;
-    }
-
-    public void addDocument(CreationDesContenus creationDesContenu){
-        this.creationDesContenus.add(creationDesContenu);
-    }
-
-    public void addAdmin(GestionAuteur gestionAuteur){
-        this.gestionAuteurs.add(gestionAuteur);
+    public void setUtilisateurAuteurs(Set<UtilisateurAuteur> utilisateurAuteurs) {
+        this.utilisateurAuteurs = utilisateurAuteurs;
     }
 }

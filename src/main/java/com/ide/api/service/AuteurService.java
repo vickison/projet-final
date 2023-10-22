@@ -4,6 +4,7 @@ import com.ide.api.entities.Auteur;
 import com.ide.api.repository.AuteurRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -23,7 +24,8 @@ public class AuteurService {
     }
 
     public Auteur findAuteur(Integer id){
-        return this.auteurRepository.findById(id).get();
+        return this.auteurRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Auteur not found with id: " + id));
     }
 
 
