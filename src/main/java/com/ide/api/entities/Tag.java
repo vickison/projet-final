@@ -1,5 +1,6 @@
 package com.ide.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -15,9 +16,11 @@ public class Tag {
     private String tag;
 
     @OneToMany(mappedBy = "tagID")
+    @JsonIgnore
     private Set<DocumentTag> documentTags = new HashSet<>();
 
     @OneToMany(mappedBy = "tagID")
+    @JsonIgnore
     private Set<UtilisateurTag> utilisateurTags = new HashSet<>();
 
     public Integer getTagID() {

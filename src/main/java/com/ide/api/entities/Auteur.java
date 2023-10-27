@@ -24,6 +24,7 @@ public class Auteur{
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "auteurID")
+    @JsonIgnore
     private Set<UtilisateurAuteur> utilisateurAuteurs = new HashSet<>();
 
     public Integer getAuteurID() {

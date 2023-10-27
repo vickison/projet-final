@@ -70,14 +70,14 @@ public class DocumentController {
     //La methode qui permet d'ajouter un document, utiliser directement coté client
 
     @PostMapping(value="/ajouter", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseMessage> addDocument(@RequestParam(required = false, value = "R") String resume,
-                                                       @RequestParam(required = false, value = "Prop") String proprietaire,
-                                                       @RequestParam(required = false, value = "L") String langue,
-                                                       @RequestParam(required = true, value = "C") Integer categorieID,
-                                                       @RequestParam(required = true, value = "U") Integer utilisateurID,
-                                                       @RequestParam(value = "A", required = false) Integer auteurID,
-                                                       @RequestParam(value = "T", required = false) Integer tagID,
-                                                       @RequestParam(value = "P", required = false) String paysPublication,
+    public ResponseEntity<ResponseMessage> addDocument(@RequestParam(required = false, name = "resume") String resume,
+                                                       @RequestParam(required = false, name = "proprietaire") String proprietaire,
+                                                       @RequestParam(required = false, name = "langue") String langue,
+                                                       @RequestParam(required = true, name = "categorieID") Integer categorieID,
+                                                       @RequestParam(required = true, name = "utilisateurID") Integer utilisateurID,
+                                                       @RequestParam(name = "auteurID", required = false) Integer auteurID,
+                                                       @RequestParam(name = "tagID", required = false) Integer tagID,
+                                                       @RequestParam(value = "paysPublication", required = false) String paysPublication,
                                                        @RequestParam("file") MultipartFile file) throws IOException{
 
         Document document = new Document();

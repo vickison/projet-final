@@ -23,7 +23,8 @@ public class DocumentDownloadController {
     }
 
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<Resource> downloadDocument(@PathVariable Integer id, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Integer id,
+                                                     HttpServletRequest request){
         Document document = documentService.findDocument(id);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(document.getFormat()))

@@ -29,6 +29,7 @@ public class Categorie{
 
     @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "cat-ut")
+    @JsonIgnore
     private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
 
     public Integer getCategorieID() {
