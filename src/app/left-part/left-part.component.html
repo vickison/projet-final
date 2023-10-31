@@ -1,0 +1,44 @@
+<!-- Barre responsive -->
+<div class="responsive-bar" *ngIf="isMobile" (click)="toggleMenu()">
+    <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+</div>
+
+<div [ngClass]="{ 'left_section_open': isLeftSectionVisible }">
+    <section class="left_section">
+        
+            <div class="nom_projet"> DCE </div>
+
+            <nav>
+                <ul style="padding-top: 1.5rem">
+                    <li *ngFor="let categorie of categories">
+                        <a (click)="onCategoryClick(categorie.categorieID)"
+                            routerLink="/categories/{{ categorie.categorieID }}"
+                        >
+                            {{ categorie.nom }}
+                        </a>
+                    </li>
+                    
+                    <hr style="color: white">
+                    
+                    <li>
+                        <img src="assets/profil.png" alt="hommage" style="width: 70%; height: 25%; display: block; margin: 0 auto; margin-top: 4rem">
+                        <br />
+                        <span style="color: white; text-align: center;  display: block; margin: 0 auto; font-size: small;">IN MEMORIAM
+                        </span>
+                        <span style="color: white; text-align: center;  display: block; margin: 0 auto; font-size: small;">Nom et Prenom</span>
+                        <span style="color: white; text-align: center;  display: block; margin: 0 auto; font-size: small;">Naissance - Mort</span>
+                        <span style="color: white; text-align: center;  display: block; margin: 0 auto; font-size: small;">Niveau et Poste</span>
+        
+                    </li>
+                    
+                </ul>
+            </nav>
+        <!-- </div> -->
+        
+        
+    </section>
+</div>
+<!-- <div [style.display]="isLeftSectionVisible ? 'block' : 'none'"> -->
+
+<!-- </div> -->
+

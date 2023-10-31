@@ -1,0 +1,9 @@
+<h3>Liste des catégories</h3>
+<ul class="list-group">
+  <li
+    class="list-group-item"
+    *ngFor="let categorie of categories"
+  >
+    {{ categorie.categorId }}: {{ categorie.nom }}
+  </li>
+</ul>

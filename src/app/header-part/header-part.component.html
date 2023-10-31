@@ -1,0 +1,82 @@
+   <!-- <div  class="icon_format" id="icon_format" style="position: fixed; top: 2.2rem">
+
+    <a type="button" (click)="toggleListVisibility()"  id="format_icon"> <i class="fa fa-folder" aria-hidden="true" style="color: black;" ></i> </a>
+   </div> -->
+
+   
+   <div class= "header_container" >
+
+   
+      <mat-form-field appearance="outline" class="header_search">
+        <input  matInput  type="text" placeholder="Rechercher" [(ngModel)]="value"  style="border-radius: 3px;"/>
+        <button mat-icon-button *ngIf="value" matSuffix  aria-label="Clear" (click)="value=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+       
+   
+      <button mat-mini-fab  color="black"  (click)="toggleListVisibility()" id="format_icon" class="header_folder">   
+        <mat-icon svgIcon="folder"></mat-icon>
+      </button>
+   
+
+   
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="header_sort">
+        <mat-icon>sort</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <span>Date d'ajout</span>
+        </button>
+        <button mat-menu-item>
+          <span>Ordre Alphabétique</span>
+        </button>
+      </mat-menu>
+  
+
+      <!-- ;background-color: red -->
+        <mat-form-field style="margin-left: 15%; width: 8%;" *ngIf="!isMobile && !isTablet" >
+            <mat-icon matPrefix>translate</mat-icon>
+            <mat-select [(value)]="selectedLanguage">
+              <mat-option [value]="option.value" *ngFor="let option of language">{{ option.viewValue }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+     
+
+      <button mat-stroked-button   *ngIf="!isMobile && !isTablet"  style="margin-top: 1rem; margin-left: 15%;"> A propos</button>
+    
+
+  </div>
+
+    <!-- Les boutons représentant les differents types de formats -->
+      
+    <div class="icon_bar" id="icon_bar" *ngIf="isListVisible">
+           
+        <button mat-raised-button color="warn">
+            <mat-icon>home</mat-icon>
+            Tout
+          </button>
+
+          <button mat-raised-button color="secondary">
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+
+          <button mat-raised-button color="secondary">
+           <i class="fa fa-file-image-o" aria-hidden="true"></i>
+          </button>
+           
+          <button mat-raised-button color="secondadry">
+             <i class="fa fa-file-video-o" aria-hidden="true"></i>
+          </button>
+
+          <button mat-raised-button color="secondary">
+             <i class="fa fa-file-audio-o" aria-hidden="true"></i>
+          </button>
+           
+            
+        </div>
+
+

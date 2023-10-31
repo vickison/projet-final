@@ -1,0 +1,32 @@
+<footer>
+     <!-- <div class="row">
+          <div class="col-md-2 sponsor" style="margin-left: 24.5rem;">
+              Logo 1
+          </div>
+
+          <div class="col-md-6 sponsor">
+              Logo 2
+          </div>
+
+          <div class="col-md-4 sponsor">
+              Logo 3
+          </div>
+
+           <div class="col-md-4 sponsor">
+              Logo 4
+          </div>
+          
+      </div> -->
+
+      <mat-form-field class="footer_sort" *ngIf="isTablet">
+        <mat-icon matPrefix>translate</mat-icon>
+        <mat-select [(value)]="selectedLanguage">
+          <mat-option [value]="option.value" *ngFor="let option of language">{{ option.viewValue }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button   *ngIf="isMobile || isTablet" class="footer_A_propos"> A propos</button>
+
+
+  <div><i class="fa fa-copyright" aria-hidden="true"></i>copyright</div> 
+</footer>
