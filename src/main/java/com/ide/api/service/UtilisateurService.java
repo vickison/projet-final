@@ -40,4 +40,13 @@ public class UtilisateurService {
         return this.utilisateurRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur not found with id: " + id));
     }
+
+    public boolean utilisateurAuthentifie(String email, String password){
+        Utilisateur utilisateur = this.utilisateurRepository.findByEmail(email);
+
+        if(utilisateur == null)
+            return false;
+
+        return passwordEncoder.matches(password, utilisateur.getPassword());
+    }
 }

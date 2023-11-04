@@ -64,4 +64,8 @@ public class CategorieService {
         return this.categorieRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Categorie not found with id: " + id));
     }
+
+    public List<Categorie> findCategoriesByUtilisateurId(Utilisateur utilisateur){
+        return this.categorieRepository.findByUtilisateurCategoriesUtilisateurID(utilisateur);
+    }
 }

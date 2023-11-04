@@ -5,10 +5,7 @@ import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.CategorieDocumentRepository;
 import com.ide.api.repository.UtilisateurRepository;
-import com.ide.api.service.CategorieDocumentService;
-import com.ide.api.service.UtilisateurCategorieService;
-import com.ide.api.service.UtilisateurService;
-import com.ide.api.service.CategorieService;
+import com.ide.api.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +29,18 @@ public class CategorieController {
     private UtilisateurRepository utilisateurRepository;
 
     private UtilisateurCategorieService utilisateurCategorieService;
-
-    //Le constructeur de notre classe
-
+    private DocumentService documentService;
 
     public CategorieController(CategorieService categorieService,
                                UtilisateurService utilisateurService,
                                UtilisateurCategorieService utilisateurCategorieService,
-                               UtilisateurRepository utilisateurRepository) {
+                               UtilisateurRepository utilisateurRepository,
+                               DocumentService documentService) {
         this.categorieService = categorieService;
         this.utilisateurService = utilisateurService;
         this.utilisateurCategorieService = utilisateurCategorieService;
         this.utilisateurRepository = utilisateurRepository;
+        this.documentService = documentService;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -82,6 +79,12 @@ public class CategorieController {
         }
     }
 
+    @GetMapping("/{categoryID}/documents")
+    public ResponseEntity<List<Document>> findDocumentsByCategoryId(@PathVariable Integer categoryID){
+        Categorie categorie = categorieService.findCategory(categoryID);
+        List<Document> documents = this.documentService.findDocumentsByCategoryId(categorie);
+        return ResponseEntity.ok(documents);
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Categorie> findAllCategories(){

@@ -87,4 +87,11 @@ public class TagController {
     public @ResponseBody Tag findTag(@PathVariable Integer id){
         return this.tagService.findTag(id);
     }
+
+    @GetMapping("/{tagID}/documents")
+    public ResponseEntity<List<Document>> findDocumentsByTagId(@PathVariable Integer tagID){
+        Tag tag = this.tagService.findTag(tagID);
+        List<Document> documents = this.documentService.findDocumentsByTagId(tag);
+        return ResponseEntity.ok(documents);
+    }
 }

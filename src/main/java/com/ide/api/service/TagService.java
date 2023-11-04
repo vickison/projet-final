@@ -1,6 +1,8 @@
 package com.ide.api.service;
 
+import com.ide.api.entities.Document;
 import com.ide.api.entities.Tag;
+import com.ide.api.entities.Utilisateur;
 import com.ide.api.repository.TagRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +28,13 @@ public class TagService {
     public Tag findTag(Integer id){
         return this.tagRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tag not found with id: " + id));
+    }
+
+    public List<Tag> findTagsByDocumentId(Document document){
+        return this.tagRepository.findByDocumentTagsDocumentID(document);
+    }
+
+    public List<Tag> findTagsByUtilisateurId(Utilisateur utilisateur){
+        return this.tagRepository.findByUtilisateurTagsUtilisateurID(utilisateur);
     }
 }

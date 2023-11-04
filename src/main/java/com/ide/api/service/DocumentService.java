@@ -44,4 +44,19 @@ public class DocumentService {
         return this.documentRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + id));
     }
+    public List<Document> findDocumentsByCategoryId(Categorie categorie){
+        return this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+    }
+
+    public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur){
+        return this.documentRepository.findByUtilisateurDocumentsUtilisateurID(utilisateur);
+    }
+
+    public List<Document> findDocumentsByAuteurId(Auteur auteur){
+        return this.documentRepository.findByAuteurDocumentsAuteurID(auteur);
+    }
+
+    public List<Document> findDocumentsByTagId(Tag tag){
+        return this.documentRepository.findByDocumentTagsDocumentID(tag);
+    }
 }

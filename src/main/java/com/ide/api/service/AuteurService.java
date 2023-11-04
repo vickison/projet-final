@@ -1,6 +1,7 @@
 package com.ide.api.service;
 
 import com.ide.api.entities.Auteur;
+import com.ide.api.entities.Utilisateur;
 import com.ide.api.repository.AuteurRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,7 @@ public class AuteurService {
                 .orElseThrow(() -> new EntityNotFoundException("Auteur not found with id: " + id));
     }
 
-
+    public List<Auteur> findAuteursByUtilisateurId(Utilisateur utilisateur){
+        return this.auteurRepository.findByUtilisateurAuteursUtilisateurID(utilisateur);
+    }
 }

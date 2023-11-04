@@ -9,12 +9,7 @@ import javax.persistence.Entity;
 import java.util.*;
 
 
-/*
 
-On definit ici une classe Document, qui est une entité,
-donc qui va nous créer, grace à des annotations, la table documents dans la base avec les champs nécéssaires
-
-* */
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "document")
