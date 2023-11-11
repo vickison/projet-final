@@ -4,6 +4,8 @@ import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.*;
 import com.ide.api.service.*;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -171,5 +174,16 @@ public class DocumentController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment, filename=\""+document.getTitre() + "\"")
                 .body(document);
+    }
+
+
+    @GetMapping(value = "/download/{id}")
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Integer id,
+                                                     HttpServletRequest request){
+        Document document = documentService.findDocument(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(document.getFormat()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getTitre() + "\"")
+                .body(new ByteArrayResource(document.getTaille()));
     }
 }

@@ -20,6 +20,7 @@ public class Utilisateur {
 
     private String nom;
     private String prenom;
+    private String username;
     @Column(name = "email", unique = true)
     private String email;
 
@@ -63,6 +64,14 @@ public class Utilisateur {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

@@ -41,12 +41,55 @@ public class UtilisateurService {
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur not found with id: " + id));
     }
 
-    public boolean utilisateurAuthentifie(String email, String password){
+    public boolean utilisateurAuthentifieParEmail(String email, String password){
         Utilisateur utilisateur = this.utilisateurRepository.findByEmail(email);
 
         if(utilisateur == null)
             return false;
+        if(!utilisateur.isAdmin()){
+            return passwordEncoder.matches(password, utilisateur.getPassword());
+        }else{
+            return false;
+        }
 
-        return passwordEncoder.matches(password, utilisateur.getPassword());
+    }
+
+    public boolean adminAuthentifieParEmail(String email, String password){
+        Utilisateur utilisateur = this.utilisateurRepository.findByEmail(email);
+
+        if(utilisateur == null)
+            return false;
+        if(utilisateur.isAdmin()){
+            return passwordEncoder.matches(password, utilisateur.getPassword());
+        }else{
+            return false;
+        }
+
+    }
+
+    public boolean utilisateurAuthentifieParUsername(String username, String password){
+        Utilisateur utilisateur = this.utilisateurRepository.findByUsername(username);
+
+        if(utilisateur == null)
+            return false;
+        if(!utilisateur.isAdmin()){
+            return passwordEncoder.matches(password, utilisateur.getPassword());
+        }else{
+            return false;
+        }
+
+    }
+
+    public boolean adminAuthentifieParUsername(String username, String password){
+        Utilisateur utilisateur = this.utilisateurRepository.findByUsername(username);
+
+        if(utilisateur == null)
+            return false;
+        if(utilisateur.isAdmin()) {
+            return passwordEncoder.matches(password, utilisateur.getPassword());
+        }else{
+            return false;
+        }
+
     }
 }

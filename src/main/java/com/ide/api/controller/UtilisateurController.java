@@ -1,5 +1,6 @@
 package com.ide.api.controller;
 
+import com.ide.api.dto.LoginRequest;
 import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.service.*;
@@ -135,5 +136,22 @@ public class UtilisateurController {
         return ResponseEntity.ok(auteurs);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> userLogin(@RequestBody LoginRequest loginRequest){
+        if(utilisateurService.utilisateurAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
+            return new ResponseEntity<>("Login Succesful", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("Invalid Credentials or Permission denied", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("admin/login")
+    public ResponseEntity<String> adminLogin(@RequestBody LoginRequest loginRequest){
+        if(utilisateurService.adminAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
+            return new ResponseEntity<>("Login Succesful", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
+        }
+    }
 
 }
