@@ -1,1 +1,22 @@
-<!-- <p class="content">content-part works!</p> -->
+<app-left-part></app-left-part>
+<div class="card" *ngFor="let document of documents">
+    <img src="assets/folder.png" alt="Image" class="card-image-top">
+    <div class="card-content">
+      <h3 class="card-title">{{ document.titre }}</h3>
+      <div class="card-links">
+        <a class="link"
+        (click)="onDocumentClick(document.titre, document.documentID)">
+          <img src="assets/download.png" alt="Download" class="link-image">
+        </a>
+        <!--<i class="link-image" (click)="downloadDocument(document.documentID, document.titre)">cloud_download</i>-->
+        <!--<a href="document-link-2" class="link">
+          <img src="link-2-image.jpg" alt="Link 2" class="link-image">
+          Document 2
+        </a>
+        <a href="document-link-3" class="link">
+          <img src="link-3-image.jpg" alt="Link 3" class="link-image">
+          Document 3
+        </a>-->
+      </div>
+    </div>
+  </div>

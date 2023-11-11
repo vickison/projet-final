@@ -28,6 +28,7 @@ import { ClientComponent } from './client/client.component';
 import{ClientRoutineModule} from 'src/app/client/client-routing.module';
 import {AdminRoutineModule } from 'src/app/admin/admin-routing.module';
 import { AppRoutineModule } from './app-routing.module';
+import { DocumentViewerComponent } from './document-viewer/document-viewer/document-viewer.component';
 //import { DocumentComponent } from './models/document/document.component';
 
 
@@ -44,6 +45,7 @@ import { AppRoutineModule } from './app-routing.module';
     //MainPartComponent,
     AdminComponent,
     ClientComponent,
+    DocumentViewerComponent,
     //DocumentComponent,
     
   ],
