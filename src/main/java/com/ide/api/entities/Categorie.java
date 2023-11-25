@@ -24,11 +24,9 @@ public class Categorie{
     private String nom;
 
     @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "cat-doc")
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "cat-ut")
     @JsonIgnore
     private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
 

@@ -32,11 +32,9 @@ public class Utilisateur {
     private Set<UtilisateurAuteur> utilisateurAuteurs = new HashSet<>();
 
     @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "ut-cat")
     private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
 
     @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "ut-doc")
     private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)

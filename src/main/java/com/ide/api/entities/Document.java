@@ -51,7 +51,6 @@ public class Document {
     private String langue;
 
     @OneToMany(mappedBy = "documentID")
-    @JsonManagedReference(value = "doc-cat")
     @JsonIgnore
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
@@ -59,7 +58,6 @@ public class Document {
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "documentID")
-    @JsonManagedReference(value = "doc-ut")
     @JsonIgnore
     private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
 

@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -40,9 +37,8 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 
-    public Document findDocument(Integer id){
-        return this.documentRepository.findById(id)
-                .orElseThrow(() -> new FileNotFoundException("File not found with id " + id));
+    public Optional<Document> findDocument(Integer id){
+        return this.documentRepository.findById(id);
     }
     public List<Document> findDocumentsByCategoryId(Categorie categorie){
         return this.documentRepository.findByCategorieDocumentsCategorieID(categorie);

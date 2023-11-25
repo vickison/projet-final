@@ -169,21 +169,55 @@ public class DocumentController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Document> recupererUnDocument(@PathVariable Integer id){
-        Document document = documentService.findDocument(id);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment, filename=\""+document.getTitre() + "\"")
-                .body(document);
+    public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id){
+        Optional<Document> optionalDocument = documentService.findDocument(id);
+        if(optionalDocument.isPresent()){
+            Document document = optionalDocument.get();
+            byte[] fileContent = document.getTaille();
+            ByteArrayResource resource = new ByteArrayResource(fileContent);
+            String contentType = determineContentType(document.getTitre());
+            return ResponseEntity.ok()
+                    .header("Content-Disposition","inline")
+                    .header("Content-Type", contentType)
+                    .body(resource);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<Resource> downloadDocument(@PathVariable Integer id,
                                                      HttpServletRequest request){
-        Document document = documentService.findDocument(id);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(document.getFormat()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getTitre() + "\"")
-                .body(new ByteArrayResource(document.getTaille()));
+        Optional<Document> optionalDocument = documentService.findDocument(id);
+        if(optionalDocument.isPresent()){
+            Document document = optionalDocument.get();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(document.getFormat()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getTitre() + "\"")
+                    .body(new ByteArrayResource(document.getTaille()));
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private  String determineContentType(String fileName){
+        String fileExtension  = Optional.ofNullable(fileName)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(fileName.lastIndexOf(".")+1))
+                .orElse("");
+        switch (fileExtension.toLowerCase()){
+            case "pdf":
+                return "application/pdf";
+            case "jpeg":
+                return "image/jpeg";
+            case "png":
+                return "image/png";
+            case "gif":
+                return "image/gif";
+            default:
+                return "application/octet-stream";
+        }
     }
 }
