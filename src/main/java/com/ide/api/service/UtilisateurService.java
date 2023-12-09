@@ -1,15 +1,14 @@
 package com.ide.api.service;
 
 import com.ide.api.entities.Utilisateur;
-import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.UtilisateurRepository;
-import com.ide.api.utilities.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -20,7 +19,7 @@ public class UtilisateurService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
+    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -92,4 +91,5 @@ public class UtilisateurService {
         }
 
     }
+
 }

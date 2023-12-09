@@ -2,9 +2,13 @@ package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +17,7 @@ import java.util.Set;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "utilisateurID")
-public class Utilisateur {
+public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer utilisateurID;
@@ -126,5 +130,33 @@ public class Utilisateur {
 
     public void setUtilisateurTags(Set<UtilisateurTag> utilisateurTags) {
         this.utilisateurTags = utilisateurTags;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(isAdmin() ? "ROLE_ADMIN" : "ROLE_USER"));
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Implement as needed
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Implement as needed
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Implement as needed
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // Implement as needed
     }
 }

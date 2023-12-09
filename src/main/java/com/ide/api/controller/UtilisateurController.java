@@ -1,13 +1,20 @@
 package com.ide.api.controller;
 
+import com.ide.api.configurations.JwtTokenProvider;
+import com.ide.api.dto.JwtAuthenticationResponse;
 import com.ide.api.dto.LoginRequest;
 import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.service.*;
 import com.ide.api.utilities.EmailValidator;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +30,23 @@ public class UtilisateurController {
     private TagService tagService;
     private CategorieService categorieService;
     private AuteurService auteurService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public UtilisateurController(UtilisateurService utilisateurService,
                                  DocumentService documentService,
                                  TagService tagService,
                                  CategorieService categorieService,
-                                 AuteurService auteurService) {
+                                 AuteurService auteurService,
+                                 AuthenticationManager authenticationManager,
+                                 JwtTokenProvider jwtTokenProvider) {
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
         this.tagService = tagService;
         this.categorieService = categorieService;
         this.auteurService = auteurService;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
@@ -136,22 +149,42 @@ public class UtilisateurController {
         return ResponseEntity.ok(auteurs);
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<String> userLogin(@RequestBody LoginRequest loginRequest){
         if(utilisateurService.utilisateurAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
             return new ResponseEntity<>("Login Succesful", HttpStatus.OK);
         }else {
             return new ResponseEntity<>("Invalid Credentials or Permission denied", HttpStatus.UNAUTHORIZED);
         }
+    }*/
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<ResponseMessage> adminLogin(@RequestBody @NotNull LoginRequest loginRequest){
+        if(utilisateurService.adminAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
+            return ResponseEntity.ok(new ResponseMessage("Login successful"));
+        }else {
+            return ResponseEntity.status(401).body(new ResponseMessage("Login failed"));
+        }
     }
 
-    @PostMapping("admin/login")
-    public ResponseEntity<String> adminLogin(@RequestBody LoginRequest loginRequest){
-        if(utilisateurService.adminAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
-            return new ResponseEntity<>("Login Succesful", HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
-        }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        // Perform authentication
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        // Set the authentication object in the security context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Generate JWT token
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        // Return the JWT token in the response
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 
 }
