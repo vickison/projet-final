@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -168,7 +170,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         // Perform authentication
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -179,12 +181,18 @@ public class UtilisateurController {
 
         // Set the authentication object in the security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // Generate JWT token
         String token = jwtTokenProvider.generateToken(authentication);
+        String jsonResponse = "{\"token\":\"" + token + "\"}";
 
-        // Return the JWT token in the response
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+
+        Cookie cookie = new Cookie("jwtToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(86400);
+        cookie.setPath("/api");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(jsonResponse);
     }
 
 }

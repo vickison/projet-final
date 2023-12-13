@@ -1,6 +1,7 @@
 package com.ide.api.configurations;
 
 import com.ide.api.service.CustomUserDetailsService;
+import com.ide.api.service.CustomUserDetailsServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
-    private final CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
     private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+    //private final CustomUserDetailsServiceImpl customUserDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService,
+    public SecurityConfig(CustomUserDetailsServiceImpl userDetailsService,
                           CustomAuthenticationSuccessHandler authenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
