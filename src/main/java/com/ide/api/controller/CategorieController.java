@@ -4,6 +4,7 @@ import com.ide.api.dto.CategorieDTO;
 import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.CategorieDocumentRepository;
+import com.ide.api.repository.CategorieRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.Set;
 public class CategorieController {
 
     //Injection de la couche service
+    private CategorieRepository categorieRepository;
     private CategorieService categorieService;
     private UtilisateurService utilisateurService;
     private UtilisateurRepository utilisateurRepository;
@@ -35,12 +38,14 @@ public class CategorieController {
                                UtilisateurService utilisateurService,
                                UtilisateurCategorieService utilisateurCategorieService,
                                UtilisateurRepository utilisateurRepository,
-                               DocumentService documentService) {
+                               DocumentService documentService,
+                               CategorieRepository categorieRepository) {
         this.categorieService = categorieService;
         this.utilisateurService = utilisateurService;
         this.utilisateurCategorieService = utilisateurCategorieService;
         this.utilisateurRepository = utilisateurRepository;
         this.documentService = documentService;
+        this.categorieRepository = categorieRepository;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -94,5 +99,14 @@ public class CategorieController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Categorie findCategory(@PathVariable Integer id){
        return this.categorieService.findCategory(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Categorie> updateCategorie(@PathVariable Integer id,
+                                                     @Valid @RequestBody Categorie categorieDetails){
+        Categorie categorie = this.categorieService.findCategory(id);
+        categorie.setNom(categorieDetails.getNom());
+        final Categorie categorieUpdate = this.categorieRepository.save(categorie);
+        return ResponseEntity.ok(categorieUpdate);
     }
 }

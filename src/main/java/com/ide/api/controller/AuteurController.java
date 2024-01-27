@@ -5,6 +5,7 @@ import com.ide.api.entities.Categorie;
 import com.ide.api.entities.Utilisateur;
 import com.ide.api.entities.UtilisateurAuteur;
 import com.ide.api.message.ResponseMessage;
+import com.ide.api.repository.AuteurRepository;
 import com.ide.api.service.AuteurService;
 import com.ide.api.service.UtilisateurAuteurService;
 import com.ide.api.service.UtilisateurService;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -21,15 +24,18 @@ import java.util.List;
 @RequestMapping(path = "auteurs")
 public class AuteurController {
     private AuteurService auteurService;
+    private AuteurRepository auteurRepository;
     private UtilisateurService utilisateurService;
     private UtilisateurAuteurService utilisateurAuteurService;
 
     public AuteurController(AuteurService auteurService,
                             UtilisateurService utilisateurService,
-                            UtilisateurAuteurService utilisateurAuteurService) {
+                            UtilisateurAuteurService utilisateurAuteurService,
+                            AuteurRepository auteurRepository) {
         this.auteurService = auteurService;
         this.utilisateurService = utilisateurService;
         this.utilisateurAuteurService = utilisateurAuteurService;
+        this.auteurRepository = auteurRepository;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -78,5 +84,18 @@ public class AuteurController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Auteur findAuteur(@PathVariable Integer id){
         return this.auteurService.findAuteur(id);
+    }
+
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Auteur> updateAuteur(@PathVariable Integer id,
+                                               @Valid @RequestBody Auteur auteurDetails){
+        Auteur auteur = this.auteurService.findAuteur(id);
+        auteur.setNom(auteurDetails.getNom());
+        auteur.setPrenom(auteurDetails.getPrenom());
+        auteur.setEmail(auteurDetails.getEmail());
+        auteur.setNationalite(auteurDetails.getNationalite());
+        final Auteur auteurUpdate = this.auteurRepository.save(auteur);
+        return ResponseEntity.ok(auteurUpdate);
     }
 }

@@ -12,6 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.header.writers.frameoptions.StaticAllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -39,12 +45,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout()
                     .logoutUrl("/api/logout")
                     .logoutSuccessUrl("/")
-                    .permitAll();
+                    .permitAll()
+                    .and()
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions
+                                .disable()
+                        )
+                );
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+
+    public XFrameOptionsHeaderWriter xFrameOptions(){
+        return new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN);
     }
 
     @Bean
@@ -57,5 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 
 }

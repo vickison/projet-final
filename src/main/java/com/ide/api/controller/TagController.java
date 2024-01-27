@@ -3,13 +3,16 @@ package com.ide.api.controller;
 import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.DocumentTagRepository;
+import com.ide.api.repository.TagRepository;
 import com.ide.api.repository.UtilisateurTagRepository;
 import com.ide.api.service.*;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
 @RequestMapping(path = "tags")
 public class TagController {
     private TagService tagService;
+    private TagRepository tagRepository;
     private UtilisateurService utilisateurService;
     private DocumentService documentService;
     private UtilisateurTagService utilisateurTagService;
@@ -31,7 +35,8 @@ public class TagController {
                          UtilisateurTagService utilisateurTagService,
                          DocumentTagService documentTagService,
                          UtilisateurTagRepository utilisateurTagRepository,
-                         DocumentTagRepository documentTagRepository) {
+                         DocumentTagRepository documentTagRepository,
+                         TagRepository tagRepository) {
         this.tagService = tagService;
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
@@ -39,6 +44,7 @@ public class TagController {
         this.documentTagService = documentTagService;
         this.utilisateurTagRepository = utilisateurTagRepository;
         this.documentTagRepository = documentTagRepository;
+        this.tagRepository = tagRepository;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -93,5 +99,14 @@ public class TagController {
         Tag tag = this.tagService.findTag(tagID);
         List<Document> documents = this.documentService.findDocumentsByTagId(tag);
         return ResponseEntity.ok(documents);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Tag> updateTag(@PathVariable Integer id,
+                                         @Valid @RequestBody Tag tagDetails){
+        Tag tag = this.tagService.findTag(id);
+        tag.setTag(tagDetails.getTag());
+        final Tag updatedTag = this.tagRepository.save(tag);
+        return ResponseEntity.ok(updatedTag);
     }
 }

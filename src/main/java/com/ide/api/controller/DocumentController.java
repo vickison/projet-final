@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -94,6 +95,12 @@ public class DocumentController {
             document.setProprietaire(proprietaire);
         if(langue != null)
             document.setLangue(langue);
+        document.setNombreDeCommentaires(0);
+        document.setNombreDeConsultations(0);
+        document.setNombreDeTelechargements(0);
+        document.setDatePublication(new Date());
+
+
 
 
         try{

@@ -5,6 +5,7 @@ import com.ide.api.dto.JwtAuthenticationResponse;
 import com.ide.api.dto.LoginRequest;
 import com.ide.api.entities.*;
 import com.ide.api.message.ResponseMessage;
+import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import com.ide.api.utilities.EmailValidator;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ import java.util.List;
 @RequestMapping(path = "")
 public class UtilisateurController {
     private UtilisateurService utilisateurService;
+    private UtilisateurRepository utilisateurRepository;
     private DocumentService documentService;
     private TagService tagService;
     private CategorieService categorieService;
@@ -35,13 +38,16 @@ public class UtilisateurController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final PasswordEncoder passwordEncoder;
     public UtilisateurController(UtilisateurService utilisateurService,
                                  DocumentService documentService,
                                  TagService tagService,
                                  CategorieService categorieService,
                                  AuteurService auteurService,
                                  AuthenticationManager authenticationManager,
-                                 JwtTokenProvider jwtTokenProvider) {
+                                 JwtTokenProvider jwtTokenProvider,
+                                 UtilisateurRepository utilisateurRepository,
+                                 PasswordEncoder passwordEncoder) {
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
         this.tagService = tagService;
@@ -49,6 +55,8 @@ public class UtilisateurController {
         this.auteurService = auteurService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.utilisateurRepository = utilisateurRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -193,6 +201,20 @@ public class UtilisateurController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(jsonResponse);
+    }
+
+    @PutMapping("/users/update/{id}")
+    public ResponseEntity<Utilisateur> updateUsers(@PathVariable Integer id,
+                                                   @Valid @RequestBody Utilisateur utilisateurDetails){
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
+        utilisateur.setNom(utilisateurDetails.getNom());
+        utilisateur.setPrenom(utilisateurDetails.getPrenom());
+        utilisateur.setUsername(utilisateurDetails.getUsername());
+        utilisateur.setEmail(utilisateurDetails.getEmail());
+        utilisateur.setPassword(passwordEncoder.encode(utilisateurDetails.getPassword()));
+        utilisateur.setAdmin(utilisateurDetails.isAdmin());
+        final Utilisateur utilisateurUpdated = this.utilisateurRepository.save(utilisateur);
+        return ResponseEntity.ok(utilisateurUpdated);
     }
 
 }
