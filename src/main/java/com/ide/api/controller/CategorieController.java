@@ -2,23 +2,26 @@ package com.ide.api.controller;
 
 import com.ide.api.dto.CategorieDTO;
 import com.ide.api.entities.*;
+import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.CategorieDocumentRepository;
 import com.ide.api.repository.CategorieRepository;
+import com.ide.api.repository.UtilisateurCategorieRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PostUpdate;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -49,19 +52,19 @@ public class CategorieController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value="/ajouter", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> createCategorie(@RequestBody Categorie categorie,
-                                                           @RequestParam int utilisateurID){
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value="/admin/ajouter", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> createCategorie(@RequestBody CategorieDTO categorieDTO){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer utilisateurID = userDetails.getId();
+        Categorie categorie = new Categorie();
+        categorie.setNom(categorieDTO.getNom());
         String message = "";
         try {
             Utilisateur utilisateur = utilisateurService.findUtilisateur(utilisateurID);
+            categorie.setAuteurCreationCategorie(utilisateur.getUsername());
             if(utilisateur.isAdmin()){
-                categorieService.createCategorie(categorie);
-                UtilisateurCategorie utilisateurCategorie = new UtilisateurCategorie();
-                utilisateurCategorie.setCategorie(categorie);
-                utilisateurCategorie.setUtilisateur(utilisateur);
-                utilisateurCategorie.setDateCreation(new Date());
-                utilisateurCategorieService.createUtilisateurCategorie(utilisateurCategorie);
+                categorieService.createCategorie(categorie, utilisateurID);
                 message = "Categorie créée avec succès...";
                 return ResponseEntity
                         .status(HttpStatus.OK)
@@ -84,29 +87,57 @@ public class CategorieController {
         }
     }
 
-    @GetMapping("/{categoryID}/documents")
+    @GetMapping("/public/{categoryID}/documents")
     public ResponseEntity<List<Document>> findDocumentsByCategoryId(@PathVariable Integer categoryID){
         Categorie categorie = categorieService.findCategory(categoryID);
         List<Document> documents = this.documentService.findDocumentsByCategoryId(categorie);
         return ResponseEntity.ok(documents);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= "/public", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Categorie> findAllCategories(){
         return this.categorieService.findAllCategories();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Categorie findCategory(@PathVariable Integer id){
        return this.categorieService.findCategory(id);
     }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Categorie> updateCategorie(@PathVariable Integer id,
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/update/{categorieID}")
+    //@PutMapping("/update/{id}")
+    public ResponseEntity<Categorie> updateCategorie(@PathVariable Integer categorieID,
                                                      @Valid @RequestBody Categorie categorieDetails){
-        Categorie categorie = this.categorieService.findCategory(id);
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
+        Categorie categorie = this.categorieService.findCategory(categorieID);
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
         categorie.setNom(categorieDetails.getNom());
-        final Categorie categorieUpdate = this.categorieRepository.save(categorie);
+        categorie.setAuteurModificationCategorie(utilisateur.getUsername());
+        Categorie categorieUpdate = this.categorieRepository.save(categorie);
+        UtilisateurCategorie newUtilisateurCategorie = new UtilisateurCategorie();
+        newUtilisateurCategorie.setCategorieID(categorieUpdate);
+        newUtilisateurCategorie.setUtilisateurID(utilisateur);
+        newUtilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
+        utilisateurCategorieService.createUtilisateurCategorie(newUtilisateurCategorie);
         return ResponseEntity.ok(categorieUpdate);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/delete/{categorieID}")
+    //@PutMapping("/update/{id}")
+    public ResponseEntity<Categorie> deleteteCategorie(@PathVariable Integer categorieID){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
+        Categorie categorie = this.categorieService.findCategory(categorieID);
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
+        categorie.setSupprimerCategorie(true);
+        categorie.setAuteurModificationCategorie(utilisateur.getUsername());
+        final Categorie deletedCategorie = this.categorieRepository.save(categorie);
+        UtilisateurCategorie newUtilisateurCategorie = new UtilisateurCategorie();
+        newUtilisateurCategorie.setCategorieID(deletedCategorie);
+        newUtilisateurCategorie.setUtilisateurID(utilisateur);
+        newUtilisateurCategorie.setTypeGestion(TypeGestion.Supprimer);
+        utilisateurCategorieService.createUtilisateurCategorie(newUtilisateurCategorie);
+        return ResponseEntity.ok(deletedCategorie);
     }
 }

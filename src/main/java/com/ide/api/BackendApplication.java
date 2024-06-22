@@ -1,9 +1,13 @@
 package com.ide.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.SpringVersion;
+
+import javax.sql.DataSource;
+import java.sql.Driver;
 
 @SpringBootApplication
 public class BackendApplication {

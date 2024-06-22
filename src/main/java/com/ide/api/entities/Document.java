@@ -1,18 +1,26 @@
 package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.*;
+import com.ide.api.enums.Langue;
+import com.ide.api.enums.TypeFichier;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.sql.Timestamp;
+import java.time.Year;
 import java.util.*;
 
 
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
-@Table(name = "document")
+@DynamicInsert
+@DynamicUpdate
+@Table(name = "tableDocuments")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "documentID")
@@ -20,35 +28,38 @@ public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "documentID")
+    @Column(name = "idDocument")
     private Integer documentID;
-
+    @Column(name = "TITRE")
     private String titre;
-
-    //Une briève description du document
-    @Lob
-    @Column(name = "resume")
+    @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
     private String resume;
-
-
-    @Column(name = "date_publication")
-    private Date datePublication;
-
-    @Lob
-    @Column(name = "taille")
-    private byte[] taille;
-
+    @Column(name = "TAILLE")
+    private long taille;
+    @Column(name = "FICHIER")
     private String url;
-    @Column(name = "nb_telechargements", columnDefinition = "Integer default '0'")
-    private Integer nombreDeTelechargements;
-    @Column(name = "nb_consultations", columnDefinition = "Integer default '0'")
-    private Integer nombreDeConsultations;
-
-    @Column(name = "nb_commentaires", columnDefinition = "Integer default '0'")
-    private Integer nombreDeCommentaires;
+    @Column(name = "NombreDeConsultations")
+    private Double nombreDeConsultations;
+    @Column(name = "NombreDePartages")
+    private Double NombreDePartages;
+    @Column(name = "TypeContenu")
     private String format;
-    private String proprietaire;
-    private String langue;
+    @Column(name = "TypeFichier")
+    @Enumerated(EnumType.STRING)
+    private TypeFichier typeFichier;
+    private Float NOTE;
+    private Double NombreNotes;
+    @Column(name = "LANGUE")
+    @Enumerated(EnumType.STRING)
+    private Langue langue;
+    private Year AnneePublication;
+    @Column(name = "DateCreationDocument")
+    private Timestamp dateCreationDocument;
+    private String AuteurCreationDocument;
+    @UpdateTimestamp
+    private Timestamp DateModificationDocument;
+    private String AuteurModificationDocument;
+    private boolean SupprimerDocument;
 
     @OneToMany(mappedBy = "documentID")
     @JsonIgnore
@@ -89,19 +100,11 @@ public class Document {
         this.resume = resume;
     }
 
-    public Date getDatePublication() {
-        return datePublication;
-    }
-
-    public void setDatePublication(Date datePublication) {
-        this.datePublication = datePublication;
-    }
-
-    public byte[] getTaille() {
+    public long getTaille() {
         return taille;
     }
 
-    public void setTaille(byte[] taille) {
+    public void setTaille(long taille) {
         this.taille = taille;
     }
 
@@ -113,28 +116,20 @@ public class Document {
         this.url = url;
     }
 
-    public Integer getNombreDeTelechargements() {
-        return nombreDeTelechargements;
-    }
-
-    public void setNombreDeTelechargements(Integer nombreDeTelechargements) {
-        this.nombreDeTelechargements = nombreDeTelechargements;
-    }
-
-    public Integer getNombreDeConsultations() {
+    public Double getNombreDeConsultations() {
         return nombreDeConsultations;
     }
 
-    public void setNombreDeConsultations(Integer nombreDeConsultations) {
+    public void setNombreDeConsultations(Double nombreDeConsultations) {
         this.nombreDeConsultations = nombreDeConsultations;
     }
 
-    public Integer getNombreDeCommentaires() {
-        return nombreDeCommentaires;
+    public Double getNombreDePartages() {
+        return NombreDePartages;
     }
 
-    public void setNombreDeCommentaires(Integer nombreDeCommentaires) {
-        this.nombreDeCommentaires = nombreDeCommentaires;
+    public void setNombreDePartages(Double nombreDePartages) {
+        NombreDePartages = nombreDePartages;
     }
 
     public String getFormat() {
@@ -145,20 +140,20 @@ public class Document {
         this.format = format;
     }
 
-    public String getProprietaire() {
-        return proprietaire;
-    }
-
-    public void setProprietaire(String proprietaire) {
-        this.proprietaire = proprietaire;
-    }
-
-    public String getLangue() {
+    public Langue getLangue() {
         return langue;
     }
 
-    public void setLangue(String langue) {
+    public void setLangue(Langue langue) {
         this.langue = langue;
+    }
+
+    public Year getAnneePublication() {
+        return AnneePublication;
+    }
+
+    public void setAnneePublication(Year anneePublication) {
+        AnneePublication = anneePublication;
     }
 
     public Set<CategorieDocument> getCategorieDocuments() {
@@ -192,4 +187,70 @@ public class Document {
     public void setDocumentTags(Set<DocumentTag> documentTags) {
         this.documentTags = documentTags;
     }
+
+
+    public Timestamp getDateCreationDocument() {
+        return dateCreationDocument;
+    }
+
+    public void setDateCreationDocument(Timestamp dateCreationDocument) {
+        this.dateCreationDocument = dateCreationDocument;
+    }
+
+    public String getAuteurCreationDocument() {
+        return AuteurCreationDocument;
+    }
+
+    public void setAuteurCreationDocument(String auteurCreationDocument) {
+        AuteurCreationDocument = auteurCreationDocument;
+    }
+
+    public Timestamp getDateModificationDocument() {
+        return DateModificationDocument;
+    }
+
+    public void setDateModificationDocument(Timestamp dateModificationDocument) {
+        DateModificationDocument = dateModificationDocument;
+    }
+
+    public String getAuteurModificationDocument() {
+        return AuteurModificationDocument;
+    }
+
+    public void setAuteurModificationDocument(String auteurModificationDocument) {
+        AuteurModificationDocument = auteurModificationDocument;
+    }
+
+    public boolean isSupprimerDocument() {
+        return SupprimerDocument;
+    }
+
+    public void setSupprimerDocument(boolean supprimerDocument) {
+        SupprimerDocument = supprimerDocument;
+    }
+
+    public Float getNOTE() {
+        return NOTE;
+    }
+
+    public void setNOTE(Float NOTE) {
+        this.NOTE = NOTE;
+    }
+
+    public Double getNombreNotes() {
+        return NombreNotes;
+    }
+
+    public void setNombreNotes(Double nombreNotes) {
+        NombreNotes = nombreNotes;
+    }
+
+    public TypeFichier getTypeFichier() {
+        return typeFichier;
+    }
+
+    public void setTypeFichier(TypeFichier typeFichier) {
+        this.typeFichier = typeFichier;
+    }
 }
+

@@ -1,34 +1,44 @@
 package com.ide.api.controller;
 
 import com.ide.api.configurations.JwtTokenProvider;
-import com.ide.api.dto.JwtAuthenticationResponse;
-import com.ide.api.dto.LoginRequest;
+import com.ide.api.dto.*;
 import com.ide.api.entities.*;
+import com.ide.api.message.JwtResponse;
 import com.ide.api.message.ResponseMessage;
+import com.ide.api.message.UserResponse;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import com.ide.api.utilities.EmailValidator;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path = "")
+@RequestMapping(path = "users")
 public class UtilisateurController {
+    private static final Logger logger = LoggerFactory.getLogger(UtilisateurController.class);
     private UtilisateurService utilisateurService;
     private UtilisateurRepository utilisateurRepository;
     private DocumentService documentService;
@@ -37,8 +47,10 @@ public class UtilisateurController {
     private AuteurService auteurService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private JdbcTemplate jdbcTemplate;
 
     private final PasswordEncoder passwordEncoder;
+    private CustomUserDetailsService userDetailsService;
     public UtilisateurController(UtilisateurService utilisateurService,
                                  DocumentService documentService,
                                  TagService tagService,
@@ -47,7 +59,10 @@ public class UtilisateurController {
                                  AuthenticationManager authenticationManager,
                                  JwtTokenProvider jwtTokenProvider,
                                  UtilisateurRepository utilisateurRepository,
-                                 PasswordEncoder passwordEncoder) {
+                                 PasswordEncoder passwordEncoder,
+                                 JdbcTemplate jdbcTemplate,
+                                 CustomUserDetailsService userDetailsService
+                                 ) {
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
         this.tagService = tagService;
@@ -57,16 +72,62 @@ public class UtilisateurController {
         this.jwtTokenProvider = jwtTokenProvider;
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jdbcTemplate = jdbcTemplate;
+        this.userDetailsService = userDetailsService;
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value="/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> createUser(@RequestBody Utilisateur utilisateur){
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value="/admin/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> createUser(@RequestBody Utilisateur utilisateur,
+                                                      HttpServletRequest request){
+        String adresseIP = request.getRemoteAddr();
         String message = "";
         try{
             if(EmailValidator.isValid(utilisateur.getEmail())) {
                 utilisateur.setAdmin(false);
+                utilisateur.setAddresseIP(adresseIP);
+                this.utilisateurService.createUtilisateur(utilisateur);
+                message = "Utilisateur créé avec succès...";
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(new ResponseMessage(message));
+            }else{
+                message = "Email incorrect...";
+                return ResponseEntity
+                        .status(HttpStatus.EXPECTATION_FAILED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(new ResponseMessage(message));
+            }
+
+        }catch (Exception e){
+            message = "Echec de création d'utilisateur...";
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
+        }
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value="/root/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> rootUser(@RequestBody UtilisateurDTO utilisateurDTO,
+                                                      HttpServletRequest request){
+        String adresseIP = request.getRemoteAddr();
+        Utilisateur utilisateur = new Utilisateur();
+        String message = "";
+        try{
+            if(EmailValidator.isValid(utilisateurDTO.getEmail())) {
+                utilisateur.setAdmin(true);
+                utilisateur.setNom(utilisateurDTO.getNom());
+                utilisateur.setNom(utilisateurDTO.getNom());
+                utilisateur.setPrenom(utilisateurDTO.getPrenom());
+                utilisateur.setPassword(utilisateurDTO.getPassword());
+                utilisateur.setEmail(utilisateurDTO.getEmail());
+                utilisateur.setUsername(utilisateurDTO.getUsername());
                 this.utilisateurService.createUtilisateur(utilisateur);
                 message = "Utilisateur créé avec succès...";
                 return ResponseEntity
@@ -92,13 +153,29 @@ public class UtilisateurController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value="/admin/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> createAdmin(@RequestBody Utilisateur utilisateur){
+    public ResponseEntity<ResponseMessage> createAdmin(@RequestBody UtilisateurDTO utilisateurDTO,
+                                                       HttpServletRequest request) throws SQLException {
+        String adresseIP = request.getRemoteAddr();
+        Utilisateur utilisateur = new Utilisateur();
         String message = "";
+        //String userDatabase = jdbcTemplate.getDataSource().getConnection().getMetaData().getUserName();
+        //String[] parts = userDatabase.split("@");
+        //String userCr = parts[0];
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
         try{
-            if(EmailValidator.isValid(utilisateur.getEmail())) {
+            if(EmailValidator.isValid(utilisateurDTO.getEmail())) {
+                utilisateur.setNom(utilisateurDTO.getNom());
+                utilisateur.setPrenom(utilisateurDTO.getPrenom());
+                utilisateur.setPassword(utilisateurDTO.getPassword());
+                utilisateur.setEmail(utilisateurDTO.getEmail());
+                utilisateur.setUsername(utilisateurDTO.getUsername());
                 utilisateur.setAdmin(true);
-                this.utilisateurService.createUtilisateur(utilisateur);
+                utilisateur.setAddresseIP(adresseIP);
+                utilisateur.setAuteurCreationUtil(userDetails.getUsername());
+                this.utilisateurService.creerUtilisateur(utilisateur, adminID);
                 message = "Utilisateur créé avec succès...";
                 return ResponseEntity
                         .status(HttpStatus.OK)
@@ -121,38 +198,38 @@ public class UtilisateurController {
         }
     }
 
-    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Utilisateur> findUsers(){
         return this.utilisateurService.findUtilisateurs();
     }
 
-    @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Utilisateur findUser(@PathVariable Integer id){
         return this.utilisateurService.findUtilisateur(id);
     }
 
-    @GetMapping("/user/{utilisateurID}/documents")
+    @GetMapping("/{utilisateurID}/documents")
     public ResponseEntity<List<Document>> findDocumentsByUtilisateurId(@PathVariable Integer utilisateurID){
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(utilisateurID);
         List<Document> documents = this.documentService.findDocumentsByUtilisateurId(utilisateur);
         return ResponseEntity.ok(documents);
     }
 
-    @GetMapping("/user/{utilisateurID}/tags")
+    @GetMapping("/{utilisateurID}/tags")
     public ResponseEntity<List<Tag>> findTagsByUtilisateurId(@PathVariable Integer utilisateurID){
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(utilisateurID);
         List<Tag> tags = this.tagService.findTagsByUtilisateurId(utilisateur);
         return ResponseEntity.ok(tags);
     }
 
-    @GetMapping("/user/{utilisateurID}/categories")
+    @GetMapping("/{utilisateurID}/categories")
     public ResponseEntity<List<Categorie>> findCategoriesByUtilisateurId(@PathVariable Integer utilisateurID){
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(utilisateurID);
         List<Categorie> categories = this.categorieService.findCategoriesByUtilisateurId(utilisateur);
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/user/{utilisateurID}/auteurs")
+    @GetMapping("/{utilisateurID}/auteurs")
     public ResponseEntity<List<Auteur>> findAuteurByUtilisateurId(@PathVariable Integer utilisateurID){
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(utilisateurID);
         List<Auteur> auteurs = this.auteurService.findAuteursByUtilisateurId(utilisateur);
@@ -167,7 +244,7 @@ public class UtilisateurController {
             return new ResponseEntity<>("Invalid Credentials or Permission denied", HttpStatus.UNAUTHORIZED);
         }
     }*/
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/login")
     public ResponseEntity<ResponseMessage> adminLogin(@RequestBody @NotNull LoginRequest loginRequest){
         if(utilisateurService.adminAuthentifieParUsername(loginRequest.getUsername(), loginRequest.getPassword())){
@@ -177,35 +254,35 @@ public class UtilisateurController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        // Perform authentication
+    @PostMapping("/signin")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        logger.info("Inside login controller...");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
                         loginRequest.getPassword()
                 )
         );
-
-        // Set the authentication object in the security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        // Generate JWT token
-        String token = jwtTokenProvider.generateToken(authentication);
-        String jsonResponse = "{\"token\":\"" + token + "\"}";
 
-
-        Cookie cookie = new Cookie("jwtToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(86400);
-        cookie.setPath("/api");
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok(jsonResponse);
+        //String jwt = jwtTokenProvider.generateJwtToken(authentication);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        ResponseCookie jwtCookie = jwtTokenProvider.generateJwtCookie(userDetails);
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(new UserResponse(userDetails.getId(),
+                        userDetails.getUsername(),
+                        roles
+        ));
     }
-
-    @PutMapping("/users/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<Utilisateur> updateUsers(@PathVariable Integer id,
                                                    @Valid @RequestBody Utilisateur utilisateurDetails){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
         utilisateur.setNom(utilisateurDetails.getNom());
         utilisateur.setPrenom(utilisateurDetails.getPrenom());

@@ -1,8 +1,13 @@
 package com.ide.api.service;
 
+import com.ide.api.entities.Auteur;
+import com.ide.api.entities.Tag;
 import com.ide.api.entities.UtilisateurTag;
+import com.ide.api.enums.TypeGestion;
 import com.ide.api.repository.UtilisateurTagRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UtilisateurTagService {
@@ -14,5 +19,16 @@ public class UtilisateurTagService {
 
     public void createUtilisateurTag(UtilisateurTag utilisateurTag){
         this.utilisateurTagRepository.save(utilisateurTag);
+    }
+
+    public UtilisateurTag findUtilTagByTagID(Tag tag){
+        UtilisateurTag utilisateurTag = new UtilisateurTag();
+        List<UtilisateurTag> utilisateurTags = this.utilisateurTagRepository.findByTagID(tag);
+        for(UtilisateurTag ut: utilisateurTags){
+            if(ut.getTypeGestion() == TypeGestion.Ajouter){
+                utilisateurTag = ut;
+            }
+        }
+        return utilisateurTag;
     }
 }

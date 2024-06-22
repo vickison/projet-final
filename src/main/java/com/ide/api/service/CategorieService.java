@@ -2,10 +2,8 @@ package com.ide.api.service;
 
 import com.ide.api.dto.CategorieDTO;
 import com.ide.api.entities.*;
-import com.ide.api.repository.CategorieDocumentRepository;
-import com.ide.api.repository.CategorieRepository;
-import com.ide.api.repository.DocumentRepository;
-import com.ide.api.repository.UtilisateurRepository;
+import com.ide.api.enums.TypeGestion;
+import com.ide.api.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,37 +21,30 @@ public class CategorieService {
     private CategorieDocumentRepository categorieDocumentRepository;
     private DocumentRepository documentRepository;
     private UtilisateurRepository utilisateurRepository;
+    private UtilisateurCategorieRepository utilisateurCategorieRepository;
 
     public CategorieService(CategorieRepository categorieRepository,
                             CategorieDocumentRepository categorieDocumentRepository,
                             DocumentRepository documentRepository,
-                            UtilisateurRepository utilisateurRepository) {
+                            UtilisateurRepository utilisateurRepository,
+                            UtilisateurCategorieRepository utilisateurCategorieRepository) {
         this.categorieRepository = categorieRepository;
         this.categorieDocumentRepository = categorieDocumentRepository;
         this.documentRepository = documentRepository;
         this.utilisateurRepository = utilisateurRepository;
+        this.utilisateurCategorieRepository = utilisateurCategorieRepository;
     }
 
-    /*private CategorieDTO convertToDTO(Categorie categorie) {
-        CategorieDTO categorieDTO = new CategorieDTO();
-        categorieDTO.setCategorieID(categorie.getCategorieID());
-        categorieDTO.setNom(categorie.getNom());
-        List<Document> documents = documentRepository.findAll();
-        List<String> documentNames = new ArrayList<>();
-        List<Integer> documentIds = new ArrayList<>();
-        for (Document document: documents){
-            do;
-        }
-        categorieDTO.setDocuments(documents);
-        for(Document document: documents)
-
-        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
-        categorieDTO.setUtlisateurs(utilisateurs);
-        return categorieDTO;
-    }*/
-
-    public void createCategorie(Categorie categorie) {
-        this.categorieRepository.save(categorie);
+    public void createCategorie(Categorie categorie,
+                                Integer idUtilisateur) {
+        Categorie categorieSaved = this.categorieRepository.save(categorie);
+        UtilisateurCategorie utilisateurCategorie = new UtilisateurCategorie();
+        Utilisateur utilisateur = this.utilisateurRepository.findById(idUtilisateur)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + idUtilisateur + " introuvable"));
+        utilisateurCategorie.setCategorieID(categorieSaved);
+        utilisateurCategorie.setUtilisateurID(utilisateur);
+        utilisateurCategorie.setTypeGestion(TypeGestion.Ajouter);
+        this.utilisateurCategorieRepository.save(utilisateurCategorie);
     }
 
     public List<Categorie> findAllCategories() {
@@ -62,10 +53,17 @@ public class CategorieService {
 
     public Categorie findCategory(Integer id){
         return this.categorieRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Categorie not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + id + " introuvable"));
     }
 
     public List<Categorie> findCategoriesByUtilisateurId(Utilisateur utilisateur){
         return this.categorieRepository.findByUtilisateurCategoriesUtilisateurID(utilisateur);
+    }
+
+    public void updateCategorie(Integer documentID,
+                               Integer adminID){
+        Categorie existingCategorie = this.categorieRepository.findById(documentID)
+                .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + documentID + " introuvable"));
+
     }
 }

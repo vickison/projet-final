@@ -1,23 +1,24 @@
 package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
+@DynamicInsert
 @IdClass(CategorieDocumentID.class)
-@Table(name = "categorie_document")
-public class CategorieDocument {
+@Table(name = "tableDocumentCategorie")
+public class CategorieDocument implements Serializable {
     @Id
     @ManyToOne
-    @JoinColumn(name = "categorieID")
-    @JsonBackReference(value = "cat-doc")
+    @JoinColumn(name = "IdentifiantCategorie")
     private  Categorie categorieID;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "documentID")
-    @JsonBackReference(value = "doc-cat")
+    @JoinColumn(name = "IdentifiantDocument")
     private Document documentID;
 
     public Categorie getCategorie() {

@@ -2,25 +2,42 @@ package com.ide.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "auteurs")
+@DynamicInsert
+@DynamicUpdate
+@Table(name = "tableAuteurs")
 public class Auteur{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idAuteur")
     private Integer auteurID;
+    @Column(name = "NOMAuteur")
     private String nom;
+    @Column(name = "PRENOMAuteur")
     private String prenom;
+    @Column(name = "EMAILAuteur")
     private String email;
-    private String nationalite;
+
+    private Timestamp DateCreationAuteur;
+    private String AuteurCreationAuteur;
+    @UpdateTimestamp
+    private Timestamp DateModificationAuteur;
+    private String AuteurModificationAuteur;
+    private boolean SupprimerAuteur;
 
     @OneToMany(mappedBy = "auteurID")
+    @JsonIgnore
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "auteurID")
@@ -59,12 +76,44 @@ public class Auteur{
         this.email = email;
     }
 
-    public String getNationalite() {
-        return nationalite;
+    public Timestamp getDateCreationAuteur() {
+        return DateCreationAuteur;
     }
 
-    public void setNationalite(String nationalite) {
-        this.nationalite = nationalite;
+    public void setDateCreationAuteur(Timestamp dateCreationAuteur) {
+        DateCreationAuteur = dateCreationAuteur;
+    }
+
+    public String getAuteurCreationAuteur() {
+        return AuteurCreationAuteur;
+    }
+
+    public void setAuteurCreationAuteur(String auteurCreationAuteur) {
+        AuteurCreationAuteur = auteurCreationAuteur;
+    }
+
+    public Timestamp getDateModificationAuteur() {
+        return DateModificationAuteur;
+    }
+
+    public void setDateModificationAuteur(Timestamp dateModificationAuteur) {
+        DateModificationAuteur = dateModificationAuteur;
+    }
+
+    public String getAuteurModificationAuteur() {
+        return AuteurModificationAuteur;
+    }
+
+    public void setAuteurModificationAuteur(String auteurModificationAuteur) {
+        AuteurModificationAuteur = auteurModificationAuteur;
+    }
+
+    public boolean getSupprimerAuteur() {
+        return SupprimerAuteur;
+    }
+
+    public void setSupprimerAuteur(boolean supprimerAuteur) {
+        SupprimerAuteur = supprimerAuteur;
     }
 
     public Set<AuteurDocument> getAuteurDocuments() {

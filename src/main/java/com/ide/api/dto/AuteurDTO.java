@@ -5,7 +5,15 @@ public class AuteurDTO {
     private String nom;
     private String prenom;
     private String email;
-    private String nationalite;
+
+    public AuteurDTO() {
+    }
+
+    public AuteurDTO(String nom, String prenom, String email) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+    }
 
     public Integer getAuteurID() {
         return auteurID;
@@ -39,11 +47,4 @@ public class AuteurDTO {
         this.email = email;
     }
 
-    public String getNationalite() {
-        return nationalite;
-    }
-
-    public void setNationalite(String nationalite) {
-        this.nationalite = nationalite;
-    }
 }

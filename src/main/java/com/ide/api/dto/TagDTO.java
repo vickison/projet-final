@@ -1,15 +1,13 @@
 package com.ide.api.dto;
 
 public class TagDTO {
-    private Integer tagID;
     private String tag;
 
-    public Integer getTagID() {
-        return tagID;
+    public TagDTO() {
     }
 
-    public void setTagID(Integer tagID) {
-        this.tagID = tagID;
+    public TagDTO(String tag) {
+        this.tag = tag;
     }
 
     public String getTag() {

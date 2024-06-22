@@ -1,52 +1,39 @@
 package com.ide.api.service;
 
-import com.ide.api.entities.CustomUser;
+import com.ide.api.entities.CustomUserDetails;
 import com.ide.api.entities.Utilisateur;
 import com.ide.api.repository.UtilisateurRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Service
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
-    // Assume you have a UserRepository to interact with your database
-    private final UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
-    public CustomUserDetailsServiceImpl(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsServiceImpl.class);
+
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByUsername(username);
-
-        // You can return a UserDetails implementation, for example, org.springframework.security.core.userdetails.User
-        return new CustomUser(
-                utilisateur.getUsername(),
-                utilisateur.getPassword(),
-                getAuthorities(utilisateur.isAdmin()),
-                utilisateur.isAdmin()
-        );
-    }
-
-    // Helper method to convert roles to authorities
-    private Collection<? extends GrantedAuthority> getAuthorities(boolean isAdmin) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-        if (isAdmin) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        logger.info("Inside loadUserByUsername... ");
+        Utilisateur utilisateur = this.utilisateurRepository.findByUsername(username);
+        if (utilisateur == null) {
+            logger.error("Username not found: " + username);
+            throw new UsernameNotFoundException("User not found with username: " + username);
         }
-
-        return authorities;
+        logger.info("User found Successfully...");
+        logger.info(utilisateur.getUsername());
+        return CustomUserDetails.build(utilisateur);
     }
 }
 

@@ -1,9 +1,8 @@
 package com.ide.api.controller;
 
-import com.ide.api.entities.Auteur;
-import com.ide.api.entities.Categorie;
-import com.ide.api.entities.Utilisateur;
-import com.ide.api.entities.UtilisateurAuteur;
+import com.ide.api.dto.AuteurDTO;
+import com.ide.api.entities.*;
+import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.AuteurRepository;
 import com.ide.api.service.AuteurService;
@@ -12,12 +11,15 @@ import com.ide.api.service.UtilisateurService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -39,19 +41,21 @@ public class AuteurController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value="/ajouter", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> createAuteur(@RequestBody Auteur au,
-                                                        @RequestParam(value = "U") Integer utilisateurID){
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value="/admin/ajouter", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> createAuteur(@RequestBody AuteurDTO auteurDTO){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer utilisateurID = userDetails.getId();
+        Auteur auteur = new Auteur();
+        auteur.setNom(auteurDTO.getNom());
+        auteur.setPrenom(auteurDTO.getPrenom());
+        auteur.setEmail(auteurDTO.getEmail());
         String message = "";
         try{
             Utilisateur utilisateur = this.utilisateurService.findUtilisateur(utilisateurID);
+            auteur.setAuteurCreationAuteur(utilisateur.getUsername());
             if(utilisateur.isAdmin()){
-                this.auteurService.createAuteur(au);
-                UtilisateurAuteur utilisateurAuteur = new UtilisateurAuteur();
-                utilisateurAuteur.setAuteur(au);
-                utilisateurAuteur.setUtilisateur(utilisateur);
-                utilisateurAuteur.setDateCreation(new Date());
-                this.utilisateurAuteurService.createUtilisateurAuteur(utilisateurAuteur);
+                this.auteurService.createAuteur(auteur, utilisateurID);
 
                 message = "Succès de création du auteur...";
                 return ResponseEntity
@@ -76,26 +80,49 @@ public class AuteurController {
 
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/public", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Auteur> findAuteurs(){
         return this.auteurService.findAuteurs();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Auteur findAuteur(@PathVariable Integer id){
         return this.auteurService.findAuteur(id);
     }
 
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Auteur> updateAuteur(@PathVariable Integer id,
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/update/{auteurID}")
+    public ResponseEntity<Auteur> updateAuteur(@PathVariable Integer auteurID,
                                                @Valid @RequestBody Auteur auteurDetails){
-        Auteur auteur = this.auteurService.findAuteur(id);
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
+        Auteur auteur = this.auteurService.findAuteur(auteurID);
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
         auteur.setNom(auteurDetails.getNom());
         auteur.setPrenom(auteurDetails.getPrenom());
         auteur.setEmail(auteurDetails.getEmail());
-        auteur.setNationalite(auteurDetails.getNationalite());
         final Auteur auteurUpdate = this.auteurRepository.save(auteur);
+        UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
+        newUtilAuteur.setUtilisateurID(utilisateur);
+        newUtilAuteur.setAuteurID(auteur);
+        newUtilAuteur.setTypeGestion(TypeGestion.Modifier);
+        utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
         return ResponseEntity.ok(auteurUpdate);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/delete/{auteurID}")
+    public ResponseEntity<Auteur> deleteAuteur(@PathVariable Integer auteurID){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
+        Auteur auteur = this.auteurService.findAuteur(auteurID);
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
+        auteur.setSupprimerAuteur(true);
+        final Auteur deletedAuteur = this.auteurRepository.save(auteur);
+        UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
+        newUtilAuteur.setUtilisateurID(utilisateur);
+        newUtilAuteur.setAuteurID(auteur);
+        newUtilAuteur.setTypeGestion(TypeGestion.Supprimer);
+        utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
+        return ResponseEntity.ok(deletedAuteur);
     }
 }

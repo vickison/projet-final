@@ -1,26 +1,25 @@
 package com.ide.api.entities;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "auteur_document")
+@DynamicInsert
+@Table(name = "tableDocumentAuteur")
 @IdClass(AuteurDocumentID.class)
-public class AuteurDocument {
+public class AuteurDocument implements Serializable {
     @Id
     @ManyToOne
-    @JoinColumn(name = "auteurID")
+    @JoinColumn(name = "IdentifiantAuteur")
     private Auteur auteurID;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "documentID")
+    @JoinColumn(name = "IdentifiantDocument")
     private Document documentID;
-    @Column(name = "date_creation")
-    private Date dateCreation;
-
-    @Column(name = "pays_publication")
-    private String paysPublication;
 
 
     public Auteur getAuteur() {
@@ -39,19 +38,4 @@ public class AuteurDocument {
         this.documentID = document;
     }
 
-    public Date getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(Date dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public String getPaysPublication() {
-        return paysPublication;
-    }
-
-    public void setPaysPublication(String paysPublication) {
-        this.paysPublication = paysPublication;
-    }
 }

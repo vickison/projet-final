@@ -9,19 +9,31 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.*;
 
 
 @Entity
-@Table(name = "categorie")
+@DynamicInsert
+@DynamicUpdate
+@Table(name = "tableCategories")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "categorieID")
 public class Categorie{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idCategorie")
     private Integer categorieID;
+    @Column(name = "CATEGORIE")
     private String nom;
+
+    private Timestamp DateCreationCategorie;
+    private String AuteurCreationCategorie;
+    @UpdateTimestamp
+    private Timestamp DateModificationCategorie;
+    private String AuteurModificationCategorie;
+    private boolean SupprimerCategorie;
 
     @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
@@ -44,6 +56,46 @@ public class Categorie{
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public Timestamp getDateCreationCategorie() {
+        return DateCreationCategorie;
+    }
+
+    public void setDateCreationCategorie(Timestamp dateCreationCategorie) {
+        DateCreationCategorie = dateCreationCategorie;
+    }
+
+    public String getAuteurCreationCategorie() {
+        return AuteurCreationCategorie;
+    }
+
+    public void setAuteurCreationCategorie(String auteurCreationCategorie) {
+        AuteurCreationCategorie = auteurCreationCategorie;
+    }
+
+    public Timestamp getDateModificationCategorie() {
+        return DateModificationCategorie;
+    }
+
+    public void setDateModificationCategorie(Timestamp dateModificationCategorie) {
+        DateModificationCategorie = dateModificationCategorie;
+    }
+
+    public String getAuteurModificationCategorie() {
+        return AuteurModificationCategorie;
+    }
+
+    public void setAuteurModificationCategorie(String auteurModificationCategorie) {
+        AuteurModificationCategorie = auteurModificationCategorie;
+    }
+
+    public boolean getSupprimerCategorie() {
+        return SupprimerCategorie;
+    }
+
+    public void setSupprimerCategorie(boolean supprimerCategorie) {
+        SupprimerCategorie = supprimerCategorie;
     }
 
     public Set<CategorieDocument> getCategorieDocuments() {

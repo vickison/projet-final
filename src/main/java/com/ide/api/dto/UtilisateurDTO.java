@@ -3,30 +3,29 @@ package com.ide.api.dto;
 import java.util.List;
 
 public class UtilisateurDTO {
-    private Integer utilisateurID;
 
     private String nom;
     private String prenom;
     private String email;
-
+    private String username;
     private String password;
-
     private boolean admin;
 
-    private List<Integer> categorieIDs;
-
-    private List<Integer> documentIDs;
-
-    private List<Integer> tagIDs;
-
-    private List<Integer> auteurIDs;
-
-    public Integer getUtilisateurID() {
-        return utilisateurID;
+    public UtilisateurDTO() {
     }
 
-    public void setUtilisateurID(Integer utilisateurID) {
-        this.utilisateurID = utilisateurID;
+    public UtilisateurDTO(String nom,
+                          String prenom,
+                          String email,
+                          String password,
+                          String username,
+                          boolean admin) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.password = password;
+        this.admin = admin;
+        this.username = username;
     }
 
     public String getNom() {
@@ -69,35 +68,11 @@ public class UtilisateurDTO {
         this.admin = admin;
     }
 
-    public List<Integer> getCategorieIDs() {
-        return categorieIDs;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCategorieIDs(List<Integer> categorieIDs) {
-        this.categorieIDs = categorieIDs;
-    }
-
-    public List<Integer> getDocumentIDs() {
-        return documentIDs;
-    }
-
-    public void setDocumentIDs(List<Integer> documentIDs) {
-        this.documentIDs = documentIDs;
-    }
-
-    public List<Integer> getTagIDs() {
-        return tagIDs;
-    }
-
-    public void setTagIDs(List<Integer> tagIDs) {
-        this.tagIDs = tagIDs;
-    }
-
-    public List<Integer> getAuteurIDs() {
-        return auteurIDs;
-    }
-
-    public void setAuteurIDs(List<Integer> auteurIDs) {
-        this.auteurIDs = auteurIDs;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

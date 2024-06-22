@@ -1,6 +1,9 @@
 package com.ide.api.service;
 
+import com.ide.api.entities.AdminUtilisateur;
 import com.ide.api.entities.Utilisateur;
+import com.ide.api.enums.TypeGestion;
+import com.ide.api.repository.AdminUtilisateurRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +19,37 @@ import java.util.List;
 @Service
 public class UtilisateurService {
     private UtilisateurRepository utilisateurRepository;
+    private AdminUtilisateurRepository adminUtilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
+    public UtilisateurService(PasswordEncoder passwordEncoder,
+                              UtilisateurRepository utilisateurRepository,
+                              AdminUtilisateurRepository adminUtilisateurRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminUtilisateurRepository = adminUtilisateurRepository;
     }
 
     public void createUtilisateur(Utilisateur utilisateur){
         String hashedPassword = passwordEncoder.encode(utilisateur.getPassword());
         utilisateur.setPassword(hashedPassword);
         this.utilisateurRepository.save(utilisateur);
+
+    }
+
+    public void creerUtilisateur(Utilisateur utilisateur,
+                                 Integer adminID){
+        String hashedPassword = passwordEncoder.encode(utilisateur.getPassword());
+        utilisateur.setPassword(hashedPassword);
+        Utilisateur utilisateurSaved = this.utilisateurRepository.save(utilisateur);
+        AdminUtilisateur adminUtilisateur = new AdminUtilisateur();
+        Utilisateur admin = this.utilisateurRepository.findById(adminID)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
+        adminUtilisateur.setAdminID(admin);
+        adminUtilisateur.setUtilisateurID(utilisateurSaved);
+        adminUtilisateur.setTypeGestion(TypeGestion.Ajouter);
+        this.adminUtilisateurRepository.save(adminUtilisateur);
 
     }
 

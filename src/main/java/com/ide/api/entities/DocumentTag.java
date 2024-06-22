@@ -1,20 +1,24 @@
 package com.ide.api.entities;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
+@DynamicInsert
 @IdClass(DocumentTagID.class)
-@Table(name = "document_tag")
-public class DocumentTag {
+@Table(name = "tableDocumentEtiquette")
+public class DocumentTag implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "documentID")
+    @JoinColumn(name = "IdentifiantDocument")
     private Document documentID;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "tagID")
+    @JoinColumn(name = "IdentifiantEtiquette")
     private Tag tagID;
 
     public Document getDocument() {
