@@ -1,0 +1,64 @@
+
+<div class="container" id="grid">
+   
+    <button mat-button color="accent" id="item3" >A Propos</button>
+   
+    <mat-toolbar color="primary" id="item1">
+      <mat-toolbar-row>
+        <span class="titre">LibEIl</span>
+        <!-- class="action" -->
+      </mat-toolbar-row>
+    </mat-toolbar>
+    
+
+    
+    <mat-card  id="item2">
+        <mat-card-header>
+          <mat-card-title>Login</mat-card-title>
+        </mat-card-header>
+        <mat-card-content >
+          <form class="example-form">
+            <table class="example-full-width" cellspacing="1">
+              <tr>
+                <td>
+                  <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Username" [(ngModel)]="form.username" name="username" required> 
+                  <!--<input matInput placeholder="Username" >-->
+                </mat-form-field>
+                </td>
+              </tr>
+              <tr>
+              <td><mat-form-field class="example-full-width">
+                <input matInput placeholder="Password" [(ngModel)]="form.password"type="password" name="password" required>
+                <!--<input matInput placeholder="Password" >-->
+              </mat-form-field></td>
+            </tr></table>
+          </form>
+          <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="onSubmit()" color="primary" >Login</button>
+          <!--<button mat-raised-button color="accent">Login</button> -->
+        </mat-card-actions>
+    </mat-card>
+  
+    <!-- <div class="autre-content"> -->
+      <!-- Ici on peut mettre d'autres éléments -->
+    <!-- </div> -->
+ 
+</div>
+  
+
+
+
+
+
+
+   
+
+
+
+
+
+
+

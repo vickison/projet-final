@@ -6,13 +6,18 @@ import { AuteurDocument } from './auteur-document.model';
 export class Document {
 	documentID?: number;
     resume?: string;
-    datePublication?: Date;
+    dateCreationDocument?: Date;
+    DateModificationDocument?: Date;
     url?: string;
-    nombreDeTelechargements?: number;
-    nombreDeConsultations?: number;
-    nombreDeCommentaires?: number;
-    proprietaire?: string;
+    NombreDeConsultations?: number;
+    NombreDePartages?: number;
     langue?: string;
+    typeFichier?: string;
+    NOTE?: number;
+    NombreNotes?: number;
+    AuteurCreationDocument?: string;
+    AuteurModificationDocument?: string;
+    supprimerDocument?: boolean;
 
     taille?: number;
     format?: string;

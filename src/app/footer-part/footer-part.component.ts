@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
-interface Language{
-  value: string;
-  viewValue : string;
-}
+
 
 @Component({
   selector: 'app-footer-part',
@@ -16,14 +13,7 @@ export class FooterPartComponent implements OnInit {
   isTablet: boolean = false;
   isMobile: boolean = false;
 
-  value = ' ';
 
-  language: Language[] = [
-    {value:'French-0', viewValue:'French'},
-    {value:'English-1', viewValue:'English'},
-    {value:'Creole-2', viewValue:'Creole'},
-   ];
-   selectedLanguage = this.language[2].value;
 
    constructor(private breakpointObserver: BreakpointObserver) { }
 

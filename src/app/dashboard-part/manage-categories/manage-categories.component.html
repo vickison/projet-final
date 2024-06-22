@@ -1,0 +1,23 @@
+<form [formGroup]="catForm" (ngSubmit)="addCat()" class="form" >
+
+  <div class="head">
+    <span><h3>Formulaire Catégorie</h3></span>
+  </div>
+
+  <p [ngClass]="classCss">
+    {{message}}
+  </p>
+    
+  <mat-form-field appearance="outline">
+    <mat-label>Nom</mat-label>
+    <input matInput type="text" id="nom" formControlName="nom" required>
+    <mat-error *ngIf="catForm.get('nom')!.invalid && catForm.get('nom')!.touched">
+      Le Nom est requis
+    </mat-error>
+  </mat-form-field>
+
+  <div>
+    <button mat-raised-button type="submit" [disabled]="catForm.invalid">Soumettre</button>
+  </div>
+
+</form>   

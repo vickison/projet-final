@@ -1,0 +1,25 @@
+.head {
+    padding-bottom: 5%;
+
+}
+  
+  
+.form {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px;
+}
+
+.success{
+    padding-top: 15px;
+    padding-left: 15px;
+    color: green;
+  }
+      
+  .error { 
+    padding-top: 15px;
+    padding-left: 15px;
+    color: red;
+  }

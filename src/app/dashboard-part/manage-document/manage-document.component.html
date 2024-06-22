@@ -1,0 +1,80 @@
+
+<div class="head">
+  <span><h3>Formulaire Document</h3></span>
+</div>
+<p [ngClass]="classCss">
+  {{message}}
+</p>
+<form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
+          style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5%;">
+
+  <div class="file-input-container">
+    <label class="file-input-label">
+      <span>Upload Document</span>
+      <input type="file" id="file" formControlName="file" (change)="onFileChange($event)" accept=".pdf, .doc, .docx, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff" />
+    </label>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Alternatif Titre</mat-label>
+    <input matInput type="text" id="titre" formControlName="titre">
+  </mat-form-field>
+  
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <input matInput type="text" id="resume" formControlName="resume" >
+    <!--<mat-error *ngIf="documentForm.get('description')!.invalid && documentForm.get('description')!.touched">
+      La description est requise
+    </mat-error>-->
+  </mat-form-field>
+  
+  
+  <mat-form-field appearance="outline">
+    <mat-label>Langue</mat-label>
+    <mat-select [(value)]="selectedLangue" >
+      <mat-option *ngFor="let langue of langues" [value]="langue">
+        {{langue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+  
+
+  <mat-form-field appearance="outline">
+    <mat-label>Categorie</mat-label>
+    <mat-select formControlName="categorieDocuments" multiple>
+      <mat-option *ngFor="let option of categorieOptions" [value]="option.categorieID">
+        {{option.categorieID}} - {{ option.nom }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+  <mat-form-field appearance="outline">
+    <mat-label>Lebel(s)</mat-label>
+    <mat-select formControlName="documentTags" multiple>
+      <mat-option *ngFor="let option of tagOptions" [value]="option.tagID">
+        {{option.tagID}} - {{ option.tag }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+  <mat-form-field appearance="outline">
+    <mat-label>Auteur(s)</mat-label>
+    <mat-select formControlName="auteurDocuments" multiple>
+      <mat-option *ngFor="let option of auteurOptions" [value]="option.auteurID">
+        {{option.auteurID}} - {{ option.nom }}, {{option.prenom}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+
+  <div style="align-items: center;">
+    <button mat-raised-button type="submit" [disabled]="documentForm.invalid">Soumettre</button>
+  </div>
+  
+  </form>
+
+

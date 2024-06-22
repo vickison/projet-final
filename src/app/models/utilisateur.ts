@@ -7,9 +7,11 @@ export class Utilisateur {
 	utilisateurID?: number;
 	nom?: string;
     prenom?: string;
+    username?: string;
     email?: string;
     password?: string;
     admin?: boolean;
+    supprimerUtil?: boolean;
     utilisateurCategories?: UtilisateurCategorie[];
     utilisateurDocuments?: UtilisateurDocument[];
     utilisateurTags?: UtilisateurTag[];

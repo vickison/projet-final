@@ -6,7 +6,7 @@ export class Auteur {
     nom?: string;
     prenom?: string;
     email?: string;
-    nationalite?: string;
+    supprimerAuteur?: boolean;
     auteurDocuments?: AuteurDocument[];
     utilisateurAuteurs?: UtilisateurAuteur[];
 }

@@ -1,20 +1,32 @@
 .page_content {
-    background-color: #ECF7FD;
-    min-height: calc(100vh - 10px);
-    margin-top: 5%;
+  margin-top: 0;
+  //top: var(--toolbar-height); 
+  //margin-top: 0.3rem;
+  padding-top: 0;
+  margin-left: 0;
+  background-color: #ECF7FD;
 }
 
 
-@media screen and (min-width: 768px) and (max-width: 1024px) {
+// .contenu {
+// margin-top: 5%;
+// z-index: 2;
+// }
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
   .page_content {
 
-     margin-top: 13%;
-}
+    margin-top: 4rem;
+    margin-left: 8rem;
+  }
+
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
     .page_content {
-      margin-top: 1rem;
+      margin-left : 0rem;
+      margin-top: 5rem;
+      //padding-top: 5.5rem;
     }
 
-  }
+}

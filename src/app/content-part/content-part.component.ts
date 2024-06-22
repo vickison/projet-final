@@ -1,82 +1,356 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, Input, ElementRef, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { DocumentService } from '../services/document.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Document } from 'src/app/models/document.model';
+import { ViewEncapsulation } from '@angular/core';
+import { PdfViewerComponent } from 'ng2-pdf-viewer';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Observable, Subscription } from 'rxjs';
+import { DetailDialogService } from '../services/detail-dialog.service';
+import { HttpClient } from '@angular/common/http';
+import { SearchService } from '../services/search.service';
+import { CategorieDocumenttsService } from '../services/categorie-documentts.service';
+import { FilterService } from '../services/filter.service';
+import { Categorie } from '../models/categorie';
+import { OrderService } from '../services/order.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DetailPartComponent } from '../detail-part/detail-part.component';
 
 
 @Component({
   selector: 'app-content-part',
   templateUrl: './content-part.component.html',
-  styleUrls: ['./content-part.component.scss']
+  styleUrls: ['./content-part.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class ContentPartComponent implements OnInit{
+export class ContentPartComponent implements OnInit, OnDestroy{
+  fileSizeFormatted: string='';
 
-  categoryID?: number;
+  @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
+  @ViewChild('videoContainer') videoContainer: ElementRef | undefined
+
+  isHovered = false;
+  private previewTimer: any;
+  private totalPreviewTime: number = 30000;
+  private containerWidthInRem: number = 1;
+  progress: number = 0;
+  isMouseOverVideo: boolean = false;
+  searchKeyword: string = '';
+  
+
+
+  startVideoPreview(){
+    this.playVideo();
+    this.progress = 0;
+    this.previewTimer = setInterval(()=>{
+      this.progress += (1000 / this.totalPreviewTime) * 100;
+      if(this.progress >= 100){
+        this.stopVideoPreview();
+      }
+    }, 1000)
+    console.log('vido start...');
+    
+  }
+
+  stopVideoPreview(){
+    clearInterval(this.previewTimer);
+    this.pauseVideo();
+    this.progress = 0;
+    console.log('video stop...');
+    
+  }
+
+  playVideo(){
+    this.videoContainer?.nativeElement.play();
+  }
+
+  pauseVideo(){
+    this.videoContainer?.nativeElement.pause();
+  }
+
+  // getFirstPage(){
+  //   this.pdfViewer.pdfViewer.currentPageNumber = 1
+  // }
+
+  private categoryID: number | null= null;
   documents: Document[] = [];
+  searchResults: Document[] = [];
+  tempDocuments: Document[] = [];
+  filteredDocuments: Document[] = [];
+  orderedDocuments: Document[] = [];
   documentID?: number;
-  downloadUrl?: string;
+  downloadUrl?: any;
   fileName?: string;
+  @Input() selectedDocument: Document | undefined;
+  documentUrl: string = '';
+  pdfBlob?: Blob;
+  selectedCategorieID: number = 0;
+  isSearching: boolean = false;
+  @Input() docs: Document[]= [];
+  @Input() categorieID: number | undefined;
+
+  private routeSubscription: Subscription = new Subscription();
+  private filterSubscription: Subscription = new Subscription();
+  private orderSubscription: Subscription = new Subscription();
+  
 
   constructor(
     private documentService: DocumentService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private detailDialogService: DetailDialogService,
+    private dialog: MatDialog,
+    private http: HttpClient,
+    private searchService: SearchService,
+    private categorieDocumentsService: CategorieDocumenttsService,
+    private filterService: FilterService,
+    private orderService: OrderService
+  ) {
+    
+   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.categoryID = +params['categorieID']; // '+' converts the string to a number
-      // Now, this.categoryId contains the categoryId from the route parameter
-      this.documentID = +params['documentID']
-      this.fetchDocuments();
+
+    this.orderSubscription = this.orderService.order$.subscribe(order => {
+      if(order.trim() !== ''){
+        this.getDocumentsByOrder(order);
+        this.categoryID = null;
+        this.orderService.setOrder('');
+      }else if(this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
     });
+
+    this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
+      if(filter.trim() !== ''){
+        this.getDocumentsByFilter(filter);
+        this.categoryID = null;
+        this.filterService.setFilter('');
+      }else if (this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
+    });
+
+    
+    this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
+      if(keywords.trim() !== ''){
+        this.getDocumentBySearch(keywords);
+        this.categoryID = null;
+        this.searchService.setSearchKeyword('');
+      }else if (this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
+    });
+
+    
+    this.route.params.subscribe(params =>{
+        const categoryID = +params['categorieID'];
+        if(!isNaN(categoryID)){
+          this.categoryID = categoryID;
+          if(this.searchService.getSearchKeyword() === '')
+            this.fetchDocuments(categoryID);
+        }
+        
+    });
+
+    //this.getDocumentByCategory();
+
+    //this.openDetailDialog();
   }
 
-  fetchDocuments() {
-    this.documentService.getDocumentsByCategorie(this.categoryID)
+  fetchDocuments(categorieID: number) {
+    this.documents = [];
+    this.documentService.getDocumentsByCategorie(categorieID)
       .subscribe((documents: Document[]) => {
-        this.documents = documents;
-        console.log('Fetched Documents:', documents);
+        this.documents = documents.filter(doc => !doc.supprimerDocument);
+        this.tempDocuments = this.documents;
+        //console.log("doc non delete: ", this.tempDocuments.filter(doc => !doc.supprimerDocument));
+      }, (error: any) => {
+        console.error('Error loading documents', error);
+        
       });
+  }
+
+
+  getDocumentUrl(id?: number): string{
+    return this.documentService.getDocumentUrl(id);
   }
 
   downloadDocument() {
     this.documentService.downloadDocument(this.documentID).subscribe(data => {
       const blob = new Blob([data], { type: 'application/octet-stream' });
       this.downloadUrl = window.URL.createObjectURL(blob);
+      
     });
+  }
+
+  getDocumentBySearch(keywords: string): void{
+    this.tempDocuments = this.documents;
+    this.documents = [];
+    this.documentService.getDocumentByKeyword(keywords).subscribe((documents: Document[]) => {
+      this.documents = documents.filter(doc => !doc.supprimerDocument);
+      console.log('temp doc: ', this.tempDocuments);
+      console.log('docs: ', this.documents);
+      if(this.tempDocuments.length > 0){
+        this.searchResults = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
+        console.log('Search in category: ', this.searchResults);
+        this.documents = this.searchResults;
+      }
+    },(error: any) =>{
+      console.error('Error loading documents', error);
+      
+    });
+  }
+
+  getDocumentsByFilter(type: string): void{
+    this.tempDocuments = this.documents;
+    this.documents = [];
+    this.documentService.getDocumentsByType(type).subscribe((documents: Document[]) =>{
+      this.documents = documents.filter(doc => !doc.supprimerDocument);
+      if(this.tempDocuments.length > 0){
+        this.filteredDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
+        this.documents = this.filteredDocuments;
+      }
+    }, (error: any) =>{
+      console.log('Error fetching documents ', error);
+    });
+  }
+
+  getDocumentsByOrder(order: string): void{
+    this.tempDocuments = this.documents;
+    this.documents = [];
+    this.documentService.getDocumentsByOrder(order).subscribe((documents: Document[]) =>{
+      this.documents = documents.filter(doc => !doc.supprimerDocument);
+      if(this.tempDocuments.length > 0){
+        this.orderedDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
+        this.documents = this.orderedDocuments;
+      }
+    }, (error: any ) => {
+      console.log('Error fetching documents ', error);
+    })
+  }
+
+
+  getBlobDocument(id?: number): string {
+    return this.documentService.getBlobDocument(id);
   }
 
   onDocumentClick(fileName?: string, documentID?: number): void {
     // Handle the click event, you have access to the document ID (documentId) here
     console.log('Clicked document ID:', documentID);
-  
-    // Now you can fetch the document details or perform any other action based on the document ID
-    this.documentService.downloadDocument(documentID).subscribe((blob: Blob) => {
-      // Handle the response from the service call
-      const link = document.createElement('a');
-      const objectUrl = URL.createObjectURL(blob);
+    if(fileName){
+      this.documentService.downloadDocument(documentID).subscribe((blob: Blob) => {
+        // Handle the response from the service call
+        const link = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
 
-      link.href = objectUrl;
-      link.target = '_blank';
+        link.href = objectUrl;
+        link.target = '_blank';
 
-      const fileExtension = this.getFileExtensionFromUrl('document_url.pdf');
-      link.download = `document_${new Date().toISOString()}.${fileExtension}`;
+        const fileExtension = this.getFileExtensionFromUrl(fileName);
+        link.download = `document_${new Date().toISOString()}.${fileExtension}`;
 
-      document.body.appendChild(link);
-      link.click();
+        document.body.appendChild(link);
+        link.click();
 
-      URL.revokeObjectURL(objectUrl);
-      document.body.removeChild(link);
-    },
-    (error) => {
-      console.error('Error downloading document:', error);
+        URL.revokeObjectURL(objectUrl);
+        document.body.removeChild(link);
+      },
+      (error) => {
+        console.error('Error downloading document:', error);
+      }
+      );
+    }else{
+      console.error('File name is undefined.');
     }
-    );
+    
   }
 
   getFileExtensionFromUrl(url: string): string {
     const pathArray = url.split('.');
     return pathArray[pathArray.length - 1];
   }
+
+  @Output() documentClicked = new EventEmitter<Document>();
+
+  onDocumentDBLClicked(document: Document): void {
+    this.documentClicked.emit(document);
+    console.log("Card dblclicked"+document);
+  }
+
+  formatBytes(bytes: number[] | undefined, decimals: number=2): string{
+    if(bytes == undefined || bytes?.length == 0) return 'N/A';
+    const sizeInBytes = bytes.length;
+     const k = 1024;
+     const dm = decimals < 0 ? 0 : decimals;
+
+     const size = ['Bytes','KB','MB','GB'];
+     const i = Math.floor(Math.log(sizeInBytes)/Math.log(k));
+     return parseFloat((sizeInBytes/Math.pow(k, i)).toFixed(dm))+' '+size[i]
+  }
+
+  formatFileSize(bytes: number | undefined): string{
+    if(bytes == undefined ) return 'N/A';
+    else if(typeof bytes !== 'number' ) return 'Invalid file size';
+    else if(bytes < 1024){
+      return bytes + ' Bytes';
+    }else if(bytes < 1024*1024){
+      return (bytes / 1024).toFixed(2)+' KB';
+    }else if(bytes < 1024*1024*1024){
+      return (bytes / (1024*1024)).toFixed(2)+' MB';
+    }else{
+      return (bytes / (1024*1024*1024)).toFixed(2)+' GB';
+    }
+  }
+
+  handlePdfLoad(event: any){
+    console.log('PDF loaded successfully', event);
+    
+  }
+
+  handlePdfError(event: any){
+    console.error('Error loadind PDF', event);
+    
+  }
+
+  getSafeUrl(url: string |  null): SafeResourceUrl | undefined {
+    // Check if the URL is defined before sanitizing
+    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : undefined;
+  }
+
+  openDetailDialog(document: Document): void {
+    const dialogRef = this.dialog.open(DetailPartComponent, {
+      width: '30%',
+      data: {document}
+    })
+    //this.detailDialogService.openDialog();
+  }
+
+  ngOnDestroy(): void{
+    if(this.routeSubscription){
+      this.routeSubscription.unsubscribe();
+    }else if(this.filterSubscription){
+      this.filterSubscription.unsubscribe();
+    }
+  }
+
+  copyLink(){
+    const link = window.location.href;
+    console.log(link);
+    navigator.clipboard.writeText(link).then(() => {
+      alert("Lien copié dans le clipboard...");
+    }).catch(err =>{
+      console.error("Echec de copier le lien...");
+    });
+  }
+
+  // getDocumentByCategory(){
+  //   this.documentService.getDocumentsByCategorie(this.categorieID).subscribe(documents =>{
+  //     console.log('Emitted ', documents);
+      
+  //   })
+  // }
+
+
 
 }

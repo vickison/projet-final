@@ -17,7 +17,7 @@ export class AdminComponent implements OnInit{
   	}
 
   	retrieveUtilisateur(): void {
-    this.utilisateurService.getAll()
+    this.utilisateurService.getAllUsers()
       .subscribe({
         next: (data) => {
           this.utilisateurs = data;

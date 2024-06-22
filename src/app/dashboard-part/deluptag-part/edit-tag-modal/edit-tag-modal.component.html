@@ -1,0 +1,24 @@
+<div class="form">
+    <div class="head"> 
+      <span><h3>Modifier Etiquette</h3></span>
+    </div>
+
+    <p [ngClass]="classCss">{{message}}</p>
+        
+    <mat-form-field appearance="outline">
+        <mat-label>Lebel</mat-label>
+        <input matInput type="text" id="tag" [(ngModel)]="updatedTagData.tag" required>
+        <!--<mat-error *ngIf="tagForm.get('tag')!.invalid && tagForm.get('tag')!.touched">
+          Le lebel est requis
+        </mat-error>-->
+    </mat-form-field>
+      
+    <div >
+      <button mat-raised-button (click)="onSaveChange()" color="primary" type="submit" style="margin-right: 1rem;">
+        Editer
+      </button>
+      <button mat-raised-button type="button" (click)="close()">
+        Annuler
+      </button>
+    </div>
+  </div>

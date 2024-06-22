@@ -1,0 +1,55 @@
+/* dashboard.component.css */
+.sidenav-container {
+   // margin-top: 5%;
+    height: 90%;
+  }
+  
+  .sidenav {
+    margin-top: 4.3%;
+    width: 11.5%;
+    background-color: rgba(255, 94, 0, 0.26);
+  }
+  
+  .sidenav-content {
+    padding: 20px;
+  }
+  
+  .option-actions {
+    float: right;
+  }
+  
+  .option-details {
+    border: 1px solid black;
+    padding: 10px;
+  }
+  
+
+// app.component.scss
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.options nb-card {
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+
+  button {
+    margin: 0 10px;
+  }
+}
+
+.details {
+  margin-top: 20px;
+  text-align: center;
+}
+
+

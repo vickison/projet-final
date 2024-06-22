@@ -1,0 +1,21 @@
+<form [formGroup]="tagForm" (ngSubmit)="addTag()" class="form" >
+
+    <div class="head">
+      <span><h3>Formulaire Lebel</h3></span>
+    </div>
+    <p [ngClass]="classCss">
+      {{message}}
+    </p>
+    <mat-form-field appearance="outline">
+      <mat-label>Lebel</mat-label>
+      <input matInput type="text" id="tag" formControlName="tag" required>
+      <mat-error *ngIf="tagForm.get('tag')!.invalid && tagForm.get('tag')!.touched">
+        Le lebel est requis
+      </mat-error>
+    </mat-form-field>
+  
+    <div>
+      <button mat-raised-button type="submit" [disabled]="tagForm.invalid">Soumettre</button>
+    </div>
+  
+  </form>   

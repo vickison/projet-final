@@ -1,3 +1,7 @@
-<div class="details card-body">
-    Details
-</div>
+<div class="detail-dialog-container">
+    <h2 style="text-align: center;">{{'Détails'|translate }}</h2>
+    <p>Titre : {{ selectedDocument.titre }}</p>
+    <p>format : {{ selectedDocument.typeFichier }}</p>
+    <p>size : {{ formatFileSize(selectedDocument.taille) }}</p>
+    <p>Résumé : {{ (selectedDocument.resume !== 'undefined') ? selectedDocument.resume : '' }}</p>
+  </div>

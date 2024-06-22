@@ -1,0 +1,68 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .form-group {
+    margin: 10px 0;
+  }
+
+  .success{
+    padding-top: 15px;
+    padding-left: 15px;
+    color: green;
+  }
+      
+  .error { 
+    padding-top: 15px;
+    padding-left: 15px;
+    color: red;
+  }
+
+  
+mat-toolbar {
+    display: flex; /* Active le mode flexbox */
+    align-items: center; /* Centre les éléments verticalement */
+    justify-content: space-between; /* Répartit les éléments horizontalement */
+  }
+  
+  
+.action {
+     margin-left: 90%; /* Ajoute une marge à droite du bouton */
+     padding: 1%; /* Ajoute du remplissage au bouton */
+}
+  
+
+
+#grid {
+  display: grid;
+  height: 60%;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+  
+#item1 {
+  background-color:#183153;
+  grid-row: 1 / span 2; /* L'élément occupe les deux premières lignes de la grille */
+  grid-column: 1 / span 8;
+  height: 15%;
+   
+}
+  
+#item2 {
+  background-color: rgb(242, 246, 250);
+  grid-row: 12 / span 12; /* L'élément occupe les trois lignes suivantes de la grille */
+  grid-column: 3 / span 4;
+  height: 100%;
+}
+
+#item3 {
+margin-top: 9%; 
+grid-row: 1 / span 1;
+grid-column: 8/ span 8;
+}
+
+  
+  

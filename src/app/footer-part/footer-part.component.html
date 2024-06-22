@@ -1,32 +1,25 @@
-<footer>
-     <!-- <div class="row">
-          <div class="col-md-2 sponsor" style="margin-left: 24.5rem;">
-              Logo 1
-          </div>
-
-          <div class="col-md-6 sponsor">
-              Logo 2
-          </div>
-
-          <div class="col-md-4 sponsor">
-              Logo 3
-          </div>
-
-           <div class="col-md-4 sponsor">
-              Logo 4
-          </div>
-          
-      </div> -->
-
-      <mat-form-field class="footer_sort" *ngIf="isTablet">
-        <mat-icon matPrefix>translate</mat-icon>
-        <mat-select [(value)]="selectedLanguage">
-          <mat-option [value]="option.value" *ngFor="let option of language">{{ option.viewValue }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-stroked-button   *ngIf="isMobile || isTablet" class="footer_A_propos"> A propos</button>
 
 
-  <div><i class="fa fa-copyright" aria-hidden="true"></i>copyright</div> 
-</footer>
+<footer class="mat-elevation-z2" style="position: absolute; bottom: 0; width: 100%;">
+  
+  <div style="text-align: center;">
+    <i class="fa fa-copyright" aria-hidden="true"></i> copyright
+  </div>
+  
+
+      <div fxLayout="row" fxLayoutGap="2rem" fxLayoutAlign="center" style=" height: 5%; margin-bottom: 2rem; margin-top: 0.5rem;">
+        <img class="im1" src="assets/fds.png" alt="FDS_Logo ">
+        <img class="im2" src="assets/pnud.jpg" alt="Pnud_Logo">
+        <img class="im3" src="assets/urgeo.jpg" alt="Urgeo_Logo">
+        <img class="im4" src="assets/ueh.png" alt="Ueh_Logo">
+      </div>
+ 
+ 
+</footer> 
+
+
+
+
+
+
+
