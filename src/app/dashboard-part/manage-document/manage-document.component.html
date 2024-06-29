@@ -6,7 +6,7 @@
   {{message}}
 </p>
 <form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
-          style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 5%;">
+          style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 3%;">
 
   <div class="file-input-container">
     <label class="file-input-label">
@@ -40,35 +40,48 @@
 
 
   
+  <div class="form-button">
+    <mat-form-field appearance="outline">
+      <mat-label>Categorie</mat-label>
+      <mat-select formControlName="categorieDocuments" multiple>
+        <mat-option *ngFor="let option of categorieOptions" [value]="option.categorieID">
+          {{option.categorieID}} - {{ option.nom }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-mini-fab color="secondadry" (click)="openCatDialog()"  class="button-add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Categorie</mat-label>
-    <mat-select formControlName="categorieDocuments" multiple>
-      <mat-option *ngFor="let option of categorieOptions" [value]="option.categorieID">
-        {{option.categorieID}} - {{ option.nom }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="form-button">
+    <mat-form-field appearance="outline">
+      <mat-label>Lebel(s)</mat-label>
+      <mat-select formControlName="documentTags" multiple>
+        <mat-option *ngFor="let option of tagOptions" [value]="option.tagID">
+          {{option.tagID}} - {{ option.tag }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-mini-fab color="secondadry" (click)="openLabelDialog()"  class="button-add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
 
-  <mat-form-field appearance="outline">
-    <mat-label>Lebel(s)</mat-label>
-    <mat-select formControlName="documentTags" multiple>
-      <mat-option *ngFor="let option of tagOptions" [value]="option.tagID">
-        {{option.tagID}} - {{ option.tag }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-
-  <mat-form-field appearance="outline">
-    <mat-label>Auteur(s)</mat-label>
-    <mat-select formControlName="auteurDocuments" multiple>
-      <mat-option *ngFor="let option of auteurOptions" [value]="option.auteurID">
-        {{option.auteurID}} - {{ option.nom }}, {{option.prenom}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="form-button">
+    <mat-form-field appearance="outline">
+      <mat-label>Auteur(s)</mat-label>
+      <mat-select formControlName="auteurDocuments" multiple>
+        <mat-option *ngFor="let option of auteurOptions" [value]="option.auteurID">
+          {{option.auteurID}} - {{ option.nom }}, {{option.prenom}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-mini-fab color="secondadry" (click)="openAuthorDialog()"  class="button-add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   
 
   <div style="align-items: center;">

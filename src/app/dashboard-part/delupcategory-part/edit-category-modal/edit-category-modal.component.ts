@@ -66,14 +66,22 @@ export class EditCategoryModalComponent {
         if(index !== -1){
           this.categories[index] = response;
         }
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedCategorieData);
+        }, 1000);
       },
       error: err => {
         this.message = 'Echec de modifier la catégorie';
         this.classCss = 'error';
         console.log("Echec de modification: ", err);
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedCategorieData);
+        }, 1000);
       }
     });
-    this.dialogRef.close(this.updatedCategorieData);
+
+    
+    
   }
 
   close() {

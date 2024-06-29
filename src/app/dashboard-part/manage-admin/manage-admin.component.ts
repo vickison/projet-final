@@ -74,7 +74,7 @@ export class ManageAdminComponent implements OnInit{
         setTimeout(() => {
             //this.dialog.closeAll();
             this.userForm.reset();
-        }, 5000);
+        }, 2000);
       }, 
       error: err =>{
         this.message = 'Enregistrement avec succès';

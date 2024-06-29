@@ -65,14 +65,22 @@ export class EditDocumentModalComponent {
         if(index !== -1){
           this.documents[index] = response;
         }
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedDocumentData);
+        }, 1000);
       },
       error: err => {
         this.message = 'Echec de modifier le document';
         this.classCss = 'error';
         console.log("Echec de modifier le document: ", err);
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedDocumentData);
+        }, 1000);
       }
     });
-    this.dialogRef.close(this.updatedDocumentData);
+
+    
+    
   }
 
   close() {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Tag } from 'src/app/models/tag.model';
 import { TagService } from 'src/app/services/tag.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
@@ -21,7 +22,8 @@ export class ManageLabelComponent {
   constructor(private fb: FormBuilder,
               private tagService: TagService,
               private utilisateurService: UtilisateurService,
-              private tokenStorageService: TokenStorageService){
+              private tokenStorageService: TokenStorageService,
+              public dialog: MatDialog){
     this.tagForm = this.fb.group({
       tag: ['', Validators.required]
     });
@@ -63,8 +65,9 @@ export class ManageLabelComponent {
           this.classCss = 'success';
           console.log("Tag ajouter avec succès: ", data);
           setTimeout(() => {
-            this.reloadPage();
-          }, 5000);
+            //this.dialog.closeAll();
+            this.tagForm.reset();
+          }, 2000);
         },
         error: err =>{
           this.message = 'Echec d\'ajouter le label';

@@ -14,7 +14,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
   styleUrls: ['./deluptag-part.component.scss']
 })
 export class DeluptagPartComponent {
-  displayedColumns = ['id', 'tag', 'supprimer', 'action'];
+  displayedColumns = ['id', 'tag', 'action'];
   tagSource: MatTableDataSource<Tag>;
   tags: Tag[] = [];
   adminID: number = 0;
@@ -53,11 +53,25 @@ export class DeluptagPartComponent {
     });
 
     dialogRef.afterClosed().subscribe(updatedTag => {
+      const t: Array<Tag>= [];
+      this.tagService.getTags().subscribe(
+        (tags: Tag[]) =>{
+          for(const tag of tags){
+            t.push(tag);
+          }
+          this.tagSource = new MatTableDataSource(t);
+          this.tagSource.paginator = this.paginator;
+          this.tagSource.sort = this.sort;
+        },
+        (error) => {
+          console.error('Erreur: ',error);
+          
+        }
+      );
       if(updatedTag){
-        // Logique pour gérer les données mises à jour
-        console.log('Dialog closed with data:', updatedTag);
-      }
-      
+          // Logique pour gérer les données mises à jour
+          console.log('Dialog closed with data:', updatedTag);
+        }
     },
     (error) => {
       console.error('Error updating tag ', error);

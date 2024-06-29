@@ -13,7 +13,7 @@ import { EditCategoryModalComponent } from './edit-category-modal/edit-category-
   styleUrls: ['./delupcategory-part.component.scss']
 })
 export class DelupcategoryPartComponent {
-  displayedColumns = ['id', 'nom', 'supprimer', 'action'];
+  displayedColumns = ['id', 'nom','action'];
   categorySource: MatTableDataSource<Categorie>;
   categories: Categorie[] = [];
   adminID: number = 0;
@@ -28,9 +28,7 @@ export class DelupcategoryPartComponent {
 
   constructor(private categorieService: CategorieService,
               private dialog: MatDialog){
-
     const cat: Array<Categorie> = [];
-
     this.categorieService.getAllCategories().subscribe(
       (categories: Categorie[]) =>{
         for(const category of categories){
@@ -57,6 +55,21 @@ export class DelupcategoryPartComponent {
     });
 
     dialogRef.afterClosed().subscribe(updatedCategorie => {
+        const cat: Array<Categorie> = [];
+      this.categorieService.getAllCategories().subscribe(
+        (categories: Categorie[]) =>{
+          for(const category of categories){
+            cat.push(category);
+          }
+          this.categorySource = new MatTableDataSource(cat);
+          this.categorySource.paginator = this.paginator;
+          this.categorySource.sort = this.sort;
+        },
+        (error) => {
+          console.error('Erreur: ',error);
+          
+        }
+      );
       if(updatedCategorie){
         // Logique pour gérer les données mises à jour
         console.log('Dialog closed with data:', updatedCategorie);

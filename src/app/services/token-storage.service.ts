@@ -33,6 +33,18 @@ export class TokenStorageService {
   }
 
 
+  public getIdUser(): any{
+    const user = window.sessionStorage.getItem(USER_KEY);
+    if(user){
+      const userObj = JSON.parse(user);
+      userObj.id = Number(userObj.id);
+      return userObj.id;
+    }else{
+      return
+    }
+  }
+
+
   public isLoggedIn(): boolean{
     const user = window.sessionStorage.getItem(USER_KEY);
     if(user){

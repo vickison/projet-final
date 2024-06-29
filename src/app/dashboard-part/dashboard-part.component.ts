@@ -8,6 +8,9 @@ import { ManageAuteursComponent } from './manage-auteurs/manage-auteurs.componen
 import { TokenStorageService } from '../services/token-storage.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UtilisateurService } from '../services/utilisateur.service';
+import { Utilisateur } from '../models/utilisateur';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-dashboard-part',
@@ -28,10 +31,15 @@ export class DashboardPartComponent implements OnInit {
 
   selectedOption: any;
   hoveredOption: any;
+  isSuperAdmin: boolean = false;
+  //utilisateur: Utilisateur ;
 
   constructor(public dialog: MatDialog, 
     private tokenService: TokenStorageService,
-    private router: Router) { }
+    private router: Router,
+    private utilisateurService: UtilisateurService) { 
+      //this.utilisateur = this.utilisateurService.getUser(Number(this.tokenService.getIdUser()));
+    }
 
 
 
@@ -39,6 +47,19 @@ export class DashboardPartComponent implements OnInit {
     if(!this.tokenService.isLoggedIn()){
       this.router.navigate(['/admin/login']);
     }
+    
+    console.log(this.tokenService.getIdUser());
+    this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
+      next: data => {
+        if(data.SuperAdmin){
+          this.isSuperAdmin = true;
+        }
+      },
+      error: err => {
+        console.log('Error fetching User: ', err);
+        
+      }
+    })
   }
 
   selectOption(option: any) {
@@ -67,7 +88,10 @@ export class DashboardPartComponent implements OnInit {
   openDialog(option: any, button: string) {
     switch (option.name) {
       case 'Admin':
-        if (button === 'Ajouter') {
+        if(!this.isSuperAdmin){
+          alert('Accès réfusé...');
+        }
+        else if (button === 'Ajouter') {
           console.log("toto");
           this.dialog.open(ManageAdminComponent, { width: '40%' });
         }
@@ -87,7 +111,7 @@ export class DashboardPartComponent implements OnInit {
         break;
       case 'Documents':
         if (button === 'Ajouter') {
-          this.dialog.open(ManageDocumentComponent);
+          this.dialog.open(ManageDocumentComponent), { width: '70%' };
         }
         // Ajoutez d'autres cas pour les boutons Modifier et Supprimer
         break;

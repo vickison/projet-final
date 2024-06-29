@@ -25,11 +25,6 @@
         <mat-cell *matCellDef="let row"> {{row.prenom}} </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="supprimer">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Supprimer </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.supprimerAuteur ? 'OUI' : 'NON'}} </mat-cell>
-      </ng-container>
-
       <!-- Color Column -->
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>

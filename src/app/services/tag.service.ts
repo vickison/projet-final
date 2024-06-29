@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable } from 'rxjs';
 import { Tag } from '../models/tag.model';
 import { TokenStorageService } from './token-storage.service';
 
@@ -10,6 +10,8 @@ import { TokenStorageService } from './token-storage.service';
 export class TagService {
 
   private apiUrl = 'http://localhost:8080/api';
+  private tagsSubject = new BehaviorSubject<Tag[]>([]);
+  tags$ = this.tagsSubject.asObservable();
 
   constructor(private http: HttpClient, private tokenService: TokenStorageService) { }
 
@@ -33,6 +35,13 @@ export class TagService {
       })
     );
   } 
+
+
+  getAllTags(): void{
+    this.http.get<Tag[]>(`${this.apiUrl}/tags/public`).subscribe(data => {
+      this.tagsSubject.next(data);
+    })
+  }
 
   updateTag(tagID: number | undefined, adminID: number, tag: Tag): Observable<Tag>{
     return this.http.put<Tag>(`${this.apiUrl}/tags/update/${tagID}?adminID=${adminID}`, tag);

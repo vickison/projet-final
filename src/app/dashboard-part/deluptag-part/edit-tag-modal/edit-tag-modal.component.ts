@@ -64,15 +64,25 @@ export class EditTagModalComponent {
         if(index !== -1){
           this.tags[index] = response;
         }
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedTagData);
+        }, 1000)
       },
       error: err => {
         this.message = 'Echec de modifier le label';
         this.classCss = 'error';
         console.log("Impossible de modifier l'etiquette: ", err);
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedTagData);
+        }, 1000)
       }
     });
 
-    this.dialogRef.close(this.updatedTagData);
+    // setTimeout(() => {
+    //   this.dialogRef.close(this.updatedTagData);
+    // }, 1000)
+
+    //this.dialogRef.close(this.updatedTagData);
   }
 
   close() {

@@ -41,3 +41,26 @@
     border-radius: 4px;
     cursor: pointer;
   }
+
+.form-button
+{
+ // background-color: red;
+display: flex;
+align-items: center;
+width: 100%;
+justify-content: center;
+gap: 8px;
+}
+
+.field {
+flex: 1;
+width: 80%;
+}
+
+.button-add {
+  width: 10%;
+  height: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

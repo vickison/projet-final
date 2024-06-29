@@ -20,6 +20,10 @@ export class UtilisateurService {
   constructor(private http: HttpClient,
     /*private cookieService: CookieService*/) { }
 
+  getUser(userId?: number): Observable<Utilisateur>{
+    return this.http.get<Utilisateur>(`${this.baseUrl}/users/${userId}`)
+  } 
+
   
 
   getAllUsers(): Observable<Utilisateur[]> {

@@ -14,7 +14,7 @@ import { EditAuteurModalComponent } from './edit-auteur-modal/edit-auteur-modal.
 })
 export class DelupauteurPartComponent {
 
-  displayedColumns = ['id', 'nom', 'prenom', 'supprimer', 'action'];
+  displayedColumns = ['id', 'nom', 'prenom', 'action'];
   auteurSource: MatTableDataSource<Auteur>;
   auteurs: Auteur[] = [];
   filterValue: string = "";
@@ -28,7 +28,6 @@ export class DelupauteurPartComponent {
   constructor(private auteurService: AuteurService, 
               private dialog: MatDialog){
     const aus: Array<Auteur> = [];
-
     this.auteurService.getAllAuteurs().subscribe(
       (auteurs: Auteur[]) =>{
         for (const auteur of auteurs) {
@@ -65,6 +64,20 @@ export class DelupauteurPartComponent {
     });
 
     dialogRef.afterClosed().subscribe(updatedAuteur => {
+      const aus: Array<Auteur> = [];
+      this.auteurService.getAllAuteurs().subscribe(
+        (auteurs: Auteur[]) =>{
+          for (const auteur of auteurs) {
+            aus.push(auteur);
+          }
+          this.auteurSource = new MatTableDataSource(aus);
+          this.auteurSource.paginator  = this.paginator;
+          this.auteurSource.sort = this.sort;
+        },
+        (error) => {
+          console.error('Erreur: ', error);
+        }
+      );
       if(updatedAuteur){
         // Logique pour gérer les données mises à jour
         console.log('Dialog closed with data:', updatedAuteur);

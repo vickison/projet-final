@@ -62,15 +62,23 @@ export class EditAuteurModalComponent {
         if(index !== -1){
           this.auteurs[index] = response;
         }
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedAuteurData);
+        });
+        
       },
       error: err => {
         this.message = 'Echec de modifiction d\'auteur';
         this.classCss = 'error';
         console.log("Echec de modifiction d'auteur: ", err);
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedAuteurData);
+        });
+        
       }
       
     });
-    this.dialogRef.close(this.updatedAuteurData);
+
   }
 
   close() {

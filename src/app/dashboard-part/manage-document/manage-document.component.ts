@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -8,6 +8,9 @@ import { CategorieService } from 'src/app/services/categorie.service';
 import { DocumentService } from 'src/app/services/document.service';
 import { TagService } from 'src/app/services/tag.service';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
+import { ManageAuteursComponent } from '../manage-auteurs/manage-auteurs.component';
+import { ManageLabelComponent } from '../manage-label/manage-label.component';
+import { ManageCategoriesComponent } from '../manage-categories/manage-categories.component';
 
 enum Langues{
   Creole='Créole',
@@ -21,7 +24,7 @@ enum Langues{
   templateUrl: './manage-document.component.html',
   styleUrls: ['./manage-document.component.scss']
 })
-export class ManageDocumentComponent implements OnInit {
+export class ManageDocumentComponent implements OnInit, OnChanges {
 
   fctrl = new FormControl();
 
@@ -69,6 +72,12 @@ export class ManageDocumentComponent implements OnInit {
       this.loadUtilisateurOptions();
       this.loadTagOptions();
       this.loadAuteurOptions();
+   }
+   ngOnChanges(): void {
+    this.loadCategorieOptions();
+    this.loadUtilisateurOptions();
+    this.loadTagOptions();
+    this.loadAuteurOptions();
    }
 
   reloadPage(): void{
@@ -130,7 +139,7 @@ export class ManageDocumentComponent implements OnInit {
         setTimeout(() => {
           //this.dialog.closeAll();
           this.documentForm.reset();
-        }, 5000);
+        }, 2000);
       },
       error: err => {
         this.message = 'Echec d\'ajouter le document';
@@ -203,6 +212,58 @@ export class ManageDocumentComponent implements OnInit {
     if (file) {
       this.documentForm.patchValue({file});
     }
+  }
+
+
+  openAuthorDialog(): void {
+    const dialogRef = this.dialog.open(ManageAuteursComponent, {
+      width: '40%', // Ajuste la taille du dialogue
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadAuteurOptions();
+      if (result) {
+        this.documentForm.patchValue({ autor: result.autor });
+      }
+    });
+  
+  }
+
+
+
+
+  openLabelDialog(): void {
+    const dialogRef = this.dialog.open(ManageLabelComponent, {
+      width: '40%', // Ajuste la taille du dialogue
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadTagOptions();
+      console.log('Result:', result);
+      console.log('Label dialog closed!');
+      console.log('tags: ', this.tagOptions);
+      
+      if (result) {
+        //console.log('Label dialog closed!');
+        this.loadTagOptions();
+      }
+    });
+  }
+
+
+  openCatDialog(): void {
+    const dialogRef = this.dialog.open(ManageCategoriesComponent, {
+      width: '40%', // Ajuste la taille du dialogue
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadCategorieOptions();
+      if (result) {
+        //this.documentForm.patchValue({ categories: result.categories });
+      }
+    });
+  
   }
 
   

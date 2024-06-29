@@ -13,7 +13,7 @@ import { EditDocumentModalComponent } from './edit-document-modal/edit-document-
   styleUrls: ['./delupdocument-part.component.scss']
 })
 export class DelupdocumentPartComponent {
-  displayedColumns = ['id', 'titre', 'resume', 'format', 'supprimer', 'action'];
+  displayedColumns = ['id', 'titre', 'resume', 'format','action'];
   documentSource: MatTableDataSource<Document>;
   documents: Document[] = [];
   adminID: number = 0;
@@ -52,6 +52,20 @@ export class DelupdocumentPartComponent {
     });
 
     dialogRef.afterClosed().subscribe(updatedDocument => {
+      const doc: Array<Document>=[];
+      this.documentService.getAllDocuments().subscribe(
+        (documents: Document[]) => {
+          for(const document of documents){
+            doc.push(document);
+          }
+          this.documentSource = new MatTableDataSource(doc);
+          this.documentSource.paginator = this.paginator;
+          this.documentSource.sort = this.sort;
+        },
+        (error) => {
+          console.error('Error fetching documents : ', error);
+        }
+      );
       if(updatedDocument){
         // Logique pour gérer les données mises à jour
         console.log('Dialog closed with data:', updatedDocument);
