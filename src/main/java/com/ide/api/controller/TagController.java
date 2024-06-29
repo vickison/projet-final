@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -121,11 +122,20 @@ public class TagController {
         tag.setTag(tagDetails.getTag());
         tag.setAdminModificationEtiquette(utilisateur.getUsername());
         final Tag updatedTag = this.tagRepository.save(tag);
-        UtilisateurTag newUtilTag = new UtilisateurTag();
-        newUtilTag.setUtilisateurID(utilisateur);
-        newUtilTag.setTagID(updatedTag);
-        newUtilTag.setTypeGestion(TypeGestion.Modifier);
-        utilisateurTagService.createUtilisateurTag(newUtilTag);
+        Optional<UtilisateurTag> utilTag = this.utilisateurTagService.findByTagAndUtil(updatedTag, utilisateur);
+        if(utilTag.isPresent()){
+            UtilisateurTag utilisateurTag = utilTag.get();
+            utilisateurTag.setTypeGestion(TypeGestion.Modifier);
+            this.utilisateurTagService.createUtilisateurTag(utilisateurTag);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurTag newUtilTag = new UtilisateurTag();
+            newUtilTag.setUtilisateurID(utilisateur);
+            newUtilTag.setTagID(updatedTag);
+            newUtilTag.setTypeGestion(TypeGestion.Modifier);
+            utilisateurTagService.createUtilisateurTag(newUtilTag);
+            System.out.println("Not inside condition");
+        }
         return ResponseEntity.ok(updatedTag);
     }
     @PreAuthorize("hasRole('ADMIN')")
@@ -137,13 +147,22 @@ public class TagController {
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
         tag.setSupprimerEtiquette(true);
         tag.setAdminModificationEtiquette(utilisateur.getUsername());
-        final Tag deletadedTag = this.tagRepository.save(tag);
-        UtilisateurTag newUtilTag = new UtilisateurTag();
-        newUtilTag.setUtilisateurID(utilisateur);
-        newUtilTag.setTagID(deletadedTag);
-        newUtilTag.setTypeGestion(TypeGestion.Supprimer);
-        utilisateurTagService.createUtilisateurTag(newUtilTag);
-        return ResponseEntity.ok(deletadedTag);
+        final Tag deletedTag = this.tagRepository.save(tag);
+        Optional<UtilisateurTag> utilTag = this.utilisateurTagService.findByTagAndUtil(deletedTag, utilisateur);
+        if(utilTag.isPresent()){
+            UtilisateurTag utilisateurTag = utilTag.get();
+            utilisateurTag.setTypeGestion(TypeGestion.Supprimer);
+            this.utilisateurTagService.createUtilisateurTag(utilisateurTag);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurTag newUtilTag = new UtilisateurTag();
+            newUtilTag.setUtilisateurID(utilisateur);
+            newUtilTag.setTagID(deletedTag);
+            newUtilTag.setTypeGestion(TypeGestion.Supprimer);
+            utilisateurTagService.createUtilisateurTag(newUtilTag);
+            System.out.println("Not inside condition");
+        }
+        return ResponseEntity.ok(deletedTag);
     }
 
 

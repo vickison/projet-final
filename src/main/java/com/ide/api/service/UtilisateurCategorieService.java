@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UtilisateurCategorieService {
@@ -37,18 +38,9 @@ public class UtilisateurCategorieService {
         }
         return utilisateurCategorie;
     }
-//    public UtilisateurCategorie createOrUpdateUtilisateurCategorie(Categorie categorieUp,
-//                                                                   Integer utilisateurID){
-//        UtilisateurCategorie existingUtilisateurCategorie = this.utilisateurCategorieRepository.findByUtilisateurIDAndCategorieID(utilisateurCategorie.getUtilisateurID(), utilisateurCategorie.getCategorieID());
-//
-//        if(existingUtilisateurCategorie != null){
-//            existingUtilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
-//            return this.utilisateurCategorieRepository.save(existingUtilisateurCategorie);
-//        }else {
-//            utilisateurCategorie.setUtilisateurID(utilisateur);
-//            utilisateurCategorie.setCategorieID(categorie);
-//            utilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
-//            return this.utilisateurCategorieRepository.save(utilisateurCategorie);
-//        }
-//    }
+
+    public Optional<UtilisateurCategorie> findByCatAndUtil(Categorie categorie, Utilisateur utilisateur){
+        return this.utilisateurCategorieRepository.findByUtilisateurIDAndCategorieID(utilisateur, categorie);
+    }
+
 }

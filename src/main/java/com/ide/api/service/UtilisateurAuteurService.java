@@ -1,12 +1,14 @@
 package com.ide.api.service;
 
 import com.ide.api.entities.Auteur;
+import com.ide.api.entities.Utilisateur;
 import com.ide.api.entities.UtilisateurAuteur;
 import com.ide.api.enums.TypeGestion;
 import com.ide.api.repository.UtilisateurAuteurRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UtilisateurAuteurService {
@@ -29,5 +31,11 @@ public class UtilisateurAuteurService {
             }
         }
         return utilisateurAuteur;
+    }
+
+
+
+    public Optional<UtilisateurAuteur> findByAuteurAndUtil(Auteur auteur, Utilisateur utilisateur){
+        return this.utilisateurAuteurRepository.findByAuteurIDAndUtilisateurID(auteur, utilisateur);
     }
 }

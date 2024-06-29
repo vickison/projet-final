@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -102,11 +103,20 @@ public class AuteurController {
         auteur.setPrenom(auteurDetails.getPrenom());
         auteur.setEmail(auteurDetails.getEmail());
         final Auteur auteurUpdate = this.auteurRepository.save(auteur);
-        UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
-        newUtilAuteur.setUtilisateurID(utilisateur);
-        newUtilAuteur.setAuteurID(auteur);
-        newUtilAuteur.setTypeGestion(TypeGestion.Modifier);
-        utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
+        Optional<UtilisateurAuteur> utilAuteur = this.utilisateurAuteurService.findByAuteurAndUtil(auteurUpdate, utilisateur);
+        if(utilAuteur.isPresent()){
+            UtilisateurAuteur utilisateurAuteur= utilAuteur.get();
+            utilisateurAuteur.setTypeGestion(TypeGestion.Modifier);
+            this.utilisateurAuteurService.createUtilisateurAuteur(utilisateurAuteur);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
+            newUtilAuteur.setUtilisateurID(utilisateur);
+            newUtilAuteur.setAuteurID(auteurUpdate);
+            newUtilAuteur.setTypeGestion(TypeGestion.Modifier);
+            this.utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
+            System.out.println("Not inside condition");
+        }
         return ResponseEntity.ok(auteurUpdate);
     }
     @PreAuthorize("hasRole('ADMIN')")
@@ -118,11 +128,20 @@ public class AuteurController {
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
         auteur.setSupprimerAuteur(true);
         final Auteur deletedAuteur = this.auteurRepository.save(auteur);
-        UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
-        newUtilAuteur.setUtilisateurID(utilisateur);
-        newUtilAuteur.setAuteurID(auteur);
-        newUtilAuteur.setTypeGestion(TypeGestion.Supprimer);
-        utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
+        Optional<UtilisateurAuteur> utilAuteur = this.utilisateurAuteurService.findByAuteurAndUtil(deletedAuteur, utilisateur);
+        if(utilAuteur.isPresent()){
+            UtilisateurAuteur utilisateurAuteur= utilAuteur.get();
+            utilisateurAuteur.setTypeGestion(TypeGestion.Supprimer);
+            this.utilisateurAuteurService.createUtilisateurAuteur(utilisateurAuteur);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurAuteur newUtilAuteur = new UtilisateurAuteur();
+            newUtilAuteur.setUtilisateurID(utilisateur);
+            newUtilAuteur.setAuteurID(deletedAuteur);
+            newUtilAuteur.setTypeGestion(TypeGestion.Supprimer);
+            this.utilisateurAuteurService.createUtilisateurAuteur(newUtilAuteur);
+            System.out.println("Not inside condition");
+        }
         return ResponseEntity.ok(deletedAuteur);
     }
 }

@@ -114,12 +114,21 @@ public class CategorieController {
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
         categorie.setNom(categorieDetails.getNom());
         categorie.setAuteurModificationCategorie(utilisateur.getUsername());
-        Categorie categorieUpdate = this.categorieRepository.save(categorie);
-        UtilisateurCategorie newUtilisateurCategorie = new UtilisateurCategorie();
-        newUtilisateurCategorie.setCategorieID(categorieUpdate);
-        newUtilisateurCategorie.setUtilisateurID(utilisateur);
-        newUtilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
-        utilisateurCategorieService.createUtilisateurCategorie(newUtilisateurCategorie);
+        final Categorie categorieUpdate = this.categorieRepository.save(categorie);
+        Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieService.findByCatAndUtil(categorieUpdate, utilisateur);
+        if(utilCat.isPresent()){
+            UtilisateurCategorie utilisateurCategorie= utilCat.get();
+            utilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
+            this.utilisateurCategorieService.createUtilisateurCategorie(utilisateurCategorie);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
+            newUtilCat.setUtilisateurID(utilisateur);
+            newUtilCat.setCategorieID(categorieUpdate);
+            newUtilCat.setTypeGestion(TypeGestion.Modifier);
+            this.utilisateurCategorieService.createUtilisateurCategorie(newUtilCat);
+            System.out.println("Not inside condition");
+        }
         return ResponseEntity.ok(categorieUpdate);
     }
     @PreAuthorize("hasRole('ADMIN')")
@@ -133,11 +142,20 @@ public class CategorieController {
         categorie.setSupprimerCategorie(true);
         categorie.setAuteurModificationCategorie(utilisateur.getUsername());
         final Categorie deletedCategorie = this.categorieRepository.save(categorie);
-        UtilisateurCategorie newUtilisateurCategorie = new UtilisateurCategorie();
-        newUtilisateurCategorie.setCategorieID(deletedCategorie);
-        newUtilisateurCategorie.setUtilisateurID(utilisateur);
-        newUtilisateurCategorie.setTypeGestion(TypeGestion.Supprimer);
-        utilisateurCategorieService.createUtilisateurCategorie(newUtilisateurCategorie);
+        Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieService.findByCatAndUtil(deletedCategorie, utilisateur);
+        if(utilCat.isPresent()){
+            UtilisateurCategorie utilisateurCategorie= utilCat.get();
+            utilisateurCategorie.setTypeGestion(TypeGestion.Supprimer);
+            this.utilisateurCategorieService.createUtilisateurCategorie(utilisateurCategorie);
+            System.out.println("Inside condition");
+        }else {
+            UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
+            newUtilCat.setUtilisateurID(utilisateur);
+            newUtilCat.setCategorieID(deletedCategorie);
+            newUtilCat.setTypeGestion(TypeGestion.Supprimer);
+            this.utilisateurCategorieService.createUtilisateurCategorie(newUtilCat);
+            System.out.println("Not inside condition");
+        }
         return ResponseEntity.ok(deletedCategorie);
     }
 }

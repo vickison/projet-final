@@ -6,6 +6,7 @@ import com.ide.api.repository.UtilisateurDocumentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UtilisateurDocumentService {
@@ -29,5 +30,10 @@ public class UtilisateurDocumentService {
             }
         }
         return utilisateurDocument;
+    }
+
+
+    public Optional<UtilisateurDocument> findByDocAndUtil(Document document, Utilisateur utilisateur){
+        return this.utilisateurDocumentRepository.findByDocumentIDAndUtilisateurID(document, utilisateur);
     }
 }

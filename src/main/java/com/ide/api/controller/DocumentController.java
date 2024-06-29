@@ -233,12 +233,21 @@ public class DocumentController {
             existingDocument.setLangue(document.getLangue());
             existingDocument.setAuteurModificationDocument(utilisateur.getUsername());
             final Document updatedDocument = this.documentRepository.save(existingDocument);
-            UtilisateurDocument newUtilDocument = new UtilisateurDocument();
-            newUtilDocument.setDocumentID(updatedDocument);
-            newUtilDocument.setUtilisateurID(utilisateur);
-            newUtilDocument.setTypeGestion(TypeGestion.Modifier);
-            utilisateurDocumentService.createUtilisateurDocument(newUtilDocument);
-            return ResponseEntity.ok(existingDocument);
+            Optional<UtilisateurDocument> utilDoc = this.utilisateurDocumentService.findByDocAndUtil(updatedDocument, utilisateur);
+            if(utilDoc.isPresent()){
+                UtilisateurDocument utilisateurDocument= utilDoc.get();
+                utilisateurDocument.setTypeGestion(TypeGestion.Modifier);
+                this.utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
+                System.out.println("Inside condition");
+            }else {
+                UtilisateurDocument newUtilDoc = new UtilisateurDocument();
+                newUtilDoc.setUtilisateurID(utilisateur);
+                newUtilDoc.setDocumentID(updatedDocument);
+                newUtilDoc.setTypeGestion(TypeGestion.Modifier);
+                this.utilisateurDocumentService.createUtilisateurDocument(newUtilDoc);
+                System.out.println("Not inside condition");
+            }
+            return ResponseEntity.ok(updatedDocument);
         }else{
             return ResponseEntity.notFound().build();
         }
@@ -256,11 +265,20 @@ public class DocumentController {
             existingDoc.setSupprimerDocument(true);
             existingDoc.setAuteurModificationDocument(utilisateur.getUsername());
             final Document deleteDoc = this.documentRepository.save(existingDoc);
-            UtilisateurDocument newUtilDocument = new UtilisateurDocument();
-            newUtilDocument.setDocumentID(deleteDoc);
-            newUtilDocument.setUtilisateurID(utilisateur);
-            newUtilDocument.setTypeGestion(TypeGestion.Supprimer);
-            utilisateurDocumentService.createUtilisateurDocument(newUtilDocument);
+            Optional<UtilisateurDocument> utilDoc = this.utilisateurDocumentService.findByDocAndUtil(deleteDoc, utilisateur);
+            if(utilDoc.isPresent()){
+                UtilisateurDocument utilisateurDocument= utilDoc.get();
+                utilisateurDocument.setTypeGestion(TypeGestion.Supprimer);
+                this.utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
+                System.out.println("Inside condition");
+            }else {
+                UtilisateurDocument newUtilDoc = new UtilisateurDocument();
+                newUtilDoc.setUtilisateurID(utilisateur);
+                newUtilDoc.setDocumentID(deleteDoc);
+                newUtilDoc.setTypeGestion(TypeGestion.Supprimer);
+                this.utilisateurDocumentService.createUtilisateurDocument(newUtilDoc);
+                System.out.println("Not inside condition");
+            }
             return ResponseEntity.ok(deleteDoc);
         }else {
             return ResponseEntity.notFound().build();
