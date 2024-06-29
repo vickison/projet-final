@@ -57,10 +57,6 @@ export class DelupadminPartComponent implements OnInit{
         console.error('Erreur: ', error);
       }
     );
-    
-  
-    
-    
     this.usersSource = new MatTableDataSource(this.utilisateurs)
 
     // Assign the data to the data source for the table to render
@@ -91,6 +87,26 @@ export class DelupadminPartComponent implements OnInit{
     });
 
     dialogRef.afterClosed().subscribe(updatedUtil => {
+      const utilis: Array<Utilisateur> =[]
+      const users: UserData[] = [];
+      for (let i = 1; i <= 100; i++) { users.push(createNewUser(i)); }
+
+      this.utilisateurService.getAllUsers().subscribe(
+        (utilisateurs: Utilisateur[]) =>{
+          for(const utilisateur of utilisateurs){
+            utilis.push(utilisateur);
+          }
+          console.log(utilis);
+          this.usersSource = new MatTableDataSource(utilis)
+
+          this.usersSource.paginator = this.paginator;
+          this.usersSource.sort = this.sort;
+          
+        },
+        (error) => {
+          console.error('Erreur: ', error);
+        }
+      );
       // Logique pour gérer les données mises à jour
       console.log('Dialog closed with data:', updatedUtil);
       // this.utilisateurService.modifUtilisateur(utilisateur.utilisateurID, updatedUtil).subscribe(response => {

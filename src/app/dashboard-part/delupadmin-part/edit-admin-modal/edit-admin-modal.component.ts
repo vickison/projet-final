@@ -50,15 +50,22 @@ export class EditAdminModalComponent {
         if(index !== -1){
           this.utilisateurs[index] = response;
         }
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedUtilData);
+        }, 1000)
       },
       error: err => {
         this.message = 'Echec de modifiction d\'utilisateur';
         this.classCss = 'error';
         console.log("Echec de modifiction d'util.: ", err);
+        setTimeout(() => {
+          this.dialogRef.close(this.updatedUtilData);
+        }, 1000)
       }
       
     });
-    this.dialogRef.close(this.updatedUtilData);
+    
+    
   }
 
   close() {
