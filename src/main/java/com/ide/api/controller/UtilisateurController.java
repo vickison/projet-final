@@ -3,6 +3,7 @@ package com.ide.api.controller;
 import com.ide.api.configurations.JwtTokenProvider;
 import com.ide.api.dto.*;
 import com.ide.api.entities.*;
+import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.JwtResponse;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.message.UserResponse;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
@@ -51,6 +53,7 @@ public class UtilisateurController {
 
     private final PasswordEncoder passwordEncoder;
     private CustomUserDetailsService userDetailsService;
+    private AdminUtilisateurService adminUtilisateurService;
     public UtilisateurController(UtilisateurService utilisateurService,
                                  DocumentService documentService,
                                  TagService tagService,
@@ -61,7 +64,8 @@ public class UtilisateurController {
                                  UtilisateurRepository utilisateurRepository,
                                  PasswordEncoder passwordEncoder,
                                  JdbcTemplate jdbcTemplate,
-                                 CustomUserDetailsService userDetailsService
+                                 CustomUserDetailsService userDetailsService,
+                                 AdminUtilisateurService adminUtilisateurService
                                  ) {
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
@@ -74,6 +78,7 @@ public class UtilisateurController {
         this.passwordEncoder = passwordEncoder;
         this.jdbcTemplate = jdbcTemplate;
         this.userDetailsService = userDetailsService;
+        this.adminUtilisateurService = adminUtilisateurService;
     }
 
 
@@ -284,14 +289,53 @@ public class UtilisateurController {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
+        Utilisateur admin = this.utilisateurService.findUtilisateur(adminID);
         utilisateur.setNom(utilisateurDetails.getNom());
         utilisateur.setPrenom(utilisateurDetails.getPrenom());
         utilisateur.setUsername(utilisateurDetails.getUsername());
         utilisateur.setEmail(utilisateurDetails.getEmail());
         utilisateur.setPassword(passwordEncoder.encode(utilisateurDetails.getPassword()));
         utilisateur.setAdmin(utilisateurDetails.isAdmin());
+        utilisateur.setAuteurModificationUtil(admin.getUsername());
         final Utilisateur utilisateurUpdated = this.utilisateurRepository.save(utilisateur);
+        Optional<AdminUtilisateur> adminUtil = this.adminUtilisateurService.findByAdminAndUtil(admin, utilisateur);
+        if(adminUtil.isPresent()){
+            AdminUtilisateur adminUtilisateur = adminUtil.get();
+            adminUtilisateur.setTypeGestion(TypeGestion.Modifier);
+            this.adminUtilisateurService.createAdminUtilisateur(adminUtilisateur);
+        }else {
+            AdminUtilisateur newAdmUtil = new AdminUtilisateur();
+            newAdmUtil.setUtilisateurID(utilisateurUpdated);
+            newAdmUtil.setAdminID(admin);
+            newAdmUtil.setTypeGestion(TypeGestion.Modifier);
+            this.adminUtilisateurService.createAdminUtilisateur(newAdmUtil);
+        }
         return ResponseEntity.ok(utilisateurUpdated);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/delete/{id}")
+    public ResponseEntity<Utilisateur> deleteUser(@PathVariable Integer id){
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer adminID = userDetails.getId();
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
+        Utilisateur admin = this.utilisateurService.findUtilisateur(adminID);
+        utilisateur.setSupprimerUtil(true);
+        utilisateur.setAuteurModificationUtil(admin.getUsername());
+        final Utilisateur utilisateurDeleted = this.utilisateurRepository.save(utilisateur);
+        Optional<AdminUtilisateur> adminUtil = this.adminUtilisateurService.findByAdminAndUtil(admin, utilisateur);
+        if(adminUtil.isPresent()){
+            AdminUtilisateur adminUtilisateur = adminUtil.get();
+            adminUtilisateur.setTypeGestion(TypeGestion.Supprimer);
+            this.adminUtilisateurService.createAdminUtilisateur(adminUtilisateur);
+        }else {
+            AdminUtilisateur newAdmUtil = new AdminUtilisateur();
+            newAdmUtil.setUtilisateurID(utilisateurDeleted);
+            newAdmUtil.setAdminID(admin);
+            newAdmUtil.setTypeGestion(TypeGestion.Supprimer);
+            this.adminUtilisateurService.createAdminUtilisateur(newAdmUtil);
+        }
+        return ResponseEntity.ok(utilisateurDeleted);
     }
 
 }
