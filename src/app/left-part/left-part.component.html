@@ -11,7 +11,7 @@
 
             <nav>
                 <ul style="padding-top: 1.5rem">
-                    <li *ngFor="let categorie of categories" style="font-size: 125%%">
+                    <li *ngFor="let categorie of categories" style="font-size: 125%">
                         <a (click)="onCategoryClick($event,categorie.categorieID)">
                             {{ categorie.nom }}
                         </a>

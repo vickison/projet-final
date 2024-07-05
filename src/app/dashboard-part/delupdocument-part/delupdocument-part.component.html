@@ -32,7 +32,27 @@
       <!-- Name Column -->
       <ng-container matColumnDef="format">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Format </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.format}} </mat-cell>
+        <mat-cell *matCellDef="let row"> {{row.typeFichier}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="cree_par">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> créé par </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.auteurCreationDocument }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="cree_le">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> créé le </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.dateCreationDocument | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="modifie_par">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> modifié par </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.auteurModificationDocument === 'none'? '':row.auteurModificationDocument}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="modifie_le">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> modifié le </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.dateModificationDocument !==row.dateCreationDocument? (row.dateModificationDocument | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}} </mat-cell>
       </ng-container>
 
 

@@ -7,6 +7,10 @@ export class Auteur {
     prenom?: string;
     email?: string;
     supprimerAuteur?: boolean;
+    auteurCreationAuteur?: string;
+    dateCreationAuteur?: Date;
+    auteurModificationAuteur?: string;
+    dateModificationAuteur?: Date;
     auteurDocuments?: AuteurDocument[];
     utilisateurAuteurs?: UtilisateurAuteur[];
 }

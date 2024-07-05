@@ -13,7 +13,7 @@ import { EditCategoryModalComponent } from './edit-category-modal/edit-category-
   styleUrls: ['./delupcategory-part.component.scss']
 })
 export class DelupcategoryPartComponent {
-  displayedColumns = ['id', 'nom','action'];
+  displayedColumns = ['id', 'nom', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
   categorySource: MatTableDataSource<Categorie>;
   categories: Categorie[] = [];
   adminID: number = 0;

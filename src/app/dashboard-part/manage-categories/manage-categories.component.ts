@@ -76,7 +76,7 @@ export class ManageCategoriesComponent {
             setTimeout(() => {
               //this.dialog.closeAll();
               this.catForm.reset();
-            }, 2000);
+            }, 1000);
           },
           error: err =>{
             this.message = 'Echec d\'ajouter la catégorie';

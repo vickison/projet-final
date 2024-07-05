@@ -20,8 +20,8 @@ const routes: Routes = [
   {path: 'admin/login', component: LoginPartComponent},
   {path: 'admin/register', component: ManageAdminComponent},
   {path: 'admin/dashboard/documents', component: ManageDocumentComponent},
-  {path: 'admin/dashboard/tags', component: ManageLabelComponent},
-  {path: 'root/admin/register', component: SuperAdminComponent}
+  {path: 'admin/dashboard/tags', component: ManageLabelComponent}
+  //{path: 'root/admin/register', component: SuperAdminComponent}
   
 ];
 

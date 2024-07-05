@@ -13,7 +13,7 @@ import { EditDocumentModalComponent } from './edit-document-modal/edit-document-
   styleUrls: ['./delupdocument-part.component.scss']
 })
 export class DelupdocumentPartComponent {
-  displayedColumns = ['id', 'titre', 'resume', 'format','action'];
+  displayedColumns = ['id', 'titre', 'resume', 'format', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le','action'];
   documentSource: MatTableDataSource<Document>;
   documents: Document[] = [];
   adminID: number = 0;

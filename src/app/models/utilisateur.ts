@@ -12,7 +12,11 @@ export class Utilisateur {
     password?: string;
     admin?: boolean;
     supprimerUtil?: boolean;
-    SuperAdmin?: boolean;
+    superAdmin?: boolean;
+    auteurCreationUtil?: string;
+    auteurModificationUtil?: string;
+    dateCreationUtil?: Date;
+    dateModificationUtil?: Date;
     utilisateurCategories?: UtilisateurCategorie[];
     utilisateurDocuments?: UtilisateurDocument[];
     utilisateurTags?: UtilisateurTag[];

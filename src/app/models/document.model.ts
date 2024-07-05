@@ -7,16 +7,16 @@ export class Document {
 	documentID?: number;
     resume?: string;
     dateCreationDocument?: Date;
-    DateModificationDocument?: Date;
+    dateModificationDocument?: Date;
     url?: string;
-    NombreDeConsultations?: number;
-    NombreDePartages?: number;
+    nombreDeConsultations?: number;
+    nombreDePartages?: number;
     langue?: string;
     typeFichier?: string;
     NOTE?: number;
-    NombreNotes?: number;
-    AuteurCreationDocument?: string;
-    AuteurModificationDocument?: string;
+    nombreNotes?: number;
+    auteurCreationDocument?: string;
+    auteurModificationDocument?: string;
     supprimerDocument?: boolean;
 
     taille?: number;

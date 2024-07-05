@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 export class DelupadminPartComponent implements OnInit{
 
-  displayedColumns = ['id', 'nom', 'prenom', 'email', 'username', 'action'];
+  displayedColumns = ['id', 'nom', 'prenom', 'email', 'username', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
   dataSource: MatTableDataSource<UserData>;
   usersSource: MatTableDataSource<Utilisateur>;
   utilisateurs: Utilisateur[] = [];

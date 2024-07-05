@@ -16,14 +16,14 @@
     </mat-sidenav>
     <mat-sidenav-content class="sidenav-content">
       <div *ngIf="selectedOption" class="option-actions">
-        <button mat-raised-button color="accent" (click)="openDialog(selectedOption, 'Ajouter')" style="margin-right: 0;">Ajouter</button>
+          <button mat-raised-button color="accent" (click)="openDialog(selectedOption, 'Ajouter')" style="margin-right: 0;">Ajouter</button>
         <!--<button mat-raised-button color="danger" (click)="openDialog(selectedOption, 'Modifier')">Modifier</button>
         <button mat-raised-button color="warn" (click)="openDialog(selectedOption, 'Supprimer')">Supprimer</button>-->
       </div>
 
 
       <div>
-        <app-delupadmin-part *ngIf="selectedOption?.name === 'Admin'" ></app-delupadmin-part>
+        <app-delupadmin-part *ngIf="selectedOption?.name === 'Admin' and isSuperAdmin === true" ></app-delupadmin-part>
         <app-delupcategory-part *ngIf="selectedOption?.name === 'Catégories'"></app-delupcategory-part>
         <app-delupdocument-part *ngIf="selectedOption?.name === 'Documents'"></app-delupdocument-part>
         <app-delupauteur-part *ngIf="selectedOption?.name === 'Auteurs'"></app-delupauteur-part>

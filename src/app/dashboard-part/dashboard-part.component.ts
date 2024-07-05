@@ -51,9 +51,10 @@ export class DashboardPartComponent implements OnInit {
     console.log(this.tokenService.getIdUser());
     this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
       next: data => {
-        if(data.SuperAdmin){
+        if(data.superAdmin){
           this.isSuperAdmin = true;
         }
+        
       },
       error: err => {
         console.log('Error fetching User: ', err);
@@ -86,14 +87,27 @@ export class DashboardPartComponent implements OnInit {
   // }
 
   openDialog(option: any, button: string) {
+    this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
+      next: data => {
+        if(data.superAdmin){
+          this.isSuperAdmin = true;
+        }
+      },
+      error: err => {
+        console.log('Error fetching User: ', err);
+        
+      }
+    })
+    console.log(this.isSuperAdmin);
     switch (option.name) {
       case 'Admin':
-        if(!this.isSuperAdmin){
-          alert('Accès réfusé...');
-        }
-        else if (button === 'Ajouter') {
-          console.log("toto");
-          this.dialog.open(ManageAdminComponent, { width: '40%' });
+        if(this.isSuperAdmin){
+          if (button === 'Ajouter') {
+            console.log("toto");
+            this.dialog.open(ManageAdminComponent, { width: '40%' });
+          }
+        }else{
+          alert("Oupps! Il semblerait que l'autorisation est interdite...");
         }
         // Ajoutez d'autres cas pour les boutons Modifier et Supprimer
         break;

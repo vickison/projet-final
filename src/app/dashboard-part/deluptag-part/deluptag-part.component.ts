@@ -14,7 +14,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
   styleUrls: ['./deluptag-part.component.scss']
 })
 export class DeluptagPartComponent {
-  displayedColumns = ['id', 'tag', 'action'];
+  displayedColumns = ['id', 'tag', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
   tagSource: MatTableDataSource<Tag>;
   tags: Tag[] = [];
   adminID: number = 0;
@@ -32,6 +32,7 @@ export class DeluptagPartComponent {
       (tags: Tag[]) =>{
         for(const tag of tags){
           t.push(tag);
+          console.log('tag: ', typeof(tag.dateCreationEtiquette))
         }
         this.tagSource = new MatTableDataSource(t);
         this.tagSource.paginator = this.paginator;

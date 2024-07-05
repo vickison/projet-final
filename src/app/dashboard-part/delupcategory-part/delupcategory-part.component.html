@@ -21,6 +21,26 @@
         <mat-cell *matCellDef="let row"> {{row.nom}} </mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="cree_par">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> créé par </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.auteurCreationCategorie }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="cree_le">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> créé le </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.dateCreationCategorie | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="modifie_par">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> modifié par </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.auteurModificationCategorie === 'none'? '':row.auteurModificationCategorie}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="modifie_le">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> modifié le </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.dateModificationCategorie !==row.dateCreationCategorie? (row.dateModificationCategorie | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}} </mat-cell>
+      </ng-container>
+
 
       <!-- Color Column -->
       <ng-container matColumnDef="action">

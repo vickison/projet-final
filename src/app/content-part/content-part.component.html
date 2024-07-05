@@ -40,6 +40,9 @@
           <div *ngSwitchCase="'image/gif'" class="iframe-container">
             <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
           </div>
+          <div *ngSwitchCase="'image/tiff'" class="iframe-container">
+            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+          </div>
           <div *ngSwitchCase="'video/mp4'" class="iframe-container">
             <!--<img mat-card-image src="assets/video4.png" alt="Mon image" style="height: 10rem; width: 9rem;">-->
             <video #videoContainer 

@@ -5,6 +5,10 @@ export class Categorie {
 	categorieID?: number;
 	nom?: string;
 	supprimerCategorie?: boolean;
+	auteurCreationCategorie?: string;
+	dateCreationCategorie?: Date;
+	auteurModificationCategorie?: string;
+	dateModificationCategorie?: Date;
 	utilisateurCategories?: UtilisateurCategorie[];
 	categorieDocuments?: CategorieDocument[];
 }

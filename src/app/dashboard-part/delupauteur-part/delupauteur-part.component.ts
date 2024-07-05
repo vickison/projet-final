@@ -14,7 +14,7 @@ import { EditAuteurModalComponent } from './edit-auteur-modal/edit-auteur-modal.
 })
 export class DelupauteurPartComponent {
 
-  displayedColumns = ['id', 'nom', 'prenom', 'action'];
+  displayedColumns = ['id', 'nom', 'prenom', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
   auteurSource: MatTableDataSource<Auteur>;
   auteurs: Auteur[] = [];
   filterValue: string = "";

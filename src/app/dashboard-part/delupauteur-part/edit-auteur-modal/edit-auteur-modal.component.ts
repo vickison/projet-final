@@ -64,7 +64,7 @@ export class EditAuteurModalComponent {
         }
         setTimeout(() => {
           this.dialogRef.close(this.updatedAuteurData);
-        });
+        }, 1000);
         
       },
       error: err => {
@@ -73,7 +73,7 @@ export class EditAuteurModalComponent {
         console.log("Echec de modifiction d'auteur: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedAuteurData);
-        });
+        }, 1000);
         
       }
       

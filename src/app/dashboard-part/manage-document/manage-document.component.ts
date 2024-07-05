@@ -24,7 +24,7 @@ enum Langues{
   templateUrl: './manage-document.component.html',
   styleUrls: ['./manage-document.component.scss']
 })
-export class ManageDocumentComponent implements OnInit, OnChanges {
+export class ManageDocumentComponent implements OnInit {
 
   fctrl = new FormControl();
 
@@ -43,6 +43,7 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
    classCss: String = '';
    selectedLangue: Langues = Langues.Creole;
    langues: Langues[] = [Langues.Anglais, Langues.Creole, Langues.Espagnol, Langues.Francais]
+   tagModalOpen: boolean = false;
 
    constructor(
       private fb: FormBuilder,
@@ -73,13 +74,7 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
       this.loadTagOptions();
       this.loadAuteurOptions();
    }
-   ngOnChanges(): void {
-    this.loadCategorieOptions();
-    this.loadUtilisateurOptions();
-    this.loadTagOptions();
-    this.loadAuteurOptions();
-   }
-
+   
   reloadPage(): void{
     window.location.reload();
   }
@@ -134,16 +129,16 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
      this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
       next: data => {
         this.message = 'Document ajouté avec succès';
-        this.classCss = 'success'
+        this.classCss = 'success';
         console.log("Document ajouté avec succès: ", data);
         setTimeout(() => {
           //this.dialog.closeAll();
           this.documentForm.reset();
-        }, 2000);
+        }, 1000);
       },
       error: err => {
         this.message = 'Echec d\'ajouter le document';
-        this.classCss = 'error'
+        this.classCss = 'error';
         console.log("Echec d'ajouter le document: ", err);
       }
      });
@@ -206,10 +201,15 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
 
 
   onFileChange(event: any): void {
+    const acceptTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf', 'image/gif', 'image/tiff', 'audio/mp3', 'video/mp4'];
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
 
-    if (file) {
+    if (file && !acceptTypes.includes(file.type)) {
+      this.message = 'Type de fichier invalide! Valide=(pdf, jpg, jpeg, gif, png, tiff, mp3, mp4)';
+      this.classCss = 'error';
+      this.documentForm.reset();
+    }else if(file && acceptTypes.includes(file.type)){
       this.documentForm.patchValue({file});
     }
   }
@@ -222,7 +222,18 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadAuteurOptions();
+      this.auteurService.getAuteurs().subscribe((auteurs) => {
+        this.auteurOptions = [];
+        this.auteurOptionsTemp = [];
+        for(const auteur of auteurs){
+          if(!auteur.supprimerAuteur){
+            this.auteurOptionsTemp.push({
+              ...auteur
+            })
+          }
+        }
+        this.auteurOptions = this.auteurOptionsTemp;
+      });
       if (result) {
         this.documentForm.patchValue({ autor: result.autor });
       }
@@ -234,18 +245,27 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
 
 
   openLabelDialog(): void {
+    this.tagModalOpen = true;
     const dialogRef = this.dialog.open(ManageLabelComponent, {
       width: '40%', // Ajuste la taille du dialogue
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.loadTagOptions();
-      console.log('Result:', result);
-      console.log('Label dialog closed!');
-      console.log('tags: ', this.tagOptions);
+      this.tagService.getTags().subscribe((tags) => {
+        this.tagOptions = [];
+        this.tagOptionsTemp = [];
+        for(const tag of tags){
+          if(!tag.supprimerEtiquette){
+            this.tagOptionsTemp.push({
+              ...tag
+            })
+          }
+        }
+        this.tagOptions = this.tagOptionsTemp;
+      });
       
       if (result) {
         //console.log('Label dialog closed!');
-        this.loadTagOptions();
+        
       }
     });
   }
@@ -258,7 +278,18 @@ export class ManageDocumentComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadCategorieOptions();
+      this.categorieService.getCategories().subscribe((categories) => {
+        this.categorieOptions = [];
+        this.categorieOptionsTemp = [];
+        for(const categorie of categories){
+          if(!categorie.supprimerCategorie){
+            this.categorieOptionsTemp.push({
+              ...categorie
+            })
+          }
+        }
+        this.categorieOptions = this.categorieOptionsTemp;
+      });
       if (result) {
         //this.documentForm.patchValue({ categories: result.categories });
       }
