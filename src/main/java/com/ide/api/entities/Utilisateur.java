@@ -45,6 +45,9 @@ public class Utilisateur implements UserDetails {
     private  Timestamp DateModificationUtil;
     private String AuteurModificationUtil;
     private boolean SupprimerUtil;
+    private boolean SuperAdmin;
+
+
 
     @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -171,6 +174,14 @@ public class Utilisateur implements UserDetails {
 
     public void setSupprimerUtil(boolean supprimerUtil) {
         SupprimerUtil = supprimerUtil;
+    }
+
+    public boolean isSuperAdmin() {
+        return SuperAdmin;
+    }
+
+    public void setSuperAdmin(boolean superAdmin) {
+        SuperAdmin = superAdmin;
     }
 
     public Set<UtilisateurAuteur> getUtilisateurAuteurs() {

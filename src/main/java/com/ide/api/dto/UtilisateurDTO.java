@@ -10,6 +10,7 @@ public class UtilisateurDTO {
     private String username;
     private String password;
     private boolean admin;
+    private boolean superAdmin;
 
     public UtilisateurDTO() {
     }
@@ -19,13 +20,15 @@ public class UtilisateurDTO {
                           String email,
                           String password,
                           String username,
-                          boolean admin) {
+                          boolean admin,
+                          boolean superAdmin) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.password = password;
         this.admin = admin;
         this.username = username;
+        this.superAdmin = superAdmin;
     }
 
     public String getNom() {
@@ -74,5 +77,13 @@ public class UtilisateurDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isSuperAdmin() {
+        return superAdmin;
+    }
+
+    public void setSuperAdmin(boolean superAdmin) {
+        this.superAdmin = superAdmin;
     }
 }

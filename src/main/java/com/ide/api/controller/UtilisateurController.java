@@ -127,6 +127,7 @@ public class UtilisateurController {
         try{
             if(EmailValidator.isValid(utilisateurDTO.getEmail())) {
                 utilisateur.setAdmin(true);
+                utilisateur.setSuperAdmin(true);
                 utilisateur.setNom(utilisateurDTO.getNom());
                 utilisateur.setNom(utilisateurDTO.getNom());
                 utilisateur.setPrenom(utilisateurDTO.getPrenom());
