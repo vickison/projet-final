@@ -1,7 +1,9 @@
 package com.ide.api.controller;
 
 import com.ide.api.dto.DocumentDTO;
+import com.ide.api.dto.LikeIllustrationDTO;
 import com.ide.api.entities.*;
+import com.ide.api.enums.Mention;
 import com.ide.api.enums.TypeFichier;
 import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.ResponseMessage;
@@ -50,6 +52,7 @@ public class DocumentController {
     private UtilisateurDocumentService utilisateurDocumentService;
     private CategorieDocumentService categorieDocumentService;
     private FileService fileService;
+    private LikeIllustrationService likeIllustrationService;
 
     //Le contructeur de notre classe
 
@@ -67,7 +70,8 @@ public class DocumentController {
                               TagRepository tagRepository,
                               UtilisateurDocumentService utilisateurDocumentService,
                               CategorieDocumentService categorieDocumentService,
-                              FileService fileService) {
+                              FileService fileService,
+                              LikeIllustrationService likeIllustrationService) {
         this.documentService = documentService;
         this.documentRepository = documentRepository;
         this.utilisateurService = utilisateurService;
@@ -83,6 +87,7 @@ public class DocumentController {
         this.utilisateurDocumentService = utilisateurDocumentService;
         this.categorieDocumentService = categorieDocumentService;
         this.fileService = fileService;
+        this.likeIllustrationService = likeIllustrationService;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -306,6 +311,40 @@ public class DocumentController {
         return ResponseEntity.ok(documentList);
     }
 
+    @PutMapping(value = "/public/{id}/like")
+    public ResponseEntity<String> likeIllustration(@PathVariable Integer id,
+                                                    @RequestBody LikeIllustrationDTO dto,
+                                                    HttpServletRequest request){
+        String utilIP = this.getClientIpAddress(request);
+        String likeOrUnlike = "";
+
+        if(this.likeIllustrationService.existingLike(id, utilIP)){
+            LikeIllustration likeIllustration = this.likeIllustrationService.findLikedIllus(id, utilIP);
+            if(likeIllustration.getMention() == Mention.like){
+                likeIllustration.setMention(Mention.unlike);
+                likeOrUnlike = "Illustration non aimée...";
+            }else if(likeIllustration.getMention() == Mention.unlike){
+                likeIllustration.setMention(Mention.like);
+                likeOrUnlike = "Illustration aimée...";
+            }
+            this.likeIllustrationService.createLikeIllustration(likeIllustration);
+            return ResponseEntity.ok(likeOrUnlike);
+        }else{
+            LikeIllustration likeIllustration = new LikeIllustration();
+            likeIllustration.setDocumentID(id);
+            likeIllustration.setUtilisateurIP(utilIP);
+            likeIllustration.setMention(dto.getMention());
+            this.likeIllustrationService.createLikeIllustration(likeIllustration);
+            if(dto.getMention() == Mention.like){
+                likeOrUnlike = "Illustration aimée...";
+            }else {
+                likeOrUnlike = "Illustration non aimée...";
+            }
+            return ResponseEntity.ok(likeOrUnlike);
+        }
+
+    }
+
     private  String determineContentType(String fileName){
         String fileExtension  = Optional.ofNullable(fileName)
                 .filter(f -> f.contains("."))
@@ -396,5 +435,26 @@ public class DocumentController {
             newFileName = newTitle + extension;
         }
         return  newFileName;
+    }
+
+
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
     }
 }
