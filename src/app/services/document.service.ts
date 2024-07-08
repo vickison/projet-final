@@ -3,11 +3,14 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Document } from '../models/document.model';
 import { catchError } from 'rxjs/operators';
+import { LikeIllustration } from '../models/like-illustration.model';
+import { LikeCount } from '../models/like-count.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
+
 
   private apiUrl = 'http://localhost:8080/api';
   private selectedDocumentSubject = new BehaviorSubject<Document | null>(null);
@@ -177,10 +180,18 @@ export class DocumentService {
     adminID: number, 
     document: Document): Observable<Document>{
       return this.http.put<Document>(`${this.apiUrl}/documents/delete/${documenteID}?adminID=${adminID}`, document);
-    }
+  }
 
   supDocument(documenteID: number | undefined, document: Document): Observable<Document>{
-        return this.http.put<Document>(`${this.apiUrl}/documents/admin/delete/${documenteID}`, document);
-    }
+    return this.http.put<Document>(`${this.apiUrl}/documents/admin/delete/${documenteID}`, document);
+  }
+
+  likeIllustration(documentID: number | undefined, likeIllustration: LikeIllustration){
+    return this.http.put(`${this.apiUrl}/documents/public/${documentID}/like`, likeIllustration)
+  }
+
+  likeCount(documentID: number | undefined): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/documents/public/${documentID}/like/count`)
+  }
 
 }

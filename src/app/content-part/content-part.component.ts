@@ -264,6 +264,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       console.error('File name is undefined.');
     }
     
+    
   }
 
   getFileExtensionFromUrl(url: string): string {
@@ -276,6 +277,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   onDocumentDBLClicked(document: Document): void {
     this.documentClicked.emit(document);
     console.log("Card dblclicked"+document);
+    this.documentService.likeCount(document.documentID).subscribe(data => {
+      console.log(data[0].mention, '=>', data[0].count);
+      console.log(data[1].mention, '=>', data[1].count);
+    })
   }
 
   formatBytes(bytes: number[] | undefined, decimals: number=2): string{
