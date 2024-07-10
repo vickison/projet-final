@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -31,6 +32,7 @@ public class DocumentService {
     private DocumentTagRepository documentTagRepository;
     private AuteurRepository auteurRepository;
     private AuteurDocumentRepository auteurDocumentRepository;
+    private LikeIllustrationRepository likeIllustrationRepository;
 
     public DocumentService(DocumentRepository documentRepository,
                            CategorieRepository categorieRepository,
@@ -38,7 +40,8 @@ public class DocumentService {
                            TagRepository tagRepository,
                            DocumentTagRepository documentTagRepository,
                            AuteurRepository auteurRepository,
-                           AuteurDocumentRepository auteurDocumentRepository) {
+                           AuteurDocumentRepository auteurDocumentRepository,
+                           LikeIllustrationRepository likeIllustrationRepository) {
         this.documentRepository = documentRepository;
         this.categorieRepository = categorieRepository;
         this.categorieDocumentRepository = categorieDocumentRepository;
@@ -46,6 +49,7 @@ public class DocumentService {
         this.documentTagRepository = documentTagRepository;
         this.auteurRepository = auteurRepository;
         this.auteurDocumentRepository = auteurDocumentRepository;
+        this.likeIllustrationRepository = likeIllustrationRepository;
     }
 
     public void addDocument(Document document) throws IOException {
@@ -100,14 +104,24 @@ public class DocumentService {
     }
 
     public List<Document> findDocuments(){
-        return documentRepository.findAll();
+        List<Document> documents = this.documentRepository.findAll();
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
     }
 
     public Optional<Document> findDocument(Integer id){
         return this.documentRepository.findById(id);
     }
     public List<Document> findDocumentsByCategoryId(Categorie categorie){
-        return this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+        List<Document> documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
     }
 
     public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur){

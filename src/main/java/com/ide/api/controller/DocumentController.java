@@ -1,6 +1,7 @@
 package com.ide.api.controller;
 
 import com.ide.api.dto.DocumentDTO;
+import com.ide.api.dto.LikeCountDTO;
 import com.ide.api.dto.LikeIllustrationDTO;
 import com.ide.api.entities.*;
 import com.ide.api.enums.Mention;
@@ -313,7 +314,6 @@ public class DocumentController {
 
     @PutMapping(value = "/public/{id}/like")
     public ResponseEntity<String> likeIllustration(@PathVariable Integer id,
-                                                    @RequestBody LikeIllustrationDTO dto,
                                                     HttpServletRequest request){
         String utilIP = this.getClientIpAddress(request);
         String likeOrUnlike = "";
@@ -333,9 +333,9 @@ public class DocumentController {
             LikeIllustration likeIllustration = new LikeIllustration();
             likeIllustration.setDocumentID(id);
             likeIllustration.setUtilisateurIP(utilIP);
-            likeIllustration.setMention(dto.getMention());
+            likeIllustration.setMention(Mention.like);
             this.likeIllustrationService.createLikeIllustration(likeIllustration);
-            if(dto.getMention() == Mention.like){
+            if(likeIllustration.getMention() == Mention.like){
                 likeOrUnlike = "Illustration aimée...";
             }else {
                 likeOrUnlike = "Illustration non aimée...";
@@ -344,6 +344,26 @@ public class DocumentController {
         }
 
     }
+    @GetMapping(value = "/public/{docID}/like/count")
+    public @ResponseBody List<LikeCountDTO> countMentions(@PathVariable Integer docID){
+        return this.likeIllustrationService.countByMention(docID);
+    }
+
+    @GetMapping(value = "/public/{docId}/liked")
+    public boolean isDocumentLikedBy(@PathVariable Integer docId,
+                                     HttpServletRequest request){
+        String utilIP = this.getClientIpAddress(request);
+        boolean likeOrUnlike = this.likeIllustrationService.existingLike(docId, utilIP);
+        if(likeOrUnlike){
+            LikeIllustration likeIllustration = this.likeIllustrationService.findLikedIllus(docId, utilIP);
+            if(likeIllustration.getMention() == Mention.like){
+                return true;
+            }
+            return  false;
+        }
+        return false;
+    }
+
 
     private  String determineContentType(String fileName){
         String fileExtension  = Optional.ofNullable(fileName)

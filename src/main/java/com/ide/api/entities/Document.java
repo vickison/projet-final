@@ -61,6 +61,13 @@ public class Document {
     private String AuteurModificationDocument;
     private boolean SupprimerDocument;
 
+    @Transient
+    @Column(name = "likes")
+    private Integer like;
+    @Transient
+    @Column(name = "unlikes")
+    private Integer unlike;
+
     @OneToMany(mappedBy = "documentID")
     @JsonIgnore
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
@@ -227,6 +234,22 @@ public class Document {
 
     public void setSupprimerDocument(boolean supprimerDocument) {
         SupprimerDocument = supprimerDocument;
+    }
+
+    public Integer getLike() {
+        return like;
+    }
+
+    public void setLike(Integer like) {
+        this.like = like;
+    }
+
+    public Integer getUnlike() {
+        return unlike;
+    }
+
+    public void setUnlike(Integer unlike) {
+        this.unlike = unlike;
     }
 
     public Float getNOTE() {
