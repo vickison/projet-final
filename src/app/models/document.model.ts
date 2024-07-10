@@ -18,6 +18,8 @@ export class Document {
     auteurCreationDocument?: string;
     auteurModificationDocument?: string;
     supprimerDocument?: boolean;
+    like?: number;
+    unlike?: number;
 
     taille?: number;
     format?: string;

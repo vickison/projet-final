@@ -5,7 +5,7 @@ import { Document } from 'src/app/models/document.model';
 import { ViewEncapsulation } from '@angular/core';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Observable, Subscription } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { DetailDialogService } from '../services/detail-dialog.service';
 import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../services/search.service';
@@ -88,6 +88,13 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   isSearching: boolean = false;
   @Input() docs: Document[]= [];
   @Input() categorieID: number | undefined;
+  likeCounts: any = [];
+  unLikeCounts: any = [];
+  likeMap: any = new Map();
+  unLikeMap: any = new Map();
+
+  like: number = 0;
+  unlike: number = 0;
 
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
@@ -156,7 +163,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     //this.getDocumentByCategory();
 
     //this.openDetailDialog();
+
+    
   }
+
 
   fetchDocuments(categorieID: number) {
     this.documents = [];
@@ -164,6 +174,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       .subscribe((documents: Document[]) => {
         this.documents = documents.filter(doc => !doc.supprimerDocument);
         this.tempDocuments = this.documents;
+        console.log(documents);
         //console.log("doc non delete: ", this.tempDocuments.filter(doc => !doc.supprimerDocument));
       }, (error: any) => {
         console.error('Error loading documents', error);
@@ -277,10 +288,6 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   onDocumentDBLClicked(document: Document): void {
     this.documentClicked.emit(document);
     console.log("Card dblclicked"+document);
-    this.documentService.likeCount(document.documentID).subscribe(data => {
-      console.log(data[0].mention, '=>', data[0].count);
-      console.log(data[1].mention, '=>', data[1].count);
-    })
   }
 
   formatBytes(bytes: number[] | undefined, decimals: number=2): string{

@@ -24,10 +24,8 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   ngOnInit(): void {
     this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
       this.selectedDocument = document;
-      console.log("In the Document Viewer");
-      
+      console.log("Selected document: ", document);
       this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
-
     });
 
   }
@@ -36,10 +34,31 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
     if ('selectedDocument' in changes) {
       this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
     }
+    
   }
 
   closeViewer(): void {
-    this.documentService.setSelectedDocument(null);
+    this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
+      console.log('liked', res);
+      if(confirm(res? 'Ne voulez plus aimer cette illustration': 'Voulez aimer cette illustration')){
+        //console.log('Hello ng...');
+        this.documentService.likeIllustration(this.selectedDocument?.documentID).subscribe({
+          next: data => {
+            console.log('Like or Unlike successfully...');
+          },
+          error: err => {
+            console.log('Failed to Like or Unlike...');
+          }
+        });
+        setTimeout(() => {
+          this.reloadPage();
+        }, 300);
+      }
+    });
+    setTimeout(() => {
+      this.documentService.setSelectedDocument(null);
+    }, 200);
+    
   }
 
   isAudioFormat(format: string): boolean {
@@ -57,5 +76,9 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   getSafeUrl(url: string |  null): SafeResourceUrl | undefined {
     // Check if the URL is defined before sanitizing
     return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : undefined;
+  }
+
+  reloadPage(): void{
+    window.location.reload();
   }
 }

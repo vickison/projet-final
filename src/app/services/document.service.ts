@@ -186,12 +186,16 @@ export class DocumentService {
     return this.http.put<Document>(`${this.apiUrl}/documents/admin/delete/${documenteID}`, document);
   }
 
-  likeIllustration(documentID: number | undefined, likeIllustration: LikeIllustration){
-    return this.http.put(`${this.apiUrl}/documents/public/${documentID}/like`, likeIllustration)
+  likeIllustration(documentID: number | undefined){
+    return this.http.put(`${this.apiUrl}/documents/public/${documentID}/like`, null);
   }
 
   likeCount(documentID: number | undefined): Observable<any>{
-    return this.http.get<any>(`${this.apiUrl}/documents/public/${documentID}/like/count`)
+    return this.http.get<any>(`${this.apiUrl}/documents/public/${documentID}/like/count`);
+  }
+
+  documentIsLiked(documentID: number | undefined): Observable<boolean>{
+    return this.http.get<boolean>(`${this.apiUrl}/documents/public/${documentID}/liked`);
   }
 
 }

@@ -73,6 +73,7 @@ export class ManageDocumentComponent implements OnInit {
       this.loadUtilisateurOptions();
       this.loadTagOptions();
       this.loadAuteurOptions();
+      
    }
    
   reloadPage(): void{
@@ -80,40 +81,6 @@ export class ManageDocumentComponent implements OnInit {
   }
  
    // Méthode pour soumettre le formulaire
-   onSubmit() {
-     // Vérifier si le formulaire est valide
-    if (this.documentForm.valid) {
-
-      const utilisateurID = this.documentForm.get('utilisateurDocuments')?.value;
-      const categorieID = this.documentForm.get('categorieDocuments')?.value;
-      const tagID = this.documentForm.get('documentTags')?.value;
-      const auteurID = this.documentForm.get('auteurDocuments')?.value;
-      const titre = this.documentForm.get('titre')?.value;
-      const resume = this.documentForm.get('resume')?.value;
-      const langue = this.documentForm.get('langue')?.value;
-      const file = this.documentForm.get('file')?.value as File;
-       
-
-      this.documentService.uploadDocument(
-        file,
-        utilisateurID, 
-        categorieID, 
-        tagID,
-        auteurID,
-        resume,
-        langue,
-        titre
-        ).subscribe(
-        (response) => {
-          console.log('Document uploaded successfully:', response);
-        },
-        (error) => {
-          console.error('Failed to upload document:', error);
-        }
-      );
-     }
-   }
-
    addDoc() {
     // Vérifier si le formulaire est valide
    if (this.documentForm.valid) {
@@ -125,6 +92,7 @@ export class ManageDocumentComponent implements OnInit {
      const resume = this.documentForm.get('resume')?.value;
      const langue = this.documentForm.get('langue')?.value;
      const file = this.documentForm.get('file')?.value as File;
+     
 
      this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
       next: data => {

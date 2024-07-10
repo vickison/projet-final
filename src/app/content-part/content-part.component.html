@@ -8,6 +8,16 @@
           <mat-card-title style="font-size: small;">{{ document.titre }}</mat-card-title>
           <mat-card-subtitle style="font-size: smaller;">Taille: {{ formatFileSize(document.taille) }}</mat-card-subtitle>
         </div>
+        <div  class="like-dislike-container">
+          <div class="like" >
+              <mat-icon svgIcon="like" ></mat-icon>
+              <span>{{ document.like }}</span>
+          </div>
+          <div class="dislike" >
+              <mat-icon svgIcon="dislike" ></mat-icon>
+              <span >{{ document.unlike }}</span>
+          </div>
+      </div>
       </mat-card-header>
       <div style="display: flex; width: 100%; background-color: rgb(244, 246, 248);">
         <ng-container [ngSwitch]="document.format">
