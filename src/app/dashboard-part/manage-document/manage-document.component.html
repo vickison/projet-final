@@ -31,7 +31,7 @@
   
   <mat-form-field appearance="outline">
     <mat-label>Langue</mat-label>
-    <mat-select [(value)]="selectedLangue" >
+    <mat-select formControlName="langue" >
       <mat-option *ngFor="let langue of langues" [value]="langue">
         {{langue}}
       </mat-option>

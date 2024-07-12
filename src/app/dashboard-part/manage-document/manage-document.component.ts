@@ -12,7 +12,7 @@ import { ManageAuteursComponent } from '../manage-auteurs/manage-auteurs.compone
 import { ManageLabelComponent } from '../manage-label/manage-label.component';
 import { ManageCategoriesComponent } from '../manage-categories/manage-categories.component';
 
-enum Langues{
+enum Langue{
   Creole='Créole',
   Anglais='Anglais',
   Francais='Français',
@@ -41,8 +41,8 @@ export class ManageDocumentComponent implements OnInit {
    selectedFile: File | null = null;
    message: String = '';
    classCss: String = '';
-   selectedLangue: Langues = Langues.Creole;
-   langues: Langues[] = [Langues.Anglais, Langues.Creole, Langues.Espagnol, Langues.Francais]
+   selectedLangue: Langue = Langue.Creole;
+   langues: Langue[] = [Langue.Anglais, Langue.Creole, Langue.Espagnol, Langue.Francais]
    tagModalOpen: boolean = false;
 
    constructor(
@@ -59,7 +59,7 @@ export class ManageDocumentComponent implements OnInit {
         file: [null, Validators.required],
         resume: [''],
         titre: [''],
-        langue: [''],
+        langue: [Langue.Creole, Validators.required],
         categorieDocuments: [null, Validators.required],
         documentTags: [null],
         auteurDocuments: [null]
@@ -99,6 +99,7 @@ export class ManageDocumentComponent implements OnInit {
         this.message = 'Document ajouté avec succès';
         this.classCss = 'success';
         console.log("Document ajouté avec succès: ", data);
+        console.log('Langue: ', langue);
         setTimeout(() => {
           //this.dialog.closeAll();
           this.documentForm.reset();
@@ -111,6 +112,7 @@ export class ManageDocumentComponent implements OnInit {
       }
      });
     }
+    
   }
 
 

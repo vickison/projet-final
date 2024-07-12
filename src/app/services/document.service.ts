@@ -6,6 +6,13 @@ import { catchError } from 'rxjs/operators';
 import { LikeIllustration } from '../models/like-illustration.model';
 import { LikeCount } from '../models/like-count.model';
 
+enum Langue{
+    Creole='Créole',
+    Anglais='Anglais',
+    Francais='Français',
+    Espagnol='Espagnol'
+  }
+
 @Injectable({
   providedIn: 'root'
 })
@@ -70,7 +77,7 @@ export class DocumentService {
     tagID: number[],
     auteurID: number[],
     resume: string,
-    langue: string,
+    langue: Langue,
     titre: string
     ): Observable<any> {
       let uploadUrl = '';

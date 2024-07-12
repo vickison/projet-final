@@ -3,6 +3,13 @@ import { UtilisateurDocument } from './utilisateur-document.model';
 import { DocumentTag } from './document-tag.model';
 import { AuteurDocument } from './auteur-document.model';
 
+enum Langue{
+    Creole='Créole',
+    Anglais='Anglais',
+    Francais='Français',
+    Espagnol='Espagnol'
+  }
+
 export class Document {
 	documentID?: number;
     resume?: string;
@@ -11,7 +18,7 @@ export class Document {
     url?: string;
     nombreDeConsultations?: number;
     nombreDePartages?: number;
-    langue?: string;
+    langue?: Langue;
     typeFichier?: string;
     NOTE?: number;
     nombreNotes?: number;
