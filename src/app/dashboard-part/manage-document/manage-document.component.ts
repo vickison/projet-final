@@ -171,12 +171,12 @@ export class ManageDocumentComponent implements OnInit {
 
 
   onFileChange(event: any): void {
-    const acceptTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf', 'image/gif', 'image/tiff', 'audio/mp3', 'video/mp4'];
+    const acceptTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf', 'image/gif', 'image/tiff', 'audio/mp3', 'audio/mpeg', 'video/mp4'];
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
 
     if (file && !acceptTypes.includes(file.type)) {
-      this.message = 'Type de fichier invalide! Valide=(pdf, jpg, jpeg, gif, png, tiff, mp3, mp4)';
+      this.message = 'Type de fichier invalide! Valide=(pdf, jpg, jpeg, gif, png, tiff, mp3, mp4, mpeg)'+file.type;
       this.classCss = 'error';
       this.documentForm.reset();
     }else if(file && acceptTypes.includes(file.type)){

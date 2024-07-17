@@ -38,6 +38,9 @@
           <div *ngSwitchCase="'audio/mp3'" class="iframe-container">
             <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%;">
           </div>
+          <div *ngSwitchCase="'audio/mpeg'" class="iframe-container">
+            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%;">
+          </div>
           <div *ngSwitchCase="'image/png'" class="iframe-container">
             <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
           </div>

@@ -8,6 +8,7 @@ import { DocumentService } from 'src/app/services/document.service';
 import { Document } from 'src/app/models/document.model';
 import { CategorieDocumenttsService } from '../services/categorie-documentts.service';
 import { MenuService } from '../services/menu-service.service';
+import { FilterService } from '../services/filter.service';
 
 @Component({
   selector: 'app-left-part',
@@ -23,8 +24,10 @@ export class LeftPartComponent implements OnInit{
   categorieDocuments?: CategorieDocument[];
   documents?: Document[] = [];
   activeId: number | undefined;
+  flag?: boolean
 
   @Output() categorySelected = new EventEmitter<number>();
+  @Output() documentsOfCategorie = new EventEmitter<Document[]>();
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -33,7 +36,8 @@ export class LeftPartComponent implements OnInit{
     private router: Router,
     private documentService: DocumentService,
     private menuService: MenuService,
-    private categorieDocumenttsService: CategorieDocumenttsService
+    private categorieDocumenttsService: CategorieDocumenttsService,
+    private filterService: FilterService,
   ) { }
 
   ngOnInit() {
@@ -74,16 +78,25 @@ export class LeftPartComponent implements OnInit{
   onCategoryClick(event: any, categoryID?: number): void {
     const links = document.querySelectorAll('nav ul li a');
     links.forEach(link => link.classList.remove('active'));
-
+    this.filterService.triggerRefresh();
+    //const curFlag = this.categorieService.getFlag();
+    this.categorieService.setFlag(false);
     // Add the 'active' class to the clicked link
     event.target.classList.add('active');
       this.activeId = categoryID;
       this.documentService.getDocumentsByCategorie(categoryID)
         .subscribe(documents => {
           this.documents = documents.filter(doc => !doc.supprimerDocument);
+          this.documentsOfCategorie.emit(documents);
           console.log(this.documents);
           this.router.navigate(['/categories', categoryID]);
+          //this.reloadPage();
       });
+
+      // setTimeout(() => {
+      //   this.reloadPage();
+      // }, 100);
+      
       
   }
 
@@ -93,6 +106,14 @@ export class LeftPartComponent implements OnInit{
 
   onCategorySelectect(category: Categorie): void{
     this.categorySelected.emit(category.categorieID);
+  }
+
+  reloadPage(): void{
+    window.location.reload();
+  }
+
+  refresh() {
+    this.filterService.triggerRefresh();
   }
   
 }

@@ -10,8 +10,14 @@
           <iframe [src]="getSafeUrl(documentUrl)" width="90%" height="100%"></iframe>
         </div>
         <div *ngSwitchCase="'audio/mp3'" class="iframe-contain">
-          <audio controls>
+          <audio controls width="90%" height="auto">
             <source [src]="getSafeUrl(documentUrl)" type="audio/mp3">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <div *ngSwitchCase="'audio/mpeg'" class="iframe-contain">
+          <audio controls width="90%" height="auto">
+            <source [src]="getSafeUrl(documentUrl)" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
         </div>

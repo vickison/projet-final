@@ -13,6 +13,7 @@ import { catchError } from 'rxjs/operators';
 export class CategorieService {
 
 	private apiUrl = 'http://localhost:8080/api';
+  private flag: boolean = false;
 
 	constructor(private http: HttpClient) { }
 
@@ -56,6 +57,14 @@ export class CategorieService {
 
   supCategorie(categorieID: number | undefined, categorie: Categorie): Observable<Categorie>{
     return this.http.put<Categorie>(`${this.apiUrl}/categories/admin/delete/${categorieID}`, categorie);
+  }
+
+  getFlag(): boolean{
+    return this.flag;
+  }
+
+  setFlag(value: boolean){
+    this.flag = value;
   }
 
 }

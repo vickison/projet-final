@@ -15,6 +15,7 @@ import { Categorie } from '../models/categorie';
 import { OrderService } from '../services/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DetailPartComponent } from '../detail-part/detail-part.component';
+import { CategorieService } from '../services/categorie.service';
 
 
 @Component({
@@ -36,6 +37,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   progress: number = 0;
   isMouseOverVideo: boolean = false;
   searchKeyword: string = '';
+  flag: boolean = false;
   
 
 
@@ -99,6 +101,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
   private orderSubscription: Subscription = new Subscription();
+  private refreshSubscription: Subscription = new Subscription();
   
 
   constructor(
@@ -111,19 +114,55 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private searchService: SearchService,
     private categorieDocumentsService: CategorieDocumenttsService,
     private filterService: FilterService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private router: Router,
+    private categorieService: CategorieService
   ) {
     
    }
 
   ngOnInit(): void {
+    
+    if(!this.categorieService.getFlag()){
+      this.route.params.subscribe(params =>{
+        const categoryID = +params['categorieID'];
+        if(!isNaN(categoryID)){
+          this.categoryID = categoryID;
+          if(this.searchService.getSearchKeyword() === '' && 
+            this.filterService.getFilter() === '' && 
+            this.orderService.getOrder() === '')
+            this.fetchDocuments(categoryID);
+        }
+      });
+    }
+    
+
+
+    this.refreshSubscription = this.filterService.shouldRefresh$.subscribe((shouldRefresh) => {
+      if(shouldRefresh){
+        this.route.params.subscribe(params =>{
+          const categoryID = +params['categorieID'];
+          if(!isNaN(categoryID)){
+            this.categorieService.setFlag(true);
+            this.categoryID = categoryID;
+            if(this.searchService.getSearchKeyword() === '' && 
+              this.filterService.getFilter() === '' && 
+              this.orderService.getOrder() === '')
+              this.fetchDocuments(categoryID);
+          }
+        });
+        this.filterService.clearRefresh();
+      }
+      
+    });
 
     this.orderSubscription = this.orderService.order$.subscribe(order => {
       if(order.trim() !== ''){
         this.getDocumentsByOrder(order);
         this.categoryID = null;
         this.orderService.setOrder('');
-      }else if(this.categoryID !== null){
+      }
+      else if(this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
     });
@@ -133,7 +172,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         this.getDocumentsByFilter(filter);
         this.categoryID = null;
         this.filterService.setFilter('');
-      }else if (this.categoryID !== null){
+      }
+      else if (this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
     });
@@ -144,38 +184,26 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         this.getDocumentBySearch(keywords);
         this.categoryID = null;
         this.searchService.setSearchKeyword('');
-      }else if (this.categoryID !== null){
+      }
+      else if (this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
     });
-
     
-    this.route.params.subscribe(params =>{
-        const categoryID = +params['categorieID'];
-        if(!isNaN(categoryID)){
-          this.categoryID = categoryID;
-          if(this.searchService.getSearchKeyword() === '')
-            this.fetchDocuments(categoryID);
-        }
-        
-    });
 
-    //this.getDocumentByCategory();
-
-    //this.openDetailDialog();
-
-    
   }
 
 
   fetchDocuments(categorieID: number) {
+    this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByCategorie(categorieID)
       .subscribe((documents: Document[]) => {
         this.documents = documents.filter(doc => !doc.supprimerDocument);
         this.tempDocuments = this.documents;
-        console.log(documents);
-        //console.log("doc non delete: ", this.tempDocuments.filter(doc => !doc.supprimerDocument));
+        console.log('Document List: ', this.documents);
+        this.categorieService.setFlag(false);
+        console.log(this.categorieService.getFlag());
       }, (error: any) => {
         console.error('Error loading documents', error);
         
@@ -196,16 +224,15 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentBySearch(keywords: string): void{
-    this.tempDocuments = this.documents;
+    //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentByKeyword(keywords).subscribe((documents: Document[]) => {
       this.documents = documents.filter(doc => !doc.supprimerDocument);
-      console.log('temp doc: ', this.tempDocuments);
-      console.log('docs: ', this.documents);
       if(this.tempDocuments.length > 0){
         this.searchResults = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
         console.log('Search in category: ', this.searchResults);
         this.documents = this.searchResults;
+        this.categorieService.setFlag(true);
       }
     },(error: any) =>{
       console.error('Error loading documents', error);
@@ -214,13 +241,16 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentsByFilter(type: string): void{
-    this.tempDocuments = this.documents;
+    //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByType(type).subscribe((documents: Document[]) =>{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
       if(this.tempDocuments.length > 0){
         this.filteredDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
+        console.log('Filter in category: ', this.filteredDocuments);
         this.documents = this.filteredDocuments;
+        this.categorieService.setFlag(true);
+        //this.tempDocuments = [];
       }
     }, (error: any) =>{
       console.log('Error fetching documents ', error);
@@ -228,7 +258,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentsByOrder(order: string): void{
-    this.tempDocuments = this.documents;
+    //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByOrder(order).subscribe((documents: Document[]) =>{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
@@ -344,6 +374,9 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     }else if(this.filterSubscription){
       this.filterSubscription.unsubscribe();
     }
+    else if(this.refreshSubscription){
+      this.refreshSubscription.unsubscribe();
+    }
   }
 
   copyLink(){
@@ -354,6 +387,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     }).catch(err =>{
       console.error("Echec de copier le lien...");
     });
+  }
+
+  reloadPage(): void{
+    window.location.reload();
   }
 
   // getDocumentByCategory(){
