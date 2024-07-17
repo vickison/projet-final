@@ -133,12 +133,22 @@ public class DocumentService {
     }
 
     public List<Document> findDocumentsByTagId(Tag tag){
-        return this.documentRepository.findByDocumentTagsDocumentID(tag);
+        List<Document> documents = this.documentRepository.findByDocumentTagsDocumentID(tag);
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
     }
 
     @Transactional
     public List<Document> rechercherDocument(String mots){
-        return this.documentRepository.rechercher(mots);
+        List<Document> documents = this.documentRepository.rechercher(mots);
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
     }
     @Transactional
     public List<Document> searchDocumentByKeyWords(String keywords){
@@ -151,7 +161,12 @@ public class DocumentService {
                 documents.addAll(documentRepository.searchDocumentByKeyWords(keyword.trim()));
             }
         }
-        return documents;
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
+        //return documents;
     }
 
     public List<Document> searchDocument(String searchTerm){
@@ -165,23 +180,46 @@ public class DocumentService {
     }
 
     public List<Document> findDocumentsByType(TypeFichier typeFichier){
-        return this.documentRepository.findByTypeFichier(typeFichier);
+        List<Document> documents = this.documentRepository.findByTypeFichier(typeFichier);
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
+
     }
 
     //@Transactional
     public  List<Document> getDocumentsSortedBy(String sortedBy){
         switch (sortedBy){
             case "date":
-                return documentRepository.findAllByOrderDateCreationDocumentDesc();
+                List<Document> documents = this.documentRepository.findAllByOrderDateCreationDocumentDesc();
+                return documents.stream().map(doc -> {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                    return doc;
+                }).collect(Collectors.toList());
             case "Anglais":
             case "Français":
             case "Créole":
             case "Espagnol":
-                return documentRepository.findAllByOrderLangue(sortedBy);
+                return this.documentRepository.findAllByOrderLangue(sortedBy).stream().map(doc -> {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                    return doc;
+                }).collect(Collectors.toList());
             case "titre":
-                return documentRepository.findAllByOrderTitre();
+                return this.documentRepository.findAllByOrderTitre().stream().map(doc -> {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                    return doc;
+                }).collect(Collectors.toList());
             default:
-                return documentRepository.findAll();
+                return this.documentRepository.findAll().stream().map(doc -> {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                    return doc;
+                }).collect(Collectors.toList());
         }
     }
 

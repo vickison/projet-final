@@ -123,6 +123,9 @@ public class DocumentController {
                 case "audio/mp3":
                     document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+newTitle+".mp3");
                     break;
+                case "audio/mpeg":
+                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+newTitle+".mp3");
+                    break;
                 case "image/jpeg":
                     document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+newTitle+".jpeg");
                     break;
@@ -134,6 +137,9 @@ public class DocumentController {
                     break;
                 case "image/gif":
                     document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+newTitle+".gif");
+                    break;
+                case "image/tiff":
+                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+newTitle+".tiff");
                     break;
                 default:
                     document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"\\"+documentDTO.getFile().getOriginalFilename());
