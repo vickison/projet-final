@@ -26,6 +26,7 @@ export class FilterService {
 
   triggerRefresh() {
     if (!this.shouldRefreshSubject.value) {
+      console.log('Count...');
       this.shouldRefreshSubject.next(true);
       this.refreshSubject.next();
     }

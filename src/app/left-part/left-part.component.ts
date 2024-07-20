@@ -78,7 +78,7 @@ export class LeftPartComponent implements OnInit{
   onCategoryClick(event: any, categoryID?: number): void {
     const links = document.querySelectorAll('nav ul li a');
     links.forEach(link => link.classList.remove('active'));
-    this.filterService.triggerRefresh();
+    
     //const curFlag = this.categorieService.getFlag();
     this.categorieService.setFlag(false);
     // Add the 'active' class to the clicked link
@@ -88,14 +88,13 @@ export class LeftPartComponent implements OnInit{
         .subscribe(documents => {
           this.documents = documents.filter(doc => !doc.supprimerDocument);
           this.documentsOfCategorie.emit(documents);
-          console.log(this.documents);
+          //console.log(this.documents);
           this.router.navigate(['/categories', categoryID]);
           //this.reloadPage();
       });
 
-      // setTimeout(() => {
-      //   this.reloadPage();
-      // }, 100);
+
+      this.filterService.triggerRefresh();
       
       
   }

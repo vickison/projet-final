@@ -5,7 +5,7 @@ import { Document } from 'src/app/models/document.model';
 import { ViewEncapsulation } from '@angular/core';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { map, Observable, Subscription } from 'rxjs';
+import { EMPTY, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import { DetailDialogService } from '../services/detail-dialog.service';
 import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../services/search.service';
@@ -97,6 +97,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   like: number = 0;
   unlike: number = 0;
+  count: number = 0;
 
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
@@ -123,7 +124,9 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     
+    
     if(!this.categorieService.getFlag()){
+      console.log('Without refresh service....');
       this.route.params.subscribe(params =>{
         const categoryID = +params['categorieID'];
         if(!isNaN(categoryID)){
@@ -131,84 +134,186 @@ export class ContentPartComponent implements OnInit, OnDestroy{
           if(this.searchService.getSearchKeyword() === '' && 
             this.filterService.getFilter() === '' && 
             this.orderService.getOrder() === '')
-            this.fetchDocuments(categoryID);
+            this.fetchDocuments(this.categoryID);
         }
       });
     }
-    
 
 
     this.refreshSubscription = this.filterService.shouldRefresh$.subscribe((shouldRefresh) => {
-      if(shouldRefresh){
-        this.route.params.subscribe(params =>{
-          const categoryID = +params['categorieID'];
-          if(!isNaN(categoryID)){
-            this.categorieService.setFlag(true);
-            this.categoryID = categoryID;
-            if(this.searchService.getSearchKeyword() === '' && 
-              this.filterService.getFilter() === '' && 
-              this.orderService.getOrder() === '')
-              this.fetchDocuments(categoryID);
+      if (shouldRefresh) {
+        console.log('Refresh requested...');
+    
+        // Utilisation de switchMap pour gérer les paramètres de l'URL de manière asynchrone
+        this.route.params.pipe(
+          switchMap(params => {
+            // Récupérer l'ID de catégorie à partir des paramètres de l'URL
+            const categoryID = +params['categorieID'];
+    
+            if (!isNaN(categoryID)) {
+              // Mettre à jour categoryID et appeler fetchDocuments si les conditions sont remplies
+              this.categoryID = categoryID;
+              this.categorieService.setFlag(true);
+    
+              if (this.searchService.getSearchKeyword() === '' && 
+                  this.filterService.getFilter() === '' && 
+                  this.orderService.getOrder() === '') {
+                return this.fetchDocuments(this.categoryID); // Retourner l'observable de fetchDocuments
+              } else {
+                // Si aucune action n'est nécessaire, retourner un observable vide
+                return EMPTY;
+              }
+            } else {
+              // Si categoryID n'est pas un nombre valide, retourner un observable vide
+              return EMPTY;
+            }
+          })
+        ).subscribe({
+          next: () => {
+            console.log('FetchDocuments completed.');
+            this.filterService.clearRefresh(); // Nettoyer le rafraîchissement après le traitement
+          },
+          error: (error) => {
+            console.error('Error loading documents', error);
           }
         });
-        this.filterService.clearRefresh();
       }
+    });
+    
+
+
+    // this.refreshSubscription = this.filterService.shouldRefresh$.subscribe((shouldRefresh) => {
+    //   if(shouldRefresh){
+    //     console.log('With refresh service....');
+    //     this.route.params.subscribe(params =>{
+    //       this.categoryID = null;
+    //       const categoryID = +params['categorieID'];
+    //       if(!isNaN(categoryID)){
+    //         this.categorieService.setFlag(true);
+    //         this.categoryID = categoryID;
+    //         if(this.searchService.getSearchKeyword() === '' && 
+    //           this.filterService.getFilter() === '' && 
+    //           this.orderService.getOrder() === ''){
+    //             this.fetchDocuments(this.categoryID);
+    //           }
+              
+    //       }
+    //     });
+    //     this.filterService.clearRefresh();
+    //   }
       
-    });
+    // });
 
-    this.orderSubscription = this.orderService.order$.subscribe(order => {
-      if(order.trim() !== ''){
-        this.getDocumentsByOrder(order);
-        this.categoryID = null;
-        this.orderService.setOrder('');
-      }
-      else if(this.categoryID !== null){
-        this.fetchDocuments(this.categoryID);
-      }
-    });
+    if(this.searchService.getSearchKeyword() !== '' || 
+              this.filterService.getFilter() !== '' || 
+              this.orderService.getOrder() !== ''){
+                this.orderSubscription = this.orderService.order$.subscribe(order => {
+                  if(order.trim() !== ''){
+                    this.getDocumentsByOrder(order);
+                    this.categoryID = null;
+                    this.orderService.setOrder('');
+                  }
+                  else if(this.categoryID !== null){
+                    this.fetchDocuments(this.categoryID);
+                  }
+                });
+            
+                this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
+                  if(filter.trim() !== ''){
+                    this.getDocumentsByFilter(filter);
+                    this.categoryID = null;
+                    this.filterService.setFilter('');
+                  }
+                  else if (this.categoryID !== null){
+                    this.fetchDocuments(this.categoryID);
+                  }
+                });
+            
+                
+                this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
+                  if(keywords.trim() !== ''){
+                    this.getDocumentBySearch(keywords);
+                    this.categoryID = null;
+                    this.searchService.setSearchKeyword('');
+                  }
+                  else if (this.categoryID !== null){
+                    this.fetchDocuments(this.categoryID);
+                  }
+                });
+    }
+    // this.orderSubscription = this.orderService.order$.subscribe(order => {
+    //   if(order.trim() !== ''){
+    //     this.getDocumentsByOrder(order);
+    //     this.categoryID = null;
+    //     this.orderService.setOrder('');
+    //   }
+    //   else if(this.categoryID !== null){
+    //     this.fetchDocuments(this.categoryID);
+    //   }
+    // });
 
-    this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
-      if(filter.trim() !== ''){
-        this.getDocumentsByFilter(filter);
-        this.categoryID = null;
-        this.filterService.setFilter('');
-      }
-      else if (this.categoryID !== null){
-        this.fetchDocuments(this.categoryID);
-      }
-    });
+    // this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
+    //   if(filter.trim() !== ''){
+    //     this.getDocumentsByFilter(filter);
+    //     this.categoryID = null;
+    //     this.filterService.setFilter('');
+    //   }
+    //   else if (this.categoryID !== null){
+    //     this.fetchDocuments(this.categoryID);
+    //   }
+    // });
 
     
-    this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
-      if(keywords.trim() !== ''){
-        this.getDocumentBySearch(keywords);
-        this.categoryID = null;
-        this.searchService.setSearchKeyword('');
-      }
-      else if (this.categoryID !== null){
-        this.fetchDocuments(this.categoryID);
-      }
-    });
+    // this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
+    //   if(keywords.trim() !== ''){
+    //     this.getDocumentBySearch(keywords);
+    //     this.categoryID = null;
+    //     this.searchService.setSearchKeyword('');
+    //   }
+    //   else if (this.categoryID !== null){
+    //     this.fetchDocuments(this.categoryID);
+    //   }
+    // });
     
+  }
 
+  fetchDocuments(categorieID: number): Observable<null> {
+    // Retourner l'Observable de getDocumentsByCategorie pour permettre la gestion de l'asynchronisme
+    return this.documentService.getDocumentsByCategorie(categorieID)
+      .pipe(
+        switchMap((documents: Document[]) => {
+          // Mise à jour des documents filtrés
+          this.documents = documents.filter(doc => !doc.supprimerDocument);
+          this.tempDocuments = this.documents; // Mettre à jour tempDocuments si nécessaire
+          console.log('Documents mis à jour: ', this.documents);
+  
+          // Exemple de mise à jour d'un service ou autre logique nécessaire après récupération des documents
+          this.categorieService.setFlag(false);
+  
+          // Retourner un observable vide ou une autre valeur si nécessaire
+          return of(null);
+        })
+      );
   }
 
 
-  fetchDocuments(categorieID: number) {
-    this.tempDocuments = this.documents;
-    this.documents = [];
-    this.documentService.getDocumentsByCategorie(categorieID)
-      .subscribe((documents: Document[]) => {
-        this.documents = documents.filter(doc => !doc.supprimerDocument);
-        this.tempDocuments = this.documents;
-        console.log('Document List: ', this.documents);
-        this.categorieService.setFlag(false);
-        console.log(this.categorieService.getFlag());
-      }, (error: any) => {
-        console.error('Error loading documents', error);
-        
-      });
-  }
+  // fetchDocuments(categorieID: number) {
+    
+  //   this.tempDocuments = this.documents;
+  //   this.documents = [];
+  //   this.documentService.getDocumentsByCategorie(categorieID)
+  //     .subscribe((documents: Document[]) => {
+  //       console.log('Docs Before: ', this.tempDocuments);
+  //       this.documents = documents.filter(doc => !doc.supprimerDocument);
+  //       this.tempDocuments = this.documents;
+  //       console.log('Hello...');
+  //     }, (error: any) => {
+  //       console.error('Error loading documents', error);
+  //     });
+
+      
+  //     this.categorieService.setFlag(false);
+  // }
 
 
   getDocumentUrl(id?: number): string{
