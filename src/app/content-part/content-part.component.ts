@@ -278,7 +278,6 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   fetchDocuments(categorieID: number): Observable<null> {
-    // Retourner l'Observable de getDocumentsByCategorie pour permettre la gestion de l'asynchronisme
     return this.documentService.getDocumentsByCategorie(categorieID)
       .pipe(
         switchMap((documents: Document[]) => {
@@ -504,6 +503,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       
   //   })
   // }
+
+  trackById(index: number, item: Document): number | undefined{
+    return item.documentID
+  }
 
 
 

@@ -1,7 +1,7 @@
 <!-- <p class="content">content-part works!</p> -->
 <div class="container" id="grid"  style="width: auto;"> 
 
-    <mat-card class="card" *ngFor="let document of documents" (dblclick)="onDocumentDBLClicked(document)">
+    <mat-card class="card" *ngFor="let document of documents; trackBy: trackById" (dblclick)="onDocumentDBLClicked(document)">
     
       <mat-card-header style="background-color: white; border-top-right-radius: 5%; border-top-left-radius: 5%; ">
         <div class="card-content" >
