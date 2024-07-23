@@ -67,6 +67,8 @@ export class ManageLabelComponent {
           setTimeout(() => {
             //this.dialog.closeAll();
             this.tagForm.reset();
+            this.message = '';
+            this.classCss = '';
           }, 1000);
         },
         error: err =>{

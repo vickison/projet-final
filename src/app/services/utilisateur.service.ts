@@ -5,6 +5,8 @@ import { Utilisateur } from '../models/utilisateur';
 //import { CookieService } from 'ngx-cookie-service';
 import { tap } from 'rxjs/operators';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -15,7 +17,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private baseUrl = 'http://localhost:8080/api'
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient,
     /*private cookieService: CookieService*/) { }

@@ -76,6 +76,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { authInterceptorProviders } from './helper/auth.interceptor';
 import { AuthInterceptor } from './helper/auth.interceptor';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
+import { LikeButtonComponent } from './like-button/like-button.component';
 //import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export function HttpLoaderFactory(http:HttpClient){
@@ -116,7 +117,8 @@ export function HttpLoaderFactory(http:HttpClient){
     EditTagModalComponent,
     EditAdminModalComponent,
     RegisterPartComponent,
-    SuperAdminComponent
+    SuperAdminComponent,
+    LikeButtonComponent
     
   ],
   imports: [

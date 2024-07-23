@@ -9,6 +9,7 @@ import { Document } from 'src/app/models/document.model';
 import { CategorieDocumenttsService } from '../services/categorie-documentts.service';
 import { MenuService } from '../services/menu-service.service';
 import { FilterService } from '../services/filter.service';
+import { RefresherService } from '../services/refresher.service';
 
 @Component({
   selector: 'app-left-part',
@@ -37,7 +38,7 @@ export class LeftPartComponent implements OnInit{
     private documentService: DocumentService,
     private menuService: MenuService,
     private categorieDocumenttsService: CategorieDocumenttsService,
-    private filterService: FilterService,
+    private refresherService: RefresherService,
   ) { }
 
   ngOnInit() {
@@ -94,7 +95,7 @@ export class LeftPartComponent implements OnInit{
       });
 
 
-      this.filterService.triggerRefresh();
+      this.refresherService.triggerRefresh();
       
       
   }
@@ -112,7 +113,7 @@ export class LeftPartComponent implements OnInit{
   }
 
   refresh() {
-    this.filterService.triggerRefresh();
+    this.refresherService.triggerRefresh();
   }
   
 }

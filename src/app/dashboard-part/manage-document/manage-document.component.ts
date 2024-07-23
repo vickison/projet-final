@@ -44,6 +44,7 @@ export class ManageDocumentComponent implements OnInit {
    selectedLangue: Langue = Langue.Creole;
    langues: Langue[] = [Langue.Anglais, Langue.Creole, Langue.Espagnol, Langue.Francais]
    tagModalOpen: boolean = false;
+   uploadProgress: number = 0;
 
    constructor(
       private fb: FormBuilder,
@@ -81,38 +82,79 @@ export class ManageDocumentComponent implements OnInit {
   }
  
    // Méthode pour soumettre le formulaire
-   addDoc() {
-    // Vérifier si le formulaire est valide
-   if (this.documentForm.valid) {
-     //const utilisateurID = this.documentForm.get('utilisateurDocuments')?.value;
-     const categorieID = this.documentForm.get('categorieDocuments')?.value;
-     const tagID = this.documentForm.get('documentTags')?.value;
-     const auteurID = this.documentForm.get('auteurDocuments')?.value;
-     const titre = this.documentForm.get('titre')?.value;
-     const resume = this.documentForm.get('resume')?.value;
-     const langue = this.documentForm.get('langue')?.value;
-     const file = this.documentForm.get('file')?.value as File;
+  //  addDoc() {
+  //   // Vérifier si le formulaire est valide
+  //  if (this.documentForm.valid) {
+  //    //const utilisateurID = this.documentForm.get('utilisateurDocuments')?.value;
+  //    const categorieID = this.documentForm.get('categorieDocuments')?.value;
+  //    const tagID = this.documentForm.get('documentTags')?.value;
+  //    const auteurID = this.documentForm.get('auteurDocuments')?.value;
+  //    const titre = this.documentForm.get('titre')?.value;
+  //    const resume = this.documentForm.get('resume')?.value;
+  //    const langue = this.documentForm.get('langue')?.value;
+  //    const file = this.documentForm.get('file')?.value as File;
      
 
-     this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
-      next: data => {
-        this.message = 'Document ajouté avec succès';
-        this.classCss = 'success';
-        console.log("Document ajouté avec succès: ", data);
-        console.log('Langue: ', langue);
-        setTimeout(() => {
-          //this.dialog.closeAll();
-          this.documentForm.reset();
-        }, 1000);
-      },
-      error: err => {
-        this.message = 'Echec d\'ajouter le document';
-        this.classCss = 'error';
-        console.log("Echec d'ajouter le document: ", err);
-      }
-     });
-    }
+  //    this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
+  //     next: data => {
+  //       this.message = 'Document ajouté avec succès';
+  //       this.classCss = 'success';
+  //       console.log("Document ajouté avec succès: ", data);
+  //       console.log('Langue: ', langue);
+  //       setTimeout(() => {
+  //         //this.dialog.closeAll();
+  //         this.documentForm.reset();
+  //       }, 1000);
+  //     },
+  //     error: err => {
+  //       this.message = 'Echec d\'ajouter le document';
+  //       this.classCss = 'error';
+  //       console.log("Echec d'ajouter le document: ", err);
+  //     }
+  //    });
+  //   }
     
+  // }
+
+  
+
+  addDoc() {
+    if (this.documentForm.valid) {
+      const categorieID = this.documentForm.get('categorieDocuments')?.value;
+      const tagID = this.documentForm.get('documentTags')?.value;
+      const auteurID = this.documentForm.get('auteurDocuments')?.value;
+      const titre = this.documentForm.get('titre')?.value;
+      const resume = this.documentForm.get('resume')?.value;
+      const langue = this.documentForm.get('langue')?.value;
+      const file = this.documentForm.get('file')?.value as File;
+
+      this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
+        next: (event: any) => {
+          if (typeof event === 'number') {
+            // C'est le pourcentage de progression
+            this.uploadProgress = event;
+            console.log('Progression du chargement: ', event);
+            // Mettre à jour la barre de progression ou tout autre indicateur visuel
+          } if (event === 100) {
+            // C'est la notification de réussite avec les données
+            this.message = 'Document ajouté avec succès';
+            this.classCss = 'success';
+            console.log("Document ajouté avec succès: ", event.data);
+            setTimeout(() => {
+              this.documentForm.reset();
+              this.uploadProgress = 0;
+              this.message = '';
+              this.classCss = '';
+            }, 1000);
+          }
+        },
+        error: err => {
+          this.message = 'Échec d\'ajout du document';
+          this.classCss = 'error';
+          console.error("Échec d'ajout du document: ", err);
+        }
+      });
+    }
   }
 
 

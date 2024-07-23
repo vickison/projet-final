@@ -5,6 +5,9 @@
       <div class="btn-back" role="button" (click)="closeViewer()">
         <span>&#8249;</span>
       </div>
+      <div>
+        <app-like-button *ngIf="likeButtonVisible" [isLiked]="isDocumentLiked" [documentID]="documentID" (closeClicked)="onCloseButtonClicked()"></app-like-button>
+      </div>
       <ng-container class="cntnr" [ngSwitch]="selectedDocument.format">
         <div *ngSwitchCase="'application/pdf'" class="iframe-contain">
           <iframe [src]="getSafeUrl(documentUrl)" width="90%" height="100%"></iframe>
@@ -51,5 +54,6 @@
           <p>Unsupported document type</p>
         </div>
       </ng-container>
+      
     </div>
 </div>

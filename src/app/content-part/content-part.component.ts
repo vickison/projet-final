@@ -16,6 +16,7 @@ import { OrderService } from '../services/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DetailPartComponent } from '../detail-part/detail-part.component';
 import { CategorieService } from '../services/categorie.service';
+import { RefresherService } from '../services/refresher.service';
 
 
 @Component({
@@ -117,7 +118,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private filterService: FilterService,
     private orderService: OrderService,
     private router: Router,
-    private categorieService: CategorieService
+    private categorieService: CategorieService,
+    private refresherService: RefresherService
   ) {
     
    }
@@ -131,16 +133,16 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         const categoryID = +params['categorieID'];
         if(!isNaN(categoryID)){
           this.categoryID = categoryID;
-          if(this.searchService.getSearchKeyword() === '' && 
-            this.filterService.getFilter() === '' && 
-            this.orderService.getOrder() === '')
-            this.fetchDocuments(this.categoryID);
+            this.fetchDocuments2(categoryID);
         }
       });
     }
 
+    
+    
 
-    this.refreshSubscription = this.filterService.shouldRefresh$.subscribe((shouldRefresh) => {
+
+    this.refreshSubscription = this.refresherService.shouldRefresh$.subscribe((shouldRefresh) => {
       if (shouldRefresh) {
         console.log('Refresh requested...');
     
@@ -171,7 +173,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         ).subscribe({
           next: () => {
             console.log('FetchDocuments completed.');
-            this.filterService.clearRefresh(); // Nettoyer le rafraîchissement après le traitement
+            this.refresherService.clearRefresh(); // Nettoyer le rafraîchissement après le traitement
           },
           error: (error) => {
             console.error('Error loading documents', error);
@@ -179,34 +181,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         });
       }
     });
-    
-
-
-    // this.refreshSubscription = this.filterService.shouldRefresh$.subscribe((shouldRefresh) => {
-    //   if(shouldRefresh){
-    //     console.log('With refresh service....');
-    //     this.route.params.subscribe(params =>{
-    //       this.categoryID = null;
-    //       const categoryID = +params['categorieID'];
-    //       if(!isNaN(categoryID)){
-    //         this.categorieService.setFlag(true);
-    //         this.categoryID = categoryID;
-    //         if(this.searchService.getSearchKeyword() === '' && 
-    //           this.filterService.getFilter() === '' && 
-    //           this.orderService.getOrder() === ''){
-    //             this.fetchDocuments(this.categoryID);
-    //           }
-              
-    //       }
-    //     });
-    //     this.filterService.clearRefresh();
-    //   }
-      
-    // });
+  
 
     if(this.searchService.getSearchKeyword() !== '' || 
-              this.filterService.getFilter() !== '' || 
-              this.orderService.getOrder() !== ''){
+      this.filterService.getFilter() !== '' || 
+      this.orderService.getOrder() !== ''){
                 this.orderSubscription = this.orderService.order$.subscribe(order => {
                   if(order.trim() !== ''){
                     this.getDocumentsByOrder(order);
@@ -241,6 +220,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
                   }
                 });
     }
+
+   
     // this.orderSubscription = this.orderService.order$.subscribe(order => {
     //   if(order.trim() !== ''){
     //     this.getDocumentsByOrder(order);
@@ -296,23 +277,22 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
 
-  // fetchDocuments(categorieID: number) {
+  fetchDocuments2(categorieID: number) {
     
-  //   this.tempDocuments = this.documents;
-  //   this.documents = [];
-  //   this.documentService.getDocumentsByCategorie(categorieID)
-  //     .subscribe((documents: Document[]) => {
-  //       console.log('Docs Before: ', this.tempDocuments);
-  //       this.documents = documents.filter(doc => !doc.supprimerDocument);
-  //       this.tempDocuments = this.documents;
-  //       console.log('Hello...');
-  //     }, (error: any) => {
-  //       console.error('Error loading documents', error);
-  //     });
+    this.tempDocuments = this.documents;
+    this.documents = [];
+    this.documentService.getDocumentsByCategorie(categorieID)
+      .subscribe((documents: Document[]) => {
+        console.log('Docs Before: ', this.tempDocuments);
+        this.documents = documents.filter(doc => !doc.supprimerDocument);
+        this.tempDocuments = this.documents;
+      }, (error: any) => {
+        console.error('Error loading documents', error);
+      });
 
       
-  //     this.categorieService.setFlag(false);
-  // }
+      this.categorieService.setFlag(false);
+  }
 
 
   getDocumentUrl(id?: number): string{

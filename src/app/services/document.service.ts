@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Document } from '../models/document.model';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { LikeIllustration } from '../models/like-illustration.model';
 import { LikeCount } from '../models/like-count.model';
+import { environment } from 'src/environments/environment';
 
 enum Langue{
     Creole='Créole',
@@ -19,7 +20,7 @@ enum Langue{
 export class DocumentService {
 
 
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = environment.apiUrl;
   private selectedDocumentSubject = new BehaviorSubject<Document | null>(null);
 
   constructor(private http: HttpClient) { }
@@ -111,54 +112,118 @@ export class DocumentService {
       return this.http.post(uploadUrl, formData);
   }
 
+  // creerDocument(
+  //   file: File,
+  //   categorieID: number[], 
+  //   tagID: number[],
+  //   auteurID: number[],
+  //   resume: string,
+  //   langue: string,
+  //   titre: string
+  //   ): Observable<any> {
+
+  //     let uploadUrl = '';
+  //     let queryparams = '';
+  //     const categorieIDStr = categorieID.join(',');
+  //     const tagIDStr = tagID  === null ? '' : tagID.join(',');
+  //     const auteurIDStr = auteurID === null ? '' : auteurID.join(',');
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+  //     formData.append('resume', resume);
+  //     formData.append('titre', titre);
+  //     formData.append('langue', langue);
+  //     //formData.append('paysPublication', paysPublication);
+
+  //     if(tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0 ){
+  //       queryparams = `?categorieID=${categorieIDStr}`;
+  //     }else if(tagIDStr.length ===0 && auteurIDStr.length === 0 && titre.length > 0 ){
+  //       queryparams = `?categorieID=${categorieIDStr}&newTitle=${titre}`;
+  //     }else if(tagIDStr.length ===0 && tagIDStr.length > 0 && titre.length === 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
+  //     }else if(auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${titre}`;
+  //     }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length === 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
+  //     }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length > 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}}&newTitle=${titre}`;
+  //     }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
+  //     }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0){
+  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${titre}`;
+  //     }
+  //     uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
+  //     console.log(uploadUrl);
+  //     return this.http.post(uploadUrl, formData);
+  // }
+
+
   creerDocument(
     file: File,
-    categorieID: number[], 
+    categorieID: number[],
     tagID: number[],
     auteurID: number[],
     resume: string,
     langue: string,
     titre: string
-    ): Observable<any> {
+  ): Observable<number | undefined> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    formData.append('resume', resume);
+    formData.append('titre', titre);
+    formData.append('langue', langue);
 
-      let uploadUrl = '';
-      let queryparams = '';
-      const categorieIDStr = categorieID.join(',');
-      const tagIDStr = tagID  === null ? '' : tagID.join(',');
-      const auteurIDStr = auteurID === null ? '' : auteurID.join(',');
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('resume', resume);
-      formData.append('titre', titre);
-      formData.append('langue', langue);
-      //formData.append('paysPublication', paysPublication);
+    let queryparams = '';
+    const categorieIDStr = categorieID.join(',');
+    const tagIDStr = tagID.length > 0 ? tagID.join(',') : '';
+    const auteurIDStr = auteurID.length > 0 ? auteurID.join(',') : '';
 
-      if(tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0 ){
-        queryparams = `?categorieID=${categorieIDStr}`;
-      }else if(tagIDStr.length ===0 && auteurIDStr.length === 0 && titre.length > 0 ){
-        queryparams = `?categorieID=${categorieIDStr}&newTitle=${titre}`;
-      }else if(tagIDStr.length ===0 && tagIDStr.length > 0 && titre.length === 0){
-        queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
-      }else if(auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0){
-        queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${titre}`;
-      }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length === 0){
-        queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
-      }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length > 0){
-        queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}}&newTitle=${titre}`;
-      }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0){
-        queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
-      }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0){
-        queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${titre}`;
-      }
-      uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
-      console.log(uploadUrl);
-      return this.http.post(uploadUrl, formData);
+    if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0) {
+      queryparams = `?categorieID=${categorieIDStr}`;
+    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titre)}`;
+    } else if (tagIDStr.length === 0 && tagIDStr.length > 0 && titre.length === 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
+    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titre)}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length === 0) {
+      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
+    }
+
+    const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
+    console.log(uploadUrl);
+
+    return this.http.post<any>(uploadUrl, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      map(event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          if (event.total !== undefined) {
+            const percentDone = Math.round(100 * event.loaded / event.total);
+            return percentDone;
+          }
+        } else if (event instanceof HttpResponse) {
+          return 100; // Indication que le téléchargement est terminé
+        }
+        return undefined;
+      }),
+      catchError(error => {
+        console.error('Error uploading document: ', error);
+        throw error; // Rethrow or handle as needed
+      })
+    );
   }
 
   getDocumentByKeyword(keysword: string): Observable<Document[]>{
     const formData = new FormData();
     formData.append('keysword', keysword);
-    const url = `${this.apiUrl}/documents/public/search?keywords=${keysword}`;
+    const url = `${this.apiUrl}/documents/public/rechercher?motCles=${keysword}`;
     return this.http.get<Document[]>(url);
   }
 

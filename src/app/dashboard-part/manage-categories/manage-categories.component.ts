@@ -76,6 +76,8 @@ export class ManageCategoriesComponent {
             setTimeout(() => {
               //this.dialog.closeAll();
               this.catForm.reset();
+              this.message = '';
+              this.classCss = '';
             }, 1000);
           },
           error: err =>{

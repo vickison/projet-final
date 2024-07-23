@@ -70,6 +70,8 @@ export class ManageAuteursComponent implements OnInit{
           setTimeout(() => {
             //this.dialog.closeAll();
             this.autForm.reset();
+            this.message = '';
+            this.classCss = '';
           }, 1000);
         },
         error: err => {

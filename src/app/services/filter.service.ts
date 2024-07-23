@@ -5,14 +5,10 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class FilterService {
-  private shouldRefresh = false;
+
   private filterSubject = new BehaviorSubject<string>('all');
   filter$: Observable<string> = this.filterSubject.asObservable();
-  private refreshSubject = new Subject<void>();
-  private shouldRefreshSubject = new BehaviorSubject<boolean>(false);
-
-  refresh$ = this.refreshSubject.asObservable();
-  shouldRefresh$ = this.shouldRefreshSubject.asObservable();
+ 
 
   constructor() { }
 
@@ -24,15 +20,4 @@ export class FilterService {
     return this.filterSubject.value;
   }
 
-  triggerRefresh() {
-    if (!this.shouldRefreshSubject.value) {
-      console.log('Count...');
-      this.shouldRefreshSubject.next(true);
-      this.refreshSubject.next();
-    }
-  }
-
-  clearRefresh() {
-    this.shouldRefreshSubject.next(false);
-  }
 }

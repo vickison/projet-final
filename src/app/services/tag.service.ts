@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable } from 'rxjs';
 import { Tag } from '../models/tag.model';
 import { TokenStorageService } from './token-storage.service';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class TagService {
 
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = environment.apiUrl;
   private tagsSubject = new BehaviorSubject<Tag[]>([]);
   tags$ = this.tagsSubject.asObservable();
 

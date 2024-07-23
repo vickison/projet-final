@@ -17,6 +17,9 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
  
   @Input() selectedDocument: Document | null = null;
   documentUrl: string | null = null;
+  documentID: number | undefined;
+  isDocumentLiked: boolean | undefined;
+  likeButtonVisible: boolean = false;
 
   constructor(private documentService: DocumentService,
     private sanitizer: DomSanitizer) {}
@@ -26,6 +29,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
       this.selectedDocument = document;
       console.log("Selected document: ", document);
       this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
+      this.documentID = this.selectedDocument?.documentID;
     });
 
   }
@@ -40,7 +44,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   closeViewer(): void {
     this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
       console.log('liked', res);
-      if(confirm(res? 'Ne voulez plus aimer cette illustration': 'Voulez aimer cette illustration')){
+      if(confirm(res? 'Unlike 👎 cette illustration': 'Like 👍 cette illustration')){
         //console.log('Hello ng...');
         this.documentService.likeIllustration(this.selectedDocument?.documentID).subscribe({
           next: data => {
@@ -54,10 +58,14 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
           this.reloadPage();
         }, 300);
       }
+      
+
+      
     });
     setTimeout(() => {
       this.documentService.setSelectedDocument(null);
     }, 200);
+    
     
   }
 
@@ -81,4 +89,6 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   reloadPage(): void{
     window.location.reload();
   }
+
+  onCloseButtonClicked(): void{}
 }

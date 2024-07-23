@@ -30,7 +30,7 @@
   }
 
   .file-input-container {
-    margin-top: 16px; /* Adjust spacing as needed */
+    margin-top: 10px; /* Adjust spacing as needed */
   }
   
   .file-input-label {
@@ -49,7 +49,7 @@ display: flex;
 align-items: center;
 width: 100%;
 justify-content: center;
-gap: 8px;
+gap: 15px;
 }
 
 .field {
@@ -63,4 +63,29 @@ width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px; /* Espace entre la barre de progression et l'input file */
+}
+
+progress {
+  width: 100%; /* Barre de progression prend la largeur complète */
+  height: 20px; /* Hauteur de la barre de progression */
+}
+
+progress::-webkit-progress-bar {
+  background-color: #f0f0f0; /* Couleur de fond de la barre de progression */
+}
+
+progress::-webkit-progress-value {
+  background-color: #4caf50; /* Couleur de la barre de progression remplie */
+}
+
+.prc {
+  margin-left: 10px; /* Espace entre la barre de progression et le texte du pourcentage */
+  font-weight: bold; /* Style du texte du pourcentage */
 }

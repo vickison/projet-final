@@ -15,6 +15,13 @@
     </label>
   </div>
 
+  <div *ngIf="uploadProgress > 0" class="progress-container" >
+    <!-- Barre de progression -->
+    <progress max="100" [value]="uploadProgress" style="width: 100px;"></progress>
+    <!-- Affichage du pourcentage -->
+    <span class="prc">{{ uploadProgress }}%</span>
+  </div>
+
   <mat-form-field appearance="outline">
     <mat-label>Alternatif Titre</mat-label>
     <input matInput type="text" id="titre" formControlName="titre">

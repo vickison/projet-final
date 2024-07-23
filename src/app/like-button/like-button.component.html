@@ -1,0 +1,11 @@
+<div class="like-button-container">
+    <!-- Icône de pouce aimé -->
+    <i class="fa fa-thumbs-up" [ngClass]="{'active': isLiked, 'inactive': !isLiked}" (click)="toggleLike()"></i>
+    
+    <!-- Icône de pouce non aimé -->
+    <i class="fa fa-thumbs-down" [ngClass]="{'active': !isLiked, 'inactive': isLiked}" (click)="toggleLike()"></i>
+  
+    <!-- Bouton Close -->
+    <button class="close-button" (click)="close()">X</button>
+  </div>
+  

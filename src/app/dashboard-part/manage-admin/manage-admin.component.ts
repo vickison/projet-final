@@ -73,9 +73,11 @@ export class ManageAdminComponent implements OnInit{
         this.isSignupFailed = false;
         setTimeout(() => {
             //this.dialog.closeAll();
-            //this.userForm.reset();
-            this.router.navigateByUrl('/admin/login');
-            this.dialog.closeAll();
+            this.userForm.reset();
+            //this.router.navigateByUrl('/admin/login');
+            //this.dialog.closeAll();
+            this.message = '';
+            this.classCss = '';
         }, 1000);
       }, 
       error: err =>{

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Categorie } from '../models/categorie';
 import { CategorieDocument } from '../models/categorie-document.model';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -12,7 +13,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class CategorieService {
 
-	private apiUrl = 'http://localhost:8080/api';
+	private apiUrl = environment.apiUrl;
   private flag: boolean = false;
 
 	constructor(private http: HttpClient) { }
