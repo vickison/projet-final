@@ -61,6 +61,8 @@ public class Document {
     private String AuteurModificationDocument;
     private boolean SupprimerDocument;
 
+    private String thumbnail;
+
     @Transient
     @Column(name = "likes")
     private Integer like;
@@ -274,6 +276,14 @@ public class Document {
 
     public void setTypeFichier(TypeFichier typeFichier) {
         this.typeFichier = typeFichier;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }
 

@@ -18,6 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,6 +36,9 @@ public class DocumentService {
     private AuteurRepository auteurRepository;
     private AuteurDocumentRepository auteurDocumentRepository;
     private LikeIllustrationRepository likeIllustrationRepository;
+    private ThumbnailService thumbnailService;
+
+    private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
 
     public DocumentService(DocumentRepository documentRepository,
                            CategorieRepository categorieRepository,
@@ -41,7 +47,8 @@ public class DocumentService {
                            DocumentTagRepository documentTagRepository,
                            AuteurRepository auteurRepository,
                            AuteurDocumentRepository auteurDocumentRepository,
-                           LikeIllustrationRepository likeIllustrationRepository) {
+                           LikeIllustrationRepository likeIllustrationRepository,
+                           ThumbnailService thumbnailService) {
         this.documentRepository = documentRepository;
         this.categorieRepository = categorieRepository;
         this.categorieDocumentRepository = categorieDocumentRepository;
@@ -50,6 +57,7 @@ public class DocumentService {
         this.auteurRepository = auteurRepository;
         this.auteurDocumentRepository = auteurDocumentRepository;
         this.likeIllustrationRepository = likeIllustrationRepository;
+        this.thumbnailService = thumbnailService;
     }
 
     public void addDocument(Document document) throws IOException {
@@ -63,6 +71,7 @@ public class DocumentService {
                               List<Integer> idsAuteur) throws IOException{
         System.out.println("---------------------------");
         Document savedDocument = this.documentRepository.save(document);
+        generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
         System.out.println("Service-----------------------------");
         if(idsCategorie != null && !idsCategorie.isEmpty()){
             CategorieDocument categorieDocument = new CategorieDocument();
@@ -114,6 +123,18 @@ public class DocumentService {
 
     public Optional<Document> findDocument(Integer id){
         return this.documentRepository.findById(id);
+    }
+
+    public byte[] getDocumentData(Integer id) throws IOException {
+        Optional<Document> optionalDocument = findDocument(id);
+        if (optionalDocument.isPresent()) {
+            Document document = optionalDocument.get();
+            // Récupérer les données binaires du fichier à partir de l'URL ou de l'emplacement spécifié
+            Path filePath = Paths.get(document.getUrl()); // Supposant que getUrl() retourne l'URL du fichier
+            return Files.readAllBytes(filePath);
+        } else {
+            throw new RuntimeException("Document not found with id: " + id);
+        }
     }
     public List<Document> findDocumentsByCategoryId(Categorie categorie){
         List<Document> documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
@@ -176,7 +197,13 @@ public class DocumentService {
             specs.add(new DocumentSpecification(keyword));
         }
         Specification<Document> resultSpec = specs.stream().reduce(Specification::or).orElse(null);
-        return documentRepository.findAll(resultSpec);
+        List<Document> documents = documentRepository.findAll(resultSpec);
+        return documents.stream().map(doc -> {
+            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+            return doc;
+        }).collect(Collectors.toList());
+
     }
 
     public List<Document> findDocumentsByType(TypeFichier typeFichier){
@@ -220,6 +247,49 @@ public class DocumentService {
                     doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
                     return doc;
                 }).collect(Collectors.toList());
+        }
+    }
+
+//    public byte[] getDocumentThumbnail(Integer documentID, int width, int height) {
+//        Document document = documentRepository.findById(documentID)
+//                .orElseThrow(() -> new RuntimeException("Document not found with id: " + documentID));
+//
+//        // Récupérer la miniature correspondante au document
+//        try {
+//            return thumbnailService.generateThumbnail(document.getDocumentID(), width, height);
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to generate thumbnail for document with id: " + documentID, e);
+//        }
+//    }
+
+    private String saveThumbnailToFileSystem(byte[] thumbnailData, Integer fileId) throws IOException {
+        // Sauvegarder la miniature sur le système de fichiers
+        String thumbnailFileName = fileId + "-thumbnail.jpg";
+        String thumbnailFilePath = thumbnailBasePath + thumbnailFileName;
+        Files.write(Paths.get(thumbnailFilePath), thumbnailData);
+        return thumbnailFilePath;
+    }
+
+    public void generateAndSaveThumbnail(Integer documentId, int thumbnailWidth, int thumbnailHeight) {
+        try {
+            Optional<Document> documentOptional = documentRepository.findById(documentId);
+            if (documentOptional.isPresent()) {
+                Document document = documentOptional.get();
+                byte[] fileData = getDocumentData(documentId);
+                byte[] thumbnailData = thumbnailService.generateThumbnail(fileData, documentId, document.getUrl(), thumbnailWidth, thumbnailHeight);
+                String thumbnailUrl = thumbnailService.saveThumbnailToFileSystemStr(thumbnailData, documentId);
+
+                // Mettre à jour l'URL de la miniature dans l'entité Document
+                document.setThumbnail(thumbnailUrl);
+                documentRepository.save(document); // Mettre à jour l'entité dans la base de données avec l'URL de la miniature
+            } else {
+                // Gérer le cas où le document avec l'ID donné n'est pas trouvé
+                throw new IllegalArgumentException("Document not found for id: " + documentId);
+            }
+        } catch (IOException e) {
+            // Gérer les exceptions liées à la génération ou à la sauvegarde de la miniature
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate or save thumbnail for document id: " + documentId, e);
         }
     }
 

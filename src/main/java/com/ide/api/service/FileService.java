@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -12,7 +15,7 @@ import java.util.Base64;
 @Service
 public class FileService {
     private final String basePath ="C:\\Users\\avicky\\libeil\\";
-
+    //private final String basePath ="/libeilBack-End/LibEIlH";
     public void storeFile(String nomFichier,
                           String dossierFichier,
                           String base64){
@@ -32,6 +35,15 @@ public class FileService {
     public String getFile(String nomFichier) throws NoSuchAlgorithmException, InvalidKeyException {
         String base64Fichier = encoderFichierToBase64(nomFichier);
         return base64Fichier;
+    }
+
+    public byte[] getByteFile(String fileId) {
+        try {
+            Path filePath = Paths.get(basePath).resolve(fileId);
+            return Files.readAllBytes(filePath);
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to read file " + fileId, ex);
+        }
     }
 
     public static String encoderFichierToBase64(String path){

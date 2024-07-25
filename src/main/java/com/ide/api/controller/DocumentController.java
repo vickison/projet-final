@@ -38,6 +38,7 @@ import java.util.*;
 public class DocumentController {
 
     private final String basePath ="C:\\Users\\avicky\\libeil\\";
+    //private final String basePath ="/libeilBack-End/LibEIlH";
     private DocumentRepository documentRepository;
     private DocumentService documentService;
     private UtilisateurService utilisateurService;
@@ -54,6 +55,7 @@ public class DocumentController {
     private CategorieDocumentService categorieDocumentService;
     private FileService fileService;
     private LikeIllustrationService likeIllustrationService;
+    private ThumbnailService thumbnailService;
 
     //Le contructeur de notre classe
 
@@ -72,7 +74,8 @@ public class DocumentController {
                               UtilisateurDocumentService utilisateurDocumentService,
                               CategorieDocumentService categorieDocumentService,
                               FileService fileService,
-                              LikeIllustrationService likeIllustrationService) {
+                              LikeIllustrationService likeIllustrationService,
+                              ThumbnailService thumbnailService) {
         this.documentService = documentService;
         this.documentRepository = documentRepository;
         this.utilisateurService = utilisateurService;
@@ -89,6 +92,7 @@ public class DocumentController {
         this.categorieDocumentService = categorieDocumentService;
         this.fileService = fileService;
         this.likeIllustrationService = likeIllustrationService;
+        this.thumbnailService = thumbnailService;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -369,6 +373,13 @@ public class DocumentController {
         }
         return false;
     }
+
+//    @GetMapping(value = "/public/{documentID}/thumbnail", produces = MediaType.IMAGE_JPEG_VALUE)
+//    public @ResponseBody byte[] getDocumentThumbnail(@PathVariable Integer documentID,
+//                                                     @RequestParam(required = false, defaultValue = "100") int width,
+//                                                     @RequestParam(required = false, defaultValue = "100") int height) {
+//        return documentService.getDocumentThumbnail(documentID, width, height);
+//    }
 
 
     private  String determineContentType(String fileName){
