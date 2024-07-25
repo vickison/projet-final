@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Tag } from 'src/app/models/tag.model';
 import { TagService } from 'src/app/services/tag.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
@@ -17,13 +18,16 @@ export class ManageLabelComponent {
   utilisateurOptionsTemp: { utilisateurID: number; username: string ; supprimerUtil: boolean}[] = [];
   message: String = '';
   classCss: String = '';
+  msg = '';
 
 
   constructor(private fb: FormBuilder,
               private tagService: TagService,
               private utilisateurService: UtilisateurService,
               private tokenStorageService: TokenStorageService,
-              public dialog: MatDialog){
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar
+            ){
     this.tagForm = this.fb.group({
       tag: ['', Validators.required]
     });
@@ -57,13 +61,23 @@ export class ManageLabelComponent {
   }
 
   addTag(){
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+
     if(this.tagForm.valid){
     const tag: Tag = this.tagForm.value;
       this.tagService.creerTag(tag).subscribe({
         next: data => {
-          this.message = 'Label ajouté avec succès ';
-          this.classCss = 'success';
+          //this.message = 'Label ajouté avec succès ';
+          //this.classCss = 'success';
           console.log("Tag ajouter avec succès: ", data);
+          this.msg = 'Etiquette créée avec succès✅';
+            //this.classCss = 'success';
+            //console.log("Document ajouté avec succès: ", event.data);
+          this.snackBar.open(this.msg, 'Fermer', config);
           setTimeout(() => {
             //this.dialog.closeAll();
             this.tagForm.reset();
@@ -72,9 +86,11 @@ export class ManageLabelComponent {
           }, 1000);
         },
         error: err =>{
-          this.message = 'Echec d\'ajouter le label';
-          this.classCss = 'error';
+          this.msg = 'Échec d\'ajouter Etiquette❌';
+          //this.message = 'Echec d\'ajouter le label';
+          //this.classCss = 'error';
           console.error("Echec d'enregistrement de tag: ", err);
+          this.snackBar.open(this.msg, 'Fermer', config);
         }
       });
     }else{

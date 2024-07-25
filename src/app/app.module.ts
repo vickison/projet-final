@@ -26,6 +26,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 //import { MainPartComponent } from './main-part/main-part.component';
 import { AdminComponent } from './admin/admin.component';
 import { ClientComponent } from './client/client.component';
@@ -134,6 +135,7 @@ export function HttpLoaderFactory(http:HttpClient){
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatSnackBarModule,
     BrowserModule,
     NoopAnimationsModule,
     ClientRoutineModule,

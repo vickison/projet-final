@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Categorie } from 'src/app/models/categorie';
 import { CategorieService } from 'src/app/services/categorie.service';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
@@ -18,11 +19,14 @@ export class ManageCategoriesComponent {
     utilisateurOptionsTemp: { utilisateurID: number; username: string ; supprimerUtil: boolean}[] = [];
     message: String = '';
     classCss: String = '';
+    msg = '';
 
     constructor(private fb: FormBuilder,
                 private categorieService: CategorieService,
                 private utilisateurService: UtilisateurService,
-                public dialog: MatDialog) {
+                public dialog: MatDialog,
+                private snackBar: MatSnackBar
+              ) {
       this.catForm = this.fb.group({
         nom: ['', Validators.required]
       });
@@ -63,6 +67,12 @@ export class ManageCategoriesComponent {
     }
 
     addCat() {
+
+      const config = new MatSnackBarConfig();
+      config.duration = 4000; // Durée de la notification en millisecondes
+      config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+      config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+      config.panelClass = ['custom-snackbar'];
       // Vérifier si le formulaire est valide
       if (this.catForm.valid) {
         // Récupérer les données du formulaire
@@ -70,8 +80,12 @@ export class ManageCategoriesComponent {
         // Ajouter votre logique ici
         this.categorieService.creerCategorie(categorie).subscribe({
           next: data => {
-            this.message = 'Catégorie ajoutée avec succès ';
-            this.classCss = 'success';
+            //this.message = 'Catégorie ajoutée avec succès ';
+            //this.classCss = 'success';
+            this.msg = 'Catégorie créée avec succès✅';
+            //this.classCss = 'success';
+            //console.log("Document ajouté avec succès: ", event.data);
+            this.snackBar.open(this.msg, 'Fermer', config);
             console.log("Catégorie ajoutée avec succès: ", data);
             setTimeout(() => {
               //this.dialog.closeAll();
@@ -81,8 +95,12 @@ export class ManageCategoriesComponent {
             }, 1000);
           },
           error: err =>{
-            this.message = 'Echec d\'ajouter la catégorie';
-            this.classCss = 'error';
+            //this.message = 'Echec d\'ajouter la catégorie';
+            //this.classCss = 'error';
+            this.msg = 'Échec d\'ajouter Catégorie❌';
+            //this.classCss = 'success';
+            //console.log("Document ajouté avec succès: ", event.data);
+            this.snackBar.open(this.msg, 'Fermer', config);
             console.error("Erreur d'ajouter la catégorie: ", err);
           }
         });

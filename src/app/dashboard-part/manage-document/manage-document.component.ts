@@ -11,6 +11,7 @@ import { UtilisateurService } from 'src/app/services/utilisateur.service';
 import { ManageAuteursComponent } from '../manage-auteurs/manage-auteurs.component';
 import { ManageLabelComponent } from '../manage-label/manage-label.component';
 import { ManageCategoriesComponent } from '../manage-categories/manage-categories.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 enum Langue{
   Creole='Créole',
@@ -45,6 +46,7 @@ export class ManageDocumentComponent implements OnInit {
    langues: Langue[] = [Langue.Anglais, Langue.Creole, Langue.Espagnol, Langue.Francais]
    tagModalOpen: boolean = false;
    uploadProgress: number = 0;
+   msg = '';
 
    constructor(
       private fb: FormBuilder,
@@ -54,7 +56,8 @@ export class ManageDocumentComponent implements OnInit {
       private tagService: TagService,
       private auteurService: AuteurService,
       private router: Router,
-      public dialog: MatDialog
+      public dialog: MatDialog,
+      private snackBar: MatSnackBar
     ) {
       this.documentForm = this.fb.group({
         file: [null, Validators.required],
@@ -128,30 +131,45 @@ export class ManageDocumentComponent implements OnInit {
       const langue = this.documentForm.get('langue')?.value;
       const file = this.documentForm.get('file')?.value as File;
 
+      const config = new MatSnackBarConfig();
+      config.duration = 4000; // Durée de la notification en millisecondes
+      config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+      config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+      config.panelClass = ['custom-snackbar'];
+
+      let docUpl = false;
+
       this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
-        next: (event: any) => {
-          if (typeof event === 'number') {
+        next: (response: any) => {
+          if (response.progress !== undefined) {
             // C'est le pourcentage de progression
-            this.uploadProgress = event;
+            this.uploadProgress = response.progress;
             console.log('Progression du chargement: ', event);
+            if(response.progress === 100){
+              this.snackBar.open('Ce n\'est pas terminé! Création thumbnail en cours...', 'Fermer', config);
+            }
             // Mettre à jour la barre de progression ou tout autre indicateur visuel
-          } if (event === 100) {
-            // C'est la notification de réussite avec les données
-            this.message = 'Document ajouté avec succès';
-            this.classCss = 'success';
-            console.log("Document ajouté avec succès: ", event.data);
+          }else if (response.message) {
+            this.msg = response.message;
+            this.snackBar.open(this.msg, 'Fermer', config);
+            this.uploadProgress = 0;
             setTimeout(() => {
               this.documentForm.reset();
-              this.uploadProgress = 0;
-              this.message = '';
-              this.classCss = '';
+              
             }, 1000);
           }
+          // else if(event === 100 && docUpl){
+          //   this.msg = 'Thumbnail créée avec succès✅';
+          //   this.snackBar.open(this.msg, 'Fermer', config);
+          //   this.uploadProgress = 0;
+          // }
         },
         error: err => {
-          this.message = 'Échec d\'ajout du document';
-          this.classCss = 'error';
-          console.error("Échec d'ajout du document: ", err);
+          //this.message = 'Échec d\'ajout du document';
+          this.msg = 'Échec d\'ajouter Illustration❌';
+          // this.classCss = 'error';
+          // console.error("Échec d'ajout du document: ", err);
+          this.snackBar.open(this.msg, 'Fermer', config);
         }
       });
     }

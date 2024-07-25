@@ -89,3 +89,10 @@ progress::-webkit-progress-value {
   margin-left: 10px; /* Espace entre la barre de progression et le texte du pourcentage */
   font-weight: bold; /* Style du texte du pourcentage */
 }
+
+.custom-snackbar {
+  background-color: #3f51b5; /* Couleur de fond personnalisée */
+  color: white; /* Couleur du texte personnalisée */
+  font-size: 14px; /* Taille de police personnalisée */
+  text-align: center; /* Centrer le texte */
+}

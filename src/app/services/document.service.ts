@@ -12,7 +12,14 @@ enum Langue{
     Anglais='Anglais',
     Francais='Français',
     Espagnol='Espagnol'
-  }
+}
+
+interface UploadResponse {
+  progress?: number;
+  message?: string;
+}
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -165,7 +172,7 @@ export class DocumentService {
     resume: string,
     langue: string,
     titre: string
-  ): Observable<number | undefined> {
+  ): Observable<UploadResponse> {
     const formData: FormData = new FormData();
     formData.append('file', file);
     formData.append('resume', resume);
@@ -198,24 +205,21 @@ export class DocumentService {
     const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
     console.log(uploadUrl);
 
-    return this.http.post<any>(uploadUrl, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(
+    return this.http.post(uploadUrl, formData, { reportProgress: true, observe: 'events' }).pipe(
       map(event => {
         if (event.type === HttpEventType.UploadProgress) {
           if (event.total !== undefined) {
             const percentDone = Math.round(100 * event.loaded / event.total);
-            return percentDone;
+            return { progress: percentDone }; // Renvoie la progression
           }
         } else if (event instanceof HttpResponse) {
-          return 100; // Indication que le téléchargement est terminé
+          return { message: 'Document ajouté avec succès✅' };
+          //return 'Document ajouté avec succès✅'; // Message de succès
         }
-        return undefined;
+       return {};
       }),
       catchError(error => {
-        console.error('Error uploading document: ', error);
-        throw error; // Rethrow or handle as needed
+        return throwError(() => new Error('Échec de l\'ajout du document'));
       })
     );
   }
@@ -268,6 +272,10 @@ export class DocumentService {
 
   documentIsLiked(documentID: number | undefined): Observable<boolean>{
     return this.http.get<boolean>(`${this.apiUrl}/documents/public/${documentID}/liked`);
+  }
+
+  getDocumentThumbnail(documentID: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/documents/public/${documentID}/thumbnail`, { responseType: 'blob' });
   }
 
 }

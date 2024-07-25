@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Auteur } from 'src/app/models/auteur.model';
 import { AuteurService } from 'src/app/services/auteur.service';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
@@ -17,11 +18,14 @@ export class ManageAuteursComponent implements OnInit{
   utilisateurOptionsTemp: { utilisateurID: number; username: string ; supprimerUtil: boolean}[] = [];
   message: String = '';
   classCss: String = '';
+  msg = '';
 
   constructor(private fb: FormBuilder,
               private auteurService: AuteurService,
               private utilisateurService: UtilisateurService,
-              public dialog: MatDialog){
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar
+            ){
     this.autForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
@@ -60,12 +64,23 @@ export class ManageAuteursComponent implements OnInit{
 
 
   addAuteur(){
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+
     if(this.autForm.valid){
       const auteur: Auteur = this.autForm.value;
       this.auteurService.creerAuteur(auteur).subscribe({
         next: data => {
-          this.message = 'Auteur ajouté avec succès ';
-          this.classCss = 'success';
+          //this.message = 'Auteur ajouté avec succès ';
+          //this.classCss = 'success';
+          this.msg = 'Auteur créé avec succès✅';
+            //this.classCss = 'success';
+            //console.log("Document ajouté avec succès: ", event.data);
+            this.snackBar.open(this.msg, 'Fermer', config);
           console.log("Auteur ajouté avec succès: ", data);
           setTimeout(() => {
             //this.dialog.closeAll();
@@ -75,8 +90,12 @@ export class ManageAuteursComponent implements OnInit{
           }, 1000);
         },
         error: err => {
-          this.message = 'Echec d\'ajouter l\'auteur ';
-          this.classCss = 'error';
+          //this.message = 'Echec d\'ajouter l\'auteur ';
+          //this.classCss = 'error';
+          this.msg = 'Échec d\'ajouter Auteur❌';
+            //this.classCss = 'success';
+            //console.log("Document ajouté avec succès: ", event.data);
+          this.snackBar.open(this.msg, 'Fermer', config);
           console.log("Echec d'ajouter l'auteur: ", err);
         }
       });
