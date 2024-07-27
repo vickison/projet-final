@@ -6,6 +6,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
 import { EditAdminModalComponent } from './edit-admin-modal/edit-admin-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-delupadmin-part',
@@ -24,6 +25,7 @@ export class DelupadminPartComponent implements OnInit{
   filterValue: string = "";
   message: String = '';
   classCss: String = '';
+  msg = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -34,7 +36,9 @@ export class DelupadminPartComponent implements OnInit{
   }
 
   constructor( private utilisateurService: UtilisateurService,
-               private dialog: MatDialog) { 
+               private dialog: MatDialog,
+               private snackBar: MatSnackBar
+              ) { 
     
     // Create 100 users
     const utilis: Array<Utilisateur> =[]
@@ -120,18 +124,33 @@ export class DelupadminPartComponent implements OnInit{
   }
 
   onDelete(utilisateurID: number, utilisateur: Utilisateur){
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+
+    
     this.utilisateurService.supUtilisateur(utilisateurID, utilisateur).subscribe({
       next: data => {
-        this.message = 'Suppression de l\'utilisateur avec succès';
-        this.classCss = 'success';
+        this.msg = 'Admin suprrimé avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Suppresion de l'utilisateur: ", data);
+        setTimeout(() => {
+          this.reloadPage();
+        }, 500);
       },
       error: err => {
-        this.message = 'Echec de suppression de l\'utilisateur';
-        this.classCss = 'error';
+        this.msg = 'Échec de Supprimer cet Admin❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de suppresion de l\'utilisateur: ", err);
       }
     });
+  }
+
+  reloadPage(): void{
+    window.location.reload();
   }
 
 

@@ -1,17 +1,13 @@
 <div class="form">
-  
-  
-    <div class="head"> 
-      <span><h3>Modifier Document</h3></span>
-    </div>
-    <p [ngClass]="classCss">{{message}}</p>
-    
-    <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <input matInput type="text" id="resume" [(ngModel)]="updatedDocumentData.resume" required>
-      <!--<mat-error *ngIf="tagForm.get('tag')!.invalid && tagForm.get('tag')!.touched">
-        Le lebel est requis
-      </mat-error>-->
+  <div class="head"> 
+    <span><h3>Modifier Document</h3></span>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <input matInput type="text" id="resume" [(ngModel)]="updatedDocumentData.resume" required>
+    <!--<mat-error *ngIf="tagForm.get('tag')!.invalid && tagForm.get('tag')!.touched">
+      Le lebel est requis
+    </mat-error>-->
   </mat-form-field>
 
   <mat-form-field appearance="outline">
@@ -20,15 +16,14 @@
     <!--<mat-error *ngIf="tagForm.get('tag')!.invalid && tagForm.get('tag')!.touched">
       Le lebel est requis
     </mat-error>-->
-</mat-form-field>
+  </mat-form-field>
         
-    
-    <div >
-      <button mat-raised-button (click)="onSaveChange()" color="primary" type="submit" style="margin-right: 1rem;">
-        Editer
-      </button>
-      <button mat-raised-button type="button" (click)="close()">
-        Annuler
-      </button>
-    </div>
+  <div >
+    <button mat-raised-button (click)="onSaveChange()" color="primary" type="submit" style="margin-right: 1rem;">
+      Editer
+    </button>
+    <button mat-raised-button type="button" (click)="close()">
+      Annuler
+    </button>
   </div>
+</div>

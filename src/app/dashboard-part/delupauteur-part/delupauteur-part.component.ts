@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuteurService } from 'src/app/services/auteur.service';
 import { Auteur } from 'src/app/models/auteur.model';
 import { EditAuteurModalComponent } from './edit-auteur-modal/edit-auteur-modal.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-delupauteur-part',
@@ -21,12 +22,15 @@ export class DelupauteurPartComponent {
   adminID: number = 0;
   message: String = '';
   classCss: String = '';
+  msg = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private auteurService: AuteurService, 
-              private dialog: MatDialog){
+              private dialog: MatDialog,
+              private snackBar: MatSnackBar
+            ){
     const aus: Array<Auteur> = [];
     this.auteurService.getAllAuteurs().subscribe(
       (auteurs: Auteur[]) =>{
@@ -99,20 +103,32 @@ export class DelupauteurPartComponent {
   }
 
   onDelete(auteurID: number, auteur: Auteur){
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+    
     this.auteurService.supAuteur(auteurID, auteur).subscribe({
       next: data => {
-        this.message = 'Suppression de l\'auteur avec succès';
-        this.classCss = 'success';
-        console.log("Suppresion de la catégorie: ", data);
+        this.msg = 'Auteur suprrimé avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
+        console.log("Suppresion de Auteur: ", data);
+        setTimeout(() => {
+          this.reloadPage();
+        }, 500);
       },
       error: err => {
-        this.message = 'Echec de suppression de l\'auteur';
-        this.classCss = 'error';
+        this.msg = 'Échec de Supprimer l\'Auteur❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de suppresion de l\'auteur: ", err);
       }
     });
   }
 
-
+  reloadPage(): void{
+    window.location.reload();
+  }
 
 }

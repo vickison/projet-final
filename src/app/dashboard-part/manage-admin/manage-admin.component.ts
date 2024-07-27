@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { AuthService } from 'src/app/services/auth.service';
@@ -26,6 +27,7 @@ export class ManageAdminComponent implements OnInit{
   isSignupFailed = false;
   message = '';
   classCss='';
+  msg = '';
 
   // Le groupe de contrôles du formulaire
   userForm: FormGroup  = new FormGroup({});
@@ -34,7 +36,9 @@ export class ManageAdminComponent implements OnInit{
     private userService: UtilisateurService,
     private authService: AuthService,
     private router: Router,
-    public dialog: MatDialog) { 
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) { 
     this.userForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
@@ -64,28 +68,31 @@ export class ManageAdminComponent implements OnInit{
     const email = this.userForm.get('email')?.value;
     const password = this.userForm.get('password')?.value;
 
+    const config = new MatSnackBarConfig();
+      config.duration = 4000; // Durée de la notification en millisecondes
+      config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+      config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+      config.panelClass = ['custom-snackbar'];
+
     this.authService.register(nom, prenom, username, email, password).subscribe({
       next: data => {
-        this.message = 'Enregistrement avec succès';
-        this.classCss = 'success';
+        this.msg = 'Admin créé avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log(data);
         this.isSuccessful = true;
         this.isSignupFailed = false;
         setTimeout(() => {
-            //this.dialog.closeAll();
+           
             this.userForm.reset();
-            //this.router.navigateByUrl('/admin/login');
-            //this.dialog.closeAll();
             this.message = '';
             this.classCss = '';
         }, 1000);
       }, 
       error: err =>{
-        this.message = 'Echec d\'enregistrement';
-        this.classCss = 'error';
+        this.msg = 'Échec d\'ajouter Admin❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         this.isSignupFailed = true;
         setTimeout(() => {
-          //this.reloadPage();
           this.userForm.reset();
       }, 1000);
       }
@@ -108,10 +115,7 @@ export class ManageAdminComponent implements OnInit{
         }
       );
     }
-      // Récupérer les données du formulaire
-      //const admin = this.adminForm.value;
-      // Ajouter votre logique ici
-    }
+  }
 }
 
 

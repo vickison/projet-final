@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Categorie } from 'src/app/models/categorie';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { CategorieService } from 'src/app/services/categorie.service';
@@ -20,13 +21,15 @@ export class EditCategoryModalComponent {
   categories: Categorie[] = [];
   message: string = '';
   classCss: string = '';
+  msg = '';
 
   constructor(
     public dialogRef: MatDialogRef<EditCategoryModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {categorie: Categorie},
     private fb: FormBuilder ,
     private utilisateurService: UtilisateurService,
-    private categorieService: CategorieService
+    private categorieService: CategorieService,
+    private snackBar: MatSnackBar
   ){
     // this.tagForm = this.fb.group({
     //   //tag: [data.tag, Validators.required]
@@ -58,10 +61,16 @@ export class EditCategoryModalComponent {
     //const selectedUserId = this.selectedUserId;
     // Envoyer les données mises à jour au composant principal
     //this.dialogRef.close(this.adminForm.value);
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+    
     this.categorieService.modifCategorie(this.updatedCategorieData.categorieID, this.updatedCategorieData).subscribe({
       next: response => {
-        this.message = 'Catégorie modifiée avec succès';
-        this.classCss = 'success';
+        this.msg = 'Catégorie mise à jour avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         const index = this.categories.findIndex(c => c.categorieID === response.categorieID)
         if(index !== -1){
           this.categories[index] = response;
@@ -71,8 +80,8 @@ export class EditCategoryModalComponent {
         }, 1000);
       },
       error: err => {
-        this.message = 'Echec de modifier la catégorie';
-        this.classCss = 'error';
+        this.msg = 'Échec de mise à jour de Catégorie❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de modification: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedCategorieData);

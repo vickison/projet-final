@@ -1,4 +1,4 @@
-<!-- <p class="content">content-part works!</p> -->
+<!-- <p class="content">content-part works!</p>-->
 <div class="container" id="grid"  style="width: auto;"> 
 
     <mat-card class="card" *ngFor="let document of documents; trackBy: trackById" (dblclick)="onDocumentDBLClicked(document)">
@@ -22,51 +22,31 @@
       <div style="display: flex; width: 100%; background-color: rgb(244, 246, 248);">
         <ng-container [ngSwitch]="document.format">
           <div *ngSwitchCase="'application/pdf'" class="iframe-container" >
-            <pdf-viewer #pdfViewer
-                            [src]="getDocumentUrl(document.documentID)"
-                            [render-text]="true"
-                            [show-all]="false"
-                            [page]="1"
-                            [original-size]="false"
-                            [fit-to-page]="true"
-                            [show-borders]="false" 
-                            (after-load-complete)="handlePdfLoad($event)"
-                            (error)="handlePdfError($event)"
-                            style="display: block; height: 4rem; width: 100%;">
-            </pdf-viewer>
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: scale-down;">
           </div>
           <div *ngSwitchCase="'audio/mp3'" class="iframe-container">
-            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'audio/mpeg'" class="iframe-container">
-            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'image/png'" class="iframe-container">
-            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: scale-down;">
           </div>
           <div *ngSwitchCase="'image/jpg'" class="iframe-container">
-            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'image/jpeg'" class="iframe-container">
-            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'image/gif'" class="iframe-container">
-            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'image/tiff'" class="iframe-container">
-            <img mat-card-image src={{getBlobDocument(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%;">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchCase="'video/mp4'" class="iframe-container">
-            <!--<img mat-card-image src="assets/video4.png" alt="Mon image" style="height: 10rem; width: 9rem;">-->
-            <video #videoContainer 
-                    (mouseover)="startVideoPreview()" 
-                    (mouseleave)="stopVideoPreview()" 
-                    style="height: 4rem; width: 100%;"
-                    src = {{getBlobDocument(document.documentID)}}
-                    type="video/mp4" muted control>
-
-            </video>
-            <div class="progress-bar" [style.width.%]="progress"></div>
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;">
           </div>
           <div *ngSwitchDefault>
             <p>Unknown document type</p>
@@ -90,4 +70,4 @@
     </mat-card>
     
   </div>
-  
+

@@ -80,11 +80,7 @@ export class ManageCategoriesComponent {
         // Ajouter votre logique ici
         this.categorieService.creerCategorie(categorie).subscribe({
           next: data => {
-            //this.message = 'Catégorie ajoutée avec succès ';
-            //this.classCss = 'success';
             this.msg = 'Catégorie créée avec succès✅';
-            //this.classCss = 'success';
-            //console.log("Document ajouté avec succès: ", event.data);
             this.snackBar.open(this.msg, 'Fermer', config);
             console.log("Catégorie ajoutée avec succès: ", data);
             setTimeout(() => {
@@ -95,11 +91,7 @@ export class ManageCategoriesComponent {
             }, 1000);
           },
           error: err =>{
-            //this.message = 'Echec d\'ajouter la catégorie';
-            //this.classCss = 'error';
             this.msg = 'Échec d\'ajouter Catégorie❌';
-            //this.classCss = 'success';
-            //console.log("Document ajouté avec succès: ", event.data);
             this.snackBar.open(this.msg, 'Fermer', config);
             console.error("Erreur d'ajouter la catégorie: ", err);
           }

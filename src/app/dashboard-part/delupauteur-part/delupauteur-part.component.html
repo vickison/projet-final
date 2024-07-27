@@ -7,7 +7,6 @@
   </div>
   
   <div class="example-container mat-elevation-z8">
-    <p [ngClass]="classCss">{{message}}</p>
     <mat-table [dataSource]="auteurSource" matSort>
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
@@ -50,11 +49,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
         
-        <button mat-icon-button (click)="openEditModal(row)" color="primary">   
+        <button *ngIf="!row.supprimerAuteur" mat-icon-button (click)="openEditModal(row)" color="primary">   
             <mat-icon>edit</mat-icon>
         </button>
 
-        <button mat-icon-button (click)="onDelete(row.auteurID, row)" color="warn">   
+        <button *ngIf="!row.supprimerAuteur" mat-icon-button (click)="onDelete(row.auteurID, row)" color="warn">   
             <mat-icon>delete</mat-icon>
         </button>
         </mat-cell>

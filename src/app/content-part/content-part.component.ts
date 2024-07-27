@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DetailPartComponent } from '../detail-part/detail-part.component';
 import { CategorieService } from '../services/categorie.service';
 import { RefresherService } from '../services/refresher.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   isMouseOverVideo: boolean = false;
   searchKeyword: string = '';
   flag: boolean = false;
+  documentThumbnailUrl?: string;
   
 
 
@@ -119,7 +121,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private orderService: OrderService,
     private router: Router,
     private categorieService: CategorieService,
-    private refresherService: RefresherService
+    private refresherService: RefresherService,
+    private snackBar: MatSnackBar
   ) {
     
    }
@@ -358,6 +361,14 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   getBlobDocument(id?: number): string {
     return this.documentService.getBlobDocument(id);
+  }
+
+  // getDocumentThumbnail(documentId?: number): string {
+  //   return this.documentService.getDocumentThumbnail(documentId);
+  // }
+
+  getDocumentThumbnail(documentId?: number): string {
+    return this.documentService.getDocumentThumbnail(documentId);
   }
 
   onDocumentClick(fileName?: string, documentID?: number): void {

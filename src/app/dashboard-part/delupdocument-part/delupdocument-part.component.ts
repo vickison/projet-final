@@ -6,6 +6,7 @@ import { DocumentService } from 'src/app/services/document.service';
 import { Document } from 'src/app/models/document.model';
 import { MatDialog } from '@angular/material/dialog';
 import { EditDocumentModalComponent } from './edit-document-modal/edit-document-modal.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-delupdocument-part',
@@ -19,13 +20,16 @@ export class DelupdocumentPartComponent {
   adminID: number = 0;
   message: String = '';
   classCss: String = '';
+  msg = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   
   
   constructor(private documentService: DocumentService,
-              private dialog: MatDialog){
+              private dialog: MatDialog,
+              private snackBar: MatSnackBar
+            ){
     const doc: Array<Document>=[];
     this.documentService.getAllDocuments().subscribe(
       (documents: Document[]) => {
@@ -83,17 +87,32 @@ export class DelupdocumentPartComponent {
   }
 
   onDelete(documenteID: number, document: Document){
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+    
     this.documentService.supDocument(documenteID, document).subscribe({
       next: data => {
-        this.message = 'Suppression du document avec succès';
-        this.classCss = 'success';
+        this.msg = 'Document suprrimé avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Document supprimer avec succes: ", data);
+        setTimeout(() => {
+          //this.dialog.closeAll();
+          this.reloadPage();
+        }, 500);
       },
       error: err => {
-        this.message = 'Echec de suppression du document';
-        this.classCss = 'error';
-        console.log("Echec de supprission avec succes: ", err);
+        this.msg = 'Échec de Supprimer Document❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
+        console.log("Echec de supprission: ", err);
       }
     });
+  }
+
+  reloadPage(): void{
+    window.location.reload();
   }
 }

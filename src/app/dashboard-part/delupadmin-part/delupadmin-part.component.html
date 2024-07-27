@@ -5,12 +5,8 @@
       <input matInput placeholder="Filter"> 
     </mat-form-field>
   </div>
-  
   <div class="example-container mat-elevation-z8">
-  
     <mat-table [dataSource]="usersSource" matSort>
-  
-  
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
@@ -67,11 +63,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
         
-        <button mat-icon-button color="primary" (click)="openEditModal(row)">   
+        <button *ngIf="!row.supprimerUtil" mat-icon-button color="primary" (click)="openEditModal(row)">   
             <mat-icon>edit</mat-icon>
         </button>
 
-        <button mat-icon-button color="warn">   
+        <button *ngIf="!row.supprimerUtil" (click)="onDelete(row.utilisateurID, row)" mat-icon-button color="warn">   
             <mat-icon>delete</mat-icon>
         </button>
         </mat-cell>

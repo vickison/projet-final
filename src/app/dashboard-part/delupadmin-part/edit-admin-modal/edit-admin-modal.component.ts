@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-admin-modal',
@@ -16,12 +17,14 @@ export class EditAdminModalComponent {
   message: String = '';
   classCss: String = '';
   updatedUtilData: Utilisateur;
+  msg = '';
 
   constructor(
     public dialogRef: MatDialogRef<EditAdminModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {utilisateur: Utilisateur},
     private fb: FormBuilder,
-    private utilisateurService: UtilisateurService
+    private utilisateurService: UtilisateurService,
+    private snackBar: MatSnackBar
   ) {
     // this.adminForm = this.fb.group({
     //   // nom: [data.nom, Validators.required],
@@ -42,10 +45,18 @@ export class EditAdminModalComponent {
     //const selectedUserId = this.selectedUserId;
     // Envoyer les données mises à jour au composant principal
     //this.dialogRef.close(this.adminForm.value);
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+
+    
     this.utilisateurService.modifUtilisateur(this.updatedUtilData.utilisateurID, this.updatedUtilData).subscribe({
       next: response => {
-        this.message = 'Auteur modifié avec succès';
-        this.classCss = 'success';
+        this.msg = 'Admin mis à jour avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         const index = this.utilisateurs.findIndex(a => a.utilisateurID === response.utilisateurID)
         if(index !== -1){
           this.utilisateurs[index] = response;
@@ -55,8 +66,8 @@ export class EditAdminModalComponent {
         }, 1000)
       },
       error: err => {
-        this.message = 'Echec de modifiction d\'utilisateur';
-        this.classCss = 'error';
+        this.msg = 'Échec de mis à jour de l\'Admin❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de modifiction d'util.: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedUtilData);

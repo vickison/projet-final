@@ -6,6 +6,7 @@ import { Categorie } from 'src/app/models/categorie';
 import { CategorieService } from 'src/app/services/categorie.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditCategoryModalComponent } from './edit-category-modal/edit-category-modal.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-delupcategory-part',
@@ -19,6 +20,7 @@ export class DelupcategoryPartComponent {
   adminID: number = 0;
   message: String = '';
   classCss: String = '';
+  msg = '';
   //deletedCategorieData: Categorie;
 
 
@@ -27,7 +29,9 @@ export class DelupcategoryPartComponent {
 
 
   constructor(private categorieService: CategorieService,
-              private dialog: MatDialog){
+              private dialog: MatDialog,
+              private snackBar: MatSnackBar
+            ){
     const cat: Array<Categorie> = [];
     this.categorieService.getAllCategories().subscribe(
       (categories: Categorie[]) =>{
@@ -90,18 +94,32 @@ export class DelupcategoryPartComponent {
   }
 
   onDelete(categorie: Categorie){
+
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+    
     this.categorieService.supCategorie(categorie.categorieID, categorie).subscribe({
       next: data => {
-        this.message = 'Suppression de la catégorie avec succès';
-        this.classCss = 'success';
+        this.msg = 'Catégorie suprrimée avec succès✅';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Suppresion de la catégorie: ", data);
+        setTimeout(() => {
+          this.reloadPage();
+        }, 500);
       },
       error: err => {
-        this.message = 'Echec de suppression de la catégorie';
-        this.classCss = 'error';
+        this.msg = 'Échec de Supprimer la Catégorie❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de suppresion de la catégorie: ", err);
       }
     });
+  }
+
+  reloadPage(): void{
+    window.location.reload();
   }
 
 

@@ -27,6 +27,7 @@ export class Document {
     supprimerDocument?: boolean;
     like?: number;
     unlike?: number;
+    thumbnail?: string;
 
     taille?: number;
     format?: string;

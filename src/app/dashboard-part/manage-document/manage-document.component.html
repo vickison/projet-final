@@ -2,9 +2,6 @@
 <div class="head">
   <span><h3>Formulaire Document</h3></span>
 </div>
-<p [ngClass]="classCss">
-  {{message}}
-</p>
 <form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
           style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 3%;">
 

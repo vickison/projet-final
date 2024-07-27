@@ -56,6 +56,12 @@ export class DocumentService {
     return `${this.apiUrl}/documents/public/download/${documentID}`;
   }
 
+
+  getDocumentThumbnail(documentID?: number): string {
+    const url = `${this.apiUrl}/documents/public/${documentID}/thumbnail`;
+    return url;
+  }
+
   setSelectedDocument(document: Document | null): void {
     this.selectedDocumentSubject.next(document);
   }
@@ -274,8 +280,8 @@ export class DocumentService {
     return this.http.get<boolean>(`${this.apiUrl}/documents/public/${documentID}/liked`);
   }
 
-  getDocumentThumbnail(documentID: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/documents/public/${documentID}/thumbnail`, { responseType: 'blob' });
-  }
+  // getDocumentThumbnail(documentID: number): Observable<Blob> {
+  //   return this.http.get(`${this.apiUrl}/documents/public/${documentID}/thumbnail`, { responseType: 'blob' });
+  // }
 
 }

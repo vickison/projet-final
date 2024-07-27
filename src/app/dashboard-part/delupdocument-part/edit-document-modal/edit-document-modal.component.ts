@@ -5,6 +5,7 @@ import { Utilisateur } from 'src/app/models/utilisateur';
 import { DocumentService } from 'src/app/services/document.service';
 import { UtilisateurService } from 'src/app/services/utilisateur.service';
 import { Document } from 'src/app/models/document.model';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-document-modal',
@@ -19,6 +20,7 @@ export class EditDocumentModalComponent {
   utilisateurs: Utilisateur[] = [];
   message: string = '';
   classCss: string = '';
+  msg = '';
   
 
 
@@ -27,7 +29,8 @@ export class EditDocumentModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: {document: Document},
     private fb: FormBuilder,
     private documentService: DocumentService,
-    private utilisateurService: UtilisateurService
+    private utilisateurService: UtilisateurService,
+    private snackBar: MatSnackBar
   ){
     // this.tagForm = this.fb.group({
     //   //tag: [data.tag, Validators.required]
@@ -56,11 +59,17 @@ export class EditDocumentModalComponent {
     //const selectedUserId = this.selectedUserId;
     // Envoyer les données mises à jour au composant principal
     //this.dialogRef.close(this.adminForm.value);
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+    
     this.documentService.modifDocument(this.updatedDocumentData.documentID, 
       this.updatedDocumentData).subscribe({
         next:response => {
-        this.message = 'Label modifié avec succès';
-        this.classCss = 'success';
+          this.msg = 'Document mis à jour avec succès✅';
+          this.snackBar.open(this.msg, 'Fermer', config);
         const index = this.documents.findIndex(d => d.documentID === response.documentID)
         if(index !== -1){
           this.documents[index] = response;
@@ -70,8 +79,8 @@ export class EditDocumentModalComponent {
         }, 1000);
       },
       error: err => {
-        this.message = 'Echec de modifier le document';
-        this.classCss = 'error';
+        this.msg = 'Échec de mise à jour de Document❌';
+        this.snackBar.open(this.msg, 'Fermer', config);
         console.log("Echec de modifier le document: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedDocumentData);
