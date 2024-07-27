@@ -273,6 +273,10 @@ public class UtilisateurController {
 
         //String jwt = jwtTokenProvider.generateJwtToken(authentication);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (userDetails.isDelete()) {
+            logger.warn("User with username {} is deleted and cannot log in.", userDetails.getUsername());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User account is deleted.");
+        }
         ResponseCookie jwtCookie = jwtTokenProvider.generateJwtCookie(userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())

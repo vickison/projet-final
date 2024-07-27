@@ -14,15 +14,18 @@ public class CustomUserDetails extends Utilisateur implements UserDetails {
     private Integer id;
     private String username;
     private String password;
+    private boolean isDelete;
     private Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(Integer id,
                              String username,
                              String password,
+                             boolean isDelete,
                              Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.isDelete = isDelete;
         this.authorities = authorities;
         List<GrantedAuthority> auths = new ArrayList<>();
     }
@@ -38,6 +41,7 @@ public class CustomUserDetails extends Utilisateur implements UserDetails {
                 utilisateur.getUtilisateurID(),
                 utilisateur.getUsername(),
                 utilisateur.getPassword(),
+                utilisateur.isSupprimerUtil(),
                 auths
         );
     }
@@ -54,6 +58,14 @@ public class CustomUserDetails extends Utilisateur implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 
     @Override

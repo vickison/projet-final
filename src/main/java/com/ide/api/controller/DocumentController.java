@@ -38,6 +38,8 @@ import java.util.*;
 public class DocumentController {
 
     private final String basePath ="C:\\Users\\avicky\\libeil\\";
+    private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
+    private final Path thumbnailLocation = Paths.get("C:\\Users\\avicky\\libeil\\thumbnail\\");
     //private final String basePath ="/libeilBack-End/LibEIlH";
     private DocumentRepository documentRepository;
     private DocumentService documentService;
@@ -234,6 +236,26 @@ public class DocumentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping(value = "/public/{documentID}/thumbnail")
+    public ResponseEntity<Resource> getThumbnail(@PathVariable Integer documentID){
+        try {
+            Path file = thumbnailLocation.resolve(documentID + "-thumbnail.jpg");
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/admin/update/{documentID}")
