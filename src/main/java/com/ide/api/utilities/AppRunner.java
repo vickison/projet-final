@@ -13,13 +13,14 @@ import java.util.List;
 @Component
 public class AppRunner implements ApplicationRunner {
     private final DataSource dataSource;
-    private final LikeIllustrationService likeIllustrationService;
+    //private final LikeIllustrationService likeIllustrationService;
 
     @Autowired
-    public  AppRunner(DataSource dataSource,
-                      LikeIllustrationService likeIllustrationService){
+    public  AppRunner(
+            DataSource dataSource
+    ){
         this.dataSource = dataSource;
-        this.likeIllustrationService = likeIllustrationService;
+        //this.likeIllustrationService = likeIllustrationService;
     }
 
     @Override
@@ -27,8 +28,8 @@ public class AppRunner implements ApplicationRunner {
         System.out.println("Database URL: "+ dataSource.getConnection().getMetaData().getURL());
         System.out.println("Database URL: "+ dataSource.getConnection().getMetaData().getURL());
 
-        List<LikeCountDTO> likeCountDTOs = this.likeIllustrationService.countByMention(44);
-        System.out.println(likeCountDTOs.get(0).getMention()+": "+likeCountDTOs.get(0).getCount());
-        System.out.println(likeCountDTOs.get(1).getMention()+": "+likeCountDTOs.get(1).getCount());
+//        List<LikeCountDTO> likeCountDTOs = this.likeIllustrationService.countByMention(44);
+//        System.out.println(likeCountDTOs.get(0).getMention()+": "+likeCountDTOs.get(0).getCount());
+//        System.out.println(likeCountDTOs.get(1).getMention()+": "+likeCountDTOs.get(1).getCount());
     }
 }

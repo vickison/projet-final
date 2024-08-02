@@ -22,6 +22,10 @@ public class LikeIllustrationService {
         this.likeIllustrationRepository.save(illustration);
     }
 
+    public void deleteLikeIllustration(LikeIllustration illustration){
+        this.likeIllustrationRepository.delete(illustration);
+    }
+
     public boolean existingLike(Integer docID, String utilIP){
         return this.likeIllustrationRepository.existsByDocumentIDAndUtilisateurIP(docID, utilIP);
     }

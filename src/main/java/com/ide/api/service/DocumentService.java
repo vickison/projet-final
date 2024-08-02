@@ -1,6 +1,7 @@
 package com.ide.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ide.api.configurations.FilePaths;
 import com.ide.api.dto.DocumentDTO;
 import com.ide.api.entities.*;
 import com.ide.api.enums.Langue;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -38,7 +40,8 @@ public class DocumentService {
     private LikeIllustrationRepository likeIllustrationRepository;
     private ThumbnailService thumbnailService;
 
-    private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
+
+    String thumbnailBasePath = FilePaths.THUMBNAIL_BASE_PATH;
 
     public DocumentService(DocumentRepository documentRepository,
                            CategorieRepository categorieRepository,
@@ -64,191 +67,584 @@ public class DocumentService {
         this.documentRepository.save(document);
         System.out.println(this.documentRepository.save(document));
     }
+//    @Transactional
+//    public void creerDocument(Document document,
+//                              List<Integer> idsCategorie,
+//                              List<Integer> idsTag,
+//                              List<Integer> idsAuteur) throws IOException{
+//
+//            System.out.println("---------------------------");
+//            Document savedDocument = this.documentRepository.save(document);
+//            System.out.println("Service-----------------------------");
+//
+//            if(idsCategorie != null && !idsCategorie.isEmpty()){
+//                CategorieDocument categorieDocument = new CategorieDocument();
+//                for(Integer idCategorie : idsCategorie){
+//                    Categorie categorie = this.categorieRepository.findById(idCategorie)
+//                            .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idCategorie + " introuvable"));
+//
+//                    categorieDocument.setDocument(savedDocument);
+//                    categorieDocument.setCategorie(categorie);
+//
+//                    this.categorieDocumentRepository.save(categorieDocument);
+//
+//                }
+//            }
+//            if(idsTag != null && !idsTag.isEmpty()){
+//                DocumentTag documentTag = new DocumentTag();
+//                for(Integer idTag: idsTag){
+//                    Tag tag = this.tagRepository.findById(idTag)
+//                            .orElseThrow(() -> new EntityNotFoundException("Etiquette avec identifiant: " + idTag + " introuvable"));
+//
+//                    documentTag.setDocument(savedDocument);
+//                    documentTag.setTag(tag);
+//
+//                    this.documentTagRepository.save(documentTag);
+//                }
+//            }
+//            if(idsAuteur != null && !idsAuteur.isEmpty()){
+//                AuteurDocument auteurDocument = new AuteurDocument();
+//                for(Integer idAuteur: idsAuteur){
+//                    Auteur auteur = this.auteurRepository.findById(idAuteur)
+//                            .orElseThrow(() -> new EntityNotFoundException("Auteur avec identifiant: " + idAuteur + " introuvable"));
+//
+//                    auteurDocument.setDocument(savedDocument);
+//                    auteurDocument.setAuteur(auteur);
+//
+//                    this.auteurDocumentRepository.save(auteurDocument);
+//                }
+//            }
+//            generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
+//
+//
+//
+//    }
 
+//    public List<Document> findDocuments(){
+//
+//        List<Document> documents = this.documentRepository.findAll();
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//    }
+
+
+    @Transactional
     public void creerDocument(Document document,
                               List<Integer> idsCategorie,
                               List<Integer> idsTag,
-                              List<Integer> idsAuteur) throws IOException{
-        System.out.println("---------------------------");
-        Document savedDocument = this.documentRepository.save(document);
-        generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
-        System.out.println("Service-----------------------------");
-        if(idsCategorie != null && !idsCategorie.isEmpty()){
-            CategorieDocument categorieDocument = new CategorieDocument();
-            for(Integer idCategorie : idsCategorie){
-                Categorie categorie = this.categorieRepository.findById(idCategorie)
-                        .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idCategorie + " introuvable"));
+                              List<Integer> idsAuteur) throws IOException {
 
-                categorieDocument.setDocument(savedDocument);
-                categorieDocument.setCategorie(categorie);
+        try {
+            Document savedDocument = this.documentRepository.save(document);
 
-                this.categorieDocumentRepository.save(categorieDocument);
+            if (idsCategorie != null && !idsCategorie.isEmpty()) {
+                CategorieDocument categorieDocument = new CategorieDocument();
+                for (Integer idCategorie : idsCategorie) {
+                    Categorie categorie = this.categorieRepository.findById(idCategorie)
+                            .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idCategorie + " introuvable"));
 
+                    categorieDocument.setDocument(savedDocument);
+                    categorieDocument.setCategorie(categorie);
+
+                    this.categorieDocumentRepository.save(categorieDocument);
+                }
             }
-        }
-        if(idsTag != null && !idsTag.isEmpty()){
-            DocumentTag documentTag = new DocumentTag();
-            for(Integer idTag: idsTag){
-                Tag tag = this.tagRepository.findById(idTag)
-                        .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idTag + " introuvable"));
 
-                documentTag.setDocument(savedDocument);
-                documentTag.setTag(tag);
+            if (idsTag != null && !idsTag.isEmpty()) {
+                DocumentTag documentTag = new DocumentTag();
+                for (Integer idTag : idsTag) {
+                    Tag tag = this.tagRepository.findById(idTag)
+                            .orElseThrow(() -> new EntityNotFoundException("Etiquette avec identifiant: " + idTag + " introuvable"));
 
-                this.documentTagRepository.save(documentTag);
+                    documentTag.setDocument(savedDocument);
+                    documentTag.setTag(tag);
+
+                    this.documentTagRepository.save(documentTag);
+                }
             }
-        }
-        if(idsAuteur != null && !idsAuteur.isEmpty()){
-            AuteurDocument auteurDocument = new AuteurDocument();
-            for(Integer idAuteur: idsAuteur){
-                Auteur auteur = this.auteurRepository.findById(idAuteur)
-                        .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idAuteur + " introuvable"));
 
-                auteurDocument.setDocument(savedDocument);
-                auteurDocument.setAuteur(auteur);
+            if (idsAuteur != null && !idsAuteur.isEmpty()) {
+                AuteurDocument auteurDocument = new AuteurDocument();
+                for (Integer idAuteur : idsAuteur) {
+                    Auteur auteur = this.auteurRepository.findById(idAuteur)
+                            .orElseThrow(() -> new EntityNotFoundException("Auteur avec identifiant: " + idAuteur + " introuvable"));
 
-                this.auteurDocumentRepository.save(auteurDocument);
+                    auteurDocument.setDocument(savedDocument);
+                    auteurDocument.setAuteur(auteur);
+
+                    this.auteurDocumentRepository.save(auteurDocument);
+                }
             }
+
+            generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
+
+        } catch (EntityNotFoundException e) {
+
+            System.err.println("Erreur lors de la recherche d'entité: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+
+            System.err.println("Erreur inattendue lors de la création du document: " + e.getMessage());
+            throw new RuntimeException("Erreur inattendue lors de la création du document.", e);
         }
     }
 
-    public List<Document> findDocuments(){
-        List<Document> documents = this.documentRepository.findAll();
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
+
+    public List<Document> findDocuments() {
+        List<Document> documents = new ArrayList<>();
+        try {
+
+            documents = this.documentRepository.findAll();
+            documents = documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    System.err.println("Erreur lors du comptage des likes ou unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération des documents: " + e.getMessage());
+            documents = Collections.emptyList();
+        }
+        return documents;
     }
 
-    public Optional<Document> findDocument(Integer id){
-        return this.documentRepository.findById(id);
+
+//    public Optional<Document> findDocument(Integer id){
+//        return this.documentRepository.findById(id);
+//    }
+
+    public Optional<Document> findDocument(Integer id) {
+        try {
+            return this.documentRepository.findById(id);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la recherche du document avec ID " + id + ": " + e.getMessage());
+            return Optional.empty();
+        }
     }
+
+
+//    public byte[] getDocumentData(Integer id) throws IOException {
+//        Optional<Document> optionalDocument = findDocument(id);
+//        if (optionalDocument.isPresent()) {
+//            Document document = optionalDocument.get();
+//            Path filePath = Paths.get(document.getUrl());
+//            return Files.readAllBytes(filePath);
+//        } else {
+//            throw new RuntimeException("Document not found with id: " + id);
+//        }
+//    }
+
 
     public byte[] getDocumentData(Integer id) throws IOException {
-        Optional<Document> optionalDocument = findDocument(id);
-        if (optionalDocument.isPresent()) {
-            Document document = optionalDocument.get();
-            // Récupérer les données binaires du fichier à partir de l'URL ou de l'emplacement spécifié
-            Path filePath = Paths.get(document.getUrl()); // Supposant que getUrl() retourne l'URL du fichier
-            return Files.readAllBytes(filePath);
-        } else {
-            throw new RuntimeException("Document not found with id: " + id);
-        }
-    }
-    public List<Document> findDocumentsByCategoryId(Categorie categorie){
-        List<Document> documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
-    }
+        try {
+            Optional<Document> optionalDocument = findDocument(id);
+            if (optionalDocument.isPresent()) {
+                Document document = optionalDocument.get();
+                Path filePath = Paths.get(document.getUrl());
 
-    public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur){
-        return this.documentRepository.findByUtilisateurDocumentsUtilisateurID(utilisateur);
-    }
-
-    public List<Document> findDocumentsByAuteurId(Auteur auteur){
-        return this.documentRepository.findByAuteurDocumentsAuteurID(auteur);
-    }
-
-    public List<Document> findDocumentsByTagId(Tag tag){
-        List<Document> documents = this.documentRepository.findByDocumentTagsDocumentID(tag);
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public List<Document> rechercherDocument(String mots){
-        List<Document> documents = this.documentRepository.rechercher(mots);
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
-    }
-    @Transactional
-    public List<Document> searchDocumentByKeyWords(String keywords){
-        String[] keywordArray= keywords.split(",");
-        List<Document> documents = new ArrayList<>();
-        if(keywordArray.length == 1){
-            documents.addAll(documentRepository.searchDocumentByKeyWords(keywordArray[0].trim()));
-        }else{
-            for(String keyword: keywordArray){
-                documents.addAll(documentRepository.searchDocumentByKeyWords(keyword.trim()));
+                return Files.readAllBytes(filePath);
+            } else {
+                throw new RuntimeException("Document not found with id: " + id);
             }
+        } catch (NoSuchFileException e) {
+            System.err.println("Fichier non trouvé pour l'ID du document " + id + ": " + e.getMessage());
+            throw new IOException("Le fichier associé au document n'existe pas.", e);
+        } catch (IOException e) {
+            System.err.println("Erreur de lecture du fichier pour l'ID du document " + id + ": " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Erreur inattendue lors de la récupération des données du document avec ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("Erreur inattendue lors de la récupération des données du document.", e);
         }
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
-        //return documents;
     }
 
-    public List<Document> searchDocument(String searchTerm){
-        String[] keywords= searchTerm.split(",");
-        List<Specification<Document>> specs = new ArrayList<>();
-        for(String keyword: keywords){
-            specs.add(new DocumentSpecification(keyword));
+//    public List<Document> findDocumentsByCategoryId(Categorie categorie){
+//        List<Document> documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//    }
+
+
+    public List<Document> findDocumentsByCategoryId(Categorie categorie) {
+        List<Document> documents;
+        try {
+
+            documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+
+
+            return documents.stream().map(doc -> {
+                try {
+                    // Récupérer et mettre à jour les likes et unlikes
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération des documents pour la catégorie ID " + categorie.getCategorieID() + ": " + e.getMessage(), e);
         }
-        Specification<Document> resultSpec = specs.stream().reduce(Specification::or).orElse(null);
-        List<Document> documents = documentRepository.findAll(resultSpec);
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
-
     }
 
-    public List<Document> findDocumentsByType(TypeFichier typeFichier){
-        List<Document> documents = this.documentRepository.findByTypeFichier(typeFichier);
-        return documents.stream().map(doc -> {
-            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-            return doc;
-        }).collect(Collectors.toList());
 
+//    public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur){
+//        return this.documentRepository.findByUtilisateurDocumentsUtilisateurID(utilisateur);
+//    }
+
+    public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur) {
+        List<Document> documents;
+        try {
+            documents = this.documentRepository.findByUtilisateurDocumentsUtilisateurID(utilisateur);
+            return documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération des documents pour l'utilisateur ID " + utilisateur.getUtilisateurID() + ": " + e.getMessage(), e);
+        }
     }
+
+
+    public List<Document> findDocumentsByAuteurId(Auteur auteur) {
+        List<Document> documents;
+        try {
+
+            documents = this.documentRepository.findByAuteurDocumentsAuteurID(auteur);
+
+
+            return documents.stream().map(doc -> {
+                try {
+
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération des documents pour l'auteur ID " + auteur.getAuteurID() + ": " + e.getMessage(), e);
+        }
+    }
+
+
+//    public List<Document> findDocumentsByTagId(Tag tag){
+//        List<Document> documents = this.documentRepository.findByDocumentTagsDocumentID(tag);
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//    }
+
+    public List<Document> findDocumentsByTagId(Tag tag) {
+        List<Document> documents;
+        try {
+            documents = this.documentRepository.findByDocumentTagsDocumentID(tag);
+
+            return documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération des documents pour le tag ID " + tag.getTagID() + ": " + e.getMessage(), e);
+        }
+    }
+
+
+//    @Transactional
+//    public List<Document> rechercherDocument(String mots){
+//        List<Document> documents = this.documentRepository.rechercher(mots);
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//    }
+
+    @Transactional
+    public List<Document> rechercherDocument(String mots) {
+        List<Document> documents;
+        try {
+            documents = this.documentRepository.rechercher(mots);
+            return documents.stream().map(doc -> {
+                try {
+                    // Récupérer et mettre à jour les likes et unlikes pour chaque document
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    // Loguer l'erreur et mettre à jour avec des valeurs par défaut en cas d'échec
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la recherche des documents avec les mots-clés '" + mots + "': " + e.getMessage(), e);
+        }
+    }
+
+//    @Transactional
+//    public List<Document> searchDocumentByKeyWords(String keywords){
+//        String[] keywordArray= keywords.split(",");
+//        List<Document> documents = new ArrayList<>();
+//        if(keywordArray.length == 1){
+//            documents.addAll(documentRepository.searchDocumentByKeyWords(keywordArray[0].trim()));
+//        }else{
+//            for(String keyword: keywordArray){
+//                documents.addAll(documentRepository.searchDocumentByKeyWords(keyword.trim()));
+//            }
+//        }
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//        //return documents;
+//    }
+
+
+    @Transactional
+    public List<Document> searchDocumentByKeyWords(String keywords) {
+        List<Document> documents = new ArrayList<>();
+
+        try {
+            String[] keywordArray = keywords.split(",");
+            if (keywordArray.length == 1) {
+                documents.addAll(documentRepository.searchDocumentByKeyWords(keywordArray[0].trim()));
+            } else {
+                Set<Document> uniqueDocuments = new HashSet<>();
+                for (String keyword : keywordArray) {
+                    uniqueDocuments.addAll(documentRepository.searchDocumentByKeyWords(keyword.trim()));
+                }
+                documents.addAll(uniqueDocuments);
+            }
+            return documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la recherche des documents avec les mots-clés '" + keywords + "': " + e.getMessage(), e);
+        }
+    }
+
+
+//    public List<Document> searchDocument(String searchTerm){
+//        String[] keywords= searchTerm.split(",");
+//        List<Specification<Document>> specs = new ArrayList<>();
+//        for(String keyword: keywords){
+//            specs.add(new DocumentSpecification(keyword));
+//        }
+//        Specification<Document> resultSpec = specs.stream().reduce(Specification::or).orElse(null);
+//        List<Document> documents = documentRepository.findAll(resultSpec);
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//
+//    }
+
+
+    public List<Document> searchDocument(String searchTerm) {
+        List<Document> documents = new ArrayList<>();
+
+        try {
+            String[] keywords = searchTerm.split(",");
+            List<Specification<Document>> specs = new ArrayList<>();
+            for (String keyword : keywords) {
+                specs.add(new DocumentSpecification(keyword.trim()));
+            }
+            Specification<Document> resultSpec = specs.stream()
+                    .reduce(Specification::or)
+                    .orElse(null);
+
+            if (resultSpec != null) {
+                documents = documentRepository.findAll(resultSpec);
+            }
+            return documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la recherche des documents avec le terme de recherche '" + searchTerm + "': " + e.getMessage(), e);
+        }
+    }
+
+
+//    public List<Document> findDocumentsByType(TypeFichier typeFichier){
+//        List<Document> documents = this.documentRepository.findByTypeFichier(typeFichier);
+//        return documents.stream().map(doc -> {
+//            doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//            doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//            return doc;
+//        }).collect(Collectors.toList());
+//
+//    }
+
+    public List<Document> findDocumentsByType(TypeFichier typeFichier) {
+        List<Document> documents = new ArrayList<>();
+
+        try {
+            documents = this.documentRepository.findByTypeFichier(typeFichier);
+            return documents.stream().map(doc -> {
+                try {
+                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la recherche des documents avec le type de fichier '" + typeFichier + "': " + e.getMessage(), e);
+        }
+    }
+
 
     //@Transactional
-    public  List<Document> getDocumentsSortedBy(String sortedBy){
-        switch (sortedBy){
-            case "date":
-                List<Document> documents = this.documentRepository.findAllByOrderDateCreationDocumentDesc();
-                return documents.stream().map(doc -> {
+//    public  List<Document> getDocumentsSortedBy(String sortedBy){
+//        switch (sortedBy){
+//            case "date":
+//                List<Document> documents = this.documentRepository.findAllByOrderDateCreationDocumentDesc();
+//                return documents.stream().map(doc -> {
+//                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//                    return doc;
+//                }).collect(Collectors.toList());
+//            case "Anglais":
+//            case "Français":
+//            case "Créole":
+//            case "Espagnol":
+//                return this.documentRepository.findAllByOrderLangue(sortedBy).stream().map(doc -> {
+//                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//                    return doc;
+//                }).collect(Collectors.toList());
+//            case "titre":
+//                return this.documentRepository.findAllByOrderTitre().stream().map(doc -> {
+//                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//                    return doc;
+//                }).collect(Collectors.toList());
+//            default:
+//                return this.documentRepository.findAll().stream().map(doc -> {
+//                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
+//                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
+//                    return doc;
+//                }).collect(Collectors.toList());
+//        }
+//    }
+
+
+    public List<Document> getDocumentsSortedBy(String sortedBy) {
+        List<Document> documents = new ArrayList<>();
+
+        try {
+            switch (sortedBy) {
+                case "date":
+                    documents = this.documentRepository.findAllByOrderDateCreationDocumentDesc();
+                    break;
+                case "Anglais":
+                case "Français":
+                case "Créole":
+                case "Espagnol":
+                    documents = this.documentRepository.findAllByOrderLangue(sortedBy);
+                    break;
+                case "titre":
+                    documents = this.documentRepository.findAllByOrderTitre();
+                    break;
+                default:
+                    documents = this.documentRepository.findAll();
+                    break;
+            }
+
+            return documents.stream().map(doc -> {
+                try {
                     doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
                     doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-                    return doc;
-                }).collect(Collectors.toList());
-            case "Anglais":
-            case "Français":
-            case "Créole":
-            case "Espagnol":
-                return this.documentRepository.findAllByOrderLangue(sortedBy).stream().map(doc -> {
-                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-                    return doc;
-                }).collect(Collectors.toList());
-            case "titre":
-                return this.documentRepository.findAllByOrderTitre().stream().map(doc -> {
-                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-                    return doc;
-                }).collect(Collectors.toList());
-            default:
-                return this.documentRepository.findAll().stream().map(doc -> {
-                    doc.setLike(this.likeIllustrationRepository.countLikes(doc.getDocumentID()));
-                    doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
-                    return doc;
-                }).collect(Collectors.toList());
+                } catch (Exception e) {
+                    // Gérer les erreurs de comptage des likes/unlikes
+                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    doc.setLike(0);
+                    doc.setUnlike(0);
+                }
+                return doc;
+            }).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération des documents triés par '" + sortedBy + "': " + e.getMessage(), e);
         }
     }
+
 
 //    public byte[] getDocumentThumbnail(Integer documentID, int width, int height) {
 //        Document document = documentRepository.findById(documentID)
@@ -262,35 +658,90 @@ public class DocumentService {
 //        }
 //    }
 
+//    private String saveThumbnailToFileSystem(byte[] thumbnailData, Integer fileId) throws IOException {
+//        // Sauvegarder la miniature sur le système de fichiers
+//        String thumbnailFileName = fileId + "-thumbnail.jpg";
+//        String thumbnailFilePath = thumbnailBasePath + thumbnailFileName;
+//        Files.write(Paths.get(thumbnailFilePath), thumbnailData);
+//        return thumbnailFilePath;
+//    }
+
+
     private String saveThumbnailToFileSystem(byte[] thumbnailData, Integer fileId) throws IOException {
-        // Sauvegarder la miniature sur le système de fichiers
+
         String thumbnailFileName = fileId + "-thumbnail.jpg";
         String thumbnailFilePath = thumbnailBasePath + thumbnailFileName;
-        Files.write(Paths.get(thumbnailFilePath), thumbnailData);
+
+        Path directoryPath = Paths.get(thumbnailBasePath);
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new IOException("Erreur lors de la création du répertoire pour les miniatures : " + directoryPath, e);
+            }
+        }
+
+        try {
+            Files.write(Paths.get(thumbnailFilePath), thumbnailData);
+        } catch (IOException e) {
+            throw new IOException("Erreur lors de la sauvegarde de la miniature : " + thumbnailFilePath, e);
+        }
+
         return thumbnailFilePath;
     }
 
+
+//    public void generateAndSaveThumbnail(Integer documentId, int thumbnailWidth, int thumbnailHeight) {
+//        try {
+//            Optional<Document> documentOptional = documentRepository.findById(documentId);
+//            if (documentOptional.isPresent()) {
+//                Document document = documentOptional.get();
+//                byte[] fileData = getDocumentData(documentId);
+//                byte[] thumbnailData = thumbnailService.generateThumbnail(fileData, documentId, document.getUrl(), thumbnailWidth, thumbnailHeight);
+//                String thumbnailUrl = thumbnailService.saveThumbnailToFileSystemStr(thumbnailData, documentId);
+//
+//                document.setThumbnail(thumbnailUrl);
+//                documentRepository.save(document);
+//            } else {
+//                throw new IllegalArgumentException("Document not found for id: " + documentId);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Failed to generate or save thumbnail for document id: " + documentId, e);
+//        }
+//    }
+
     public void generateAndSaveThumbnail(Integer documentId, int thumbnailWidth, int thumbnailHeight) {
         try {
+
             Optional<Document> documentOptional = documentRepository.findById(documentId);
             if (documentOptional.isPresent()) {
                 Document document = documentOptional.get();
+
+
                 byte[] fileData = getDocumentData(documentId);
                 byte[] thumbnailData = thumbnailService.generateThumbnail(fileData, documentId, document.getUrl(), thumbnailWidth, thumbnailHeight);
+
+
                 String thumbnailUrl = thumbnailService.saveThumbnailToFileSystemStr(thumbnailData, documentId);
 
-                // Mettre à jour l'URL de la miniature dans l'entité Document
+
                 document.setThumbnail(thumbnailUrl);
-                documentRepository.save(document); // Mettre à jour l'entité dans la base de données avec l'URL de la miniature
+                documentRepository.save(document);
             } else {
-                // Gérer le cas où le document avec l'ID donné n'est pas trouvé
                 throw new IllegalArgumentException("Document not found for id: " + documentId);
             }
         } catch (IOException e) {
-            // Gérer les exceptions liées à la génération ou à la sauvegarde de la miniature
             e.printStackTrace();
             throw new RuntimeException("Failed to generate or save thumbnail for document id: " + documentId, e);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erreur : " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unexpected error occurred while generating or saving thumbnail.", e);
         }
     }
+
 
 }

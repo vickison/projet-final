@@ -1,5 +1,6 @@
 package com.ide.api.service;
 
+import com.ide.api.configurations.FilePaths;
 import com.ide.api.entities.Document;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -20,7 +21,10 @@ import java.util.Optional;
 @Service
 public class ThumbnailService {
 
-    private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
+    //private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
+    //private final String thumbnailBasePath = "/libeilBack-End/LibEIlH/thumbnail/";
+    String thumbnailBasePath = FilePaths.THUMBNAIL_BASE_PATH;
+    String thumbnailVideoTempLoc = FilePaths.THUMBNAIL_VIDEO_TEMP_LOC;
 
 
     public byte[] generateThumbnail(byte[] fileData, Integer fileId, String fileName, int thumbnailWidth, int thumbnailHeight) throws IOException {
@@ -81,7 +85,7 @@ public class ThumbnailService {
     }
 
     public String saveThumbnailToFileSystemStr(byte[] thumbnailData, Integer fileId) throws IOException {
-        // Sauvegarder la miniature sur le système de fichiers
+
         String thumbnailFileName = fileId + "-thumbnail.jpg";
         String thumbnailFilePath = thumbnailBasePath + thumbnailFileName;
         Files.write(Paths.get(thumbnailFilePath), thumbnailData);
@@ -91,20 +95,13 @@ public class ThumbnailService {
     private byte[] generatePdfThumbnail(byte[] pdfData, int thumbnailWidth, int thumbnailHeight, String thumbnailFileName) throws IOException {
         try (PDDocument document = PDDocument.load(pdfData)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
-            PDPage firstPage = document.getPage(0); // Récupérer la première page du PDF
+            PDPage firstPage = document.getPage(0);
 
-            // Rendre la première page en tant qu'image BufferedImage avec une haute résolution
-            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 400, ImageType.RGB); // Augmenter DPI à 400 pour meilleure qualité
-
-            // Redimensionner l'image à la taille de la miniature avec une qualité élevée
+            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 400, ImageType.RGB);
             BufferedImage thumbnail = resizeImage(bufferedImage, thumbnailWidth, thumbnailHeight);
 
-            // Convertir BufferedImage en tableau de bytes
-            byte[] thumbnailData = bufferedImageToBytes(thumbnail, "png"); // Utiliser PNG pour meilleure qualité
-
-            // Enregistrer la miniature dans le système de fichiers
+            byte[] thumbnailData = bufferedImageToBytes(thumbnail, "png");
             saveThumbnailToFileSystem(thumbnailData, thumbnailFileName);
-
             return thumbnailData;
         }
     }
@@ -112,7 +109,6 @@ public class ThumbnailService {
     private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
         BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
-        // Utiliser un algorithme de redimensionnement de haute qualité
         g.drawImage(originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
         g.dispose();
         return resizedImage;
@@ -125,17 +121,11 @@ public class ThumbnailService {
         }
     }
     private byte[] generateVideoThumbnail(byte[] videoData, int thumbnailWidth, int thumbnailHeight, String thumbnailFileName) throws IOException {
-        // Sauvegarder temporairement la vidéo
-        String videoFilePath = saveVideoTemporarily(videoData);
 
-        // Générer la miniature avec FFmpeg
+        String videoFilePath = saveVideoTemporarily(videoData);
         String thumbnailPath = thumbnailBasePath + thumbnailFileName;
         generateVideoThumbnailWithFFmpeg(videoFilePath, thumbnailPath, thumbnailWidth, thumbnailHeight);
-
-        // Lire la miniature depuis le fichier système
         byte[] thumbnailData = Files.readAllBytes(Paths.get(thumbnailPath));
-
-        // Supprimer les fichiers temporaires
         Files.deleteIfExists(Paths.get(videoFilePath));
         Files.deleteIfExists(Paths.get(thumbnailPath));
 
@@ -143,26 +133,26 @@ public class ThumbnailService {
     }
 
     private String saveVideoTemporarily(byte[] videoData) throws IOException {
-        String tempVideoPath = thumbnailBasePath + "video\\temp_video.mp4"; // Chemin où sauvegarder la vidéo temporairement
+        String tempVideoPath = thumbnailVideoTempLoc;
         Files.write(Paths.get(tempVideoPath), videoData);
         return tempVideoPath;
     }
 
     private void generateVideoThumbnailWithFFmpeg(String videoFilePath, String thumbnailPath, int thumbnailWidth, int thumbnailHeight) throws IOException {
-        // Commande FFmpeg pour générer la miniature
+
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "ffmpeg",
                 "-i", videoFilePath,
-                "-ss", "00:00:01", // Extrait l'image à la 1ère seconde de la vidéo (ajustez selon vos besoins)
-                "-vframes", "1", // Nombre de frames à extraire
-                "-s", thumbnailWidth + "x" + thumbnailHeight, // Dimensions de la miniature
+                "-ss", "00:00:01",
+                "-vframes", "1",
+                "-s", thumbnailWidth + "x" + thumbnailHeight,
                 "-f", "image2",
                 thumbnailPath
         );
 
         Process process = processBuilder.start();
         try {
-            process.waitFor(); // Attendre la fin de la commande FFmpeg
+            process.waitFor();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Interrupted while waiting for video thumbnail generation", e);

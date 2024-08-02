@@ -1,5 +1,6 @@
 package com.ide.api.service;
 
+import com.ide.api.configurations.FilePaths;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -14,14 +15,14 @@ import java.util.Base64;
 
 @Service
 public class FileService {
-    private final String basePath ="C:\\Users\\avicky\\libeil\\";
-    //private final String basePath ="/libeilBack-End/LibEIlH";
+
+    String basePath = FilePaths.BASE_PATH;
     public void storeFile(String nomFichier,
                           String dossierFichier,
                           String base64){
         String path = basePath + dossierFichier;
         File nFichier = new File(nomFichier);
-        String locFichier = new File(path).getAbsolutePath()+ "\\"+ nFichier;
+        String locFichier = new File(path).getAbsolutePath()+ "/"+ nFichier;
         try(FileOutputStream fileOutputStream = new FileOutputStream(locFichier);) {
             byte[] decoder = Base64.getDecoder().decode(base64);
             fileOutputStream.write(decoder);
