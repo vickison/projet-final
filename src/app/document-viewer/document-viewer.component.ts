@@ -6,6 +6,8 @@ import { DocumentService } from '../services/document.service';
 import { Document } from '../models/document.model';
 import { takeUntil } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarLikeComponent } from '../snack-bar-like/snack-bar-like.component';
 
 @Component({
   selector: 'app-document-viewer',
@@ -21,8 +23,11 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   isDocumentLiked: boolean | undefined;
   likeButtonVisible: boolean = false;
 
-  constructor(private documentService: DocumentService,
-    private sanitizer: DomSanitizer) {}
+  constructor(
+    private documentService: DocumentService,
+    private sanitizer: DomSanitizer,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
@@ -42,30 +47,39 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   }
 
   closeViewer(): void {
+    let docID;
+    let isLiked;
     this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
       console.log('liked', res);
-      if(confirm(res? 'Unlike 👎 cette illustration': 'Like 👍 cette illustration')){
-        //console.log('Hello ng...');
-        this.documentService.likeIllustration(this.selectedDocument?.documentID).subscribe({
-          next: data => {
-            console.log('Like or Unlike successfully...');
-          },
-          error: err => {
-            console.log('Failed to Like or Unlike...');
-          }
-        });
-        setTimeout(() => {
-          this.reloadPage();
-        }, 300);
-      }
+      // if(confirm(res? 'Unlike 👎 cette illustration': 'Like 👍 cette illustration')){
+      //   //console.log('Hello ng...');
+      //   this.documentService.likeIllustration(this.selectedDocument?.documentID).subscribe({
+      //     next: data => {
+      //       console.log('Like or Unlike successfully...');
+      //     },
+      //     error: err => {
+      //       console.log('Failed to Like or Unlike...');
+      //     }
+      //   });
+      //   setTimeout(() => {
+      //     this.reloadPage();
+      //   }, 300);
+      // }
+      // docID = this.selectedDocument?.documentID;
+      // isLiked = res;
+
+      // this.snackBar.openFromComponent(SnackBarLikeComponent, {
+      //   data: {docID, isLiked },
+      //   duration: 6000
+      // })
       
 
       
     });
     setTimeout(() => {
       this.documentService.setSelectedDocument(null);
-    }, 200);
-    
+      this.reloadPage();
+    }, 500);
     
   }
 

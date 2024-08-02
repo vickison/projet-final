@@ -7,3 +7,18 @@ body {
 } 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Styles pour centrer le snackbar au milieu de la page */
+.mat-snack-bar-container {
+    position: fixed !important; /* Fixe le snackbar en position fixe */
+    top: 50% !important; /* Centre verticalement */
+    left: 50% !important; /* Centre horizontalement */
+    transform: translate(-50%, -50%) !important; /* Ajuste le centrage */
+    width: auto !important; /* Largeur automatique selon le contenu */
+    display: flex !important;
+    justify-content: center !important; /* Centre le contenu horizontalement */
+    align-items: center !important; /* Centre le contenu verticalement */
+    max-width: 90% !important; /* Optionnel : Limite la largeur maximale */
+    z-index: 1000; /* Assurez-vous que le snackbar est au-dessus d'autres éléments */
+  }
+  

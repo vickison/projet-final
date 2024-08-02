@@ -2,9 +2,13 @@
 <div class="overlay" *ngIf="selectedDocument">
   
   <div class="content">
-      <div class="btn-back" role="button" (click)="closeViewer()">
+      <!-- <div class="btn-back" role="button" (click)="closeViewer()">
         <span>&#8249;</span>
-      </div>
+      </div> -->
+
+      <button class="btn-back" role="button" (click)="closeViewer()">
+        <i class="fas fa-chevron-left"></i> Retour
+      </button>
       <div>
         <app-like-button *ngIf="likeButtonVisible" [isLiked]="isDocumentLiked" [documentID]="documentID" (closeClicked)="onCloseButtonClicked()"></app-like-button>
       </div>
@@ -12,6 +16,9 @@
         <div *ngSwitchCase="'application/pdf'" class="iframe-contain">
           <iframe [src]="getSafeUrl(documentUrl)" width="90%" height="100%"></iframe>
         </div>
+        <!-- <div *ngSwitchCase="'application/pdf'" class="iframe-contain">
+          <iframe [src]="getSafeUrl('https://docs.google.com/gview?url=' + documentUrl)" width="90%" height="100%"></iframe>
+        </div> -->
         <div *ngSwitchCase="'audio/mp3'" class="iframe-contain">
           <audio controls width="90%" height="auto">
             <source [src]="getSafeUrl(documentUrl)" type="audio/mp3">
@@ -32,22 +39,22 @@
         </div>
         <div *ngSwitchCase="'image/png'" class="iframe-contain">
           <div class="iframe-contain">
-            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto">
+            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto" style="object-fit: scale-down;">
           </div>
         </div>
         <div *ngSwitchCase="'image/jpg'" class="iframe-contain">
           <div class="iframe-contain">
-            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto">
+            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto" style="object-fit: scale-down;">
           </div>
         </div>
         <div *ngSwitchCase="'image/jpeg'" class="iframe-contain">
           <div class="iframe-contain">
-            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto">
+            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto" style="object-fit: scale-down;">
           </div>
         </div>
         <div *ngSwitchCase="'image/gif'" class="iframe-contain">
           <div class="iframe-contain">
-            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto">
+            <img [src]="getSafeUrl(documentUrl)" alt="Document Image" width="100%" height="auto" style="object-fit: scale-down;">
           </div>
         </div>
         <div *ngSwitchDefault>

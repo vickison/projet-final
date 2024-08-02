@@ -27,6 +27,7 @@ import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 //import { MainPartComponent } from './main-part/main-part.component';
 import { AdminComponent } from './admin/admin.component';
 import { ClientComponent } from './client/client.component';
@@ -78,6 +79,7 @@ import { authInterceptorProviders } from './helper/auth.interceptor';
 import { AuthInterceptor } from './helper/auth.interceptor';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
 import { LikeButtonComponent } from './like-button/like-button.component';
+import { SnackBarLikeComponent } from './snack-bar-like/snack-bar-like.component';
 //import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export function HttpLoaderFactory(http:HttpClient){
@@ -119,7 +121,8 @@ export function HttpLoaderFactory(http:HttpClient){
     EditAdminModalComponent,
     RegisterPartComponent,
     SuperAdminComponent,
-    LikeButtonComponent
+    LikeButtonComponent,
+    SnackBarLikeComponent
     
   ],
   imports: [

@@ -1,0 +1,6 @@
+<div class="custom-snackbar">
+    <span>{{ isLiked ? 'Vous avez aimé ce fichier, n\'aimez plus' : 'Aimez-vous ce fichier'}}</span>
+    <button mat-icon-button (click)="onLikeClick()">
+        <mat-icon>{{ isLiked ? 'thumb_down' : 'thumb_up' }}</mat-icon>
+    </button>
+</div>

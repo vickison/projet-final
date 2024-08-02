@@ -170,47 +170,113 @@ export class DocumentService {
   // }
 
 
+  // creerDocument(
+  //   file: File,
+  //   categorieID: number[],
+  //   tagID: number[],
+  //   auteurID: number[],
+  //   resume: string,
+  //   langue: string,
+  //   titre: string
+  // ): Observable<UploadResponse> {
+  //   const formData: FormData = new FormData();
+  //   formData.append('file', file);
+  //   formData.append('resume', resume);
+  //   formData.append('titre', titre);
+  //   formData.append('langue', langue);
+
+  //   let queryparams = '';
+  //   const categorieIDStr = categorieID.join(',');
+  //   const tagIDStr = tagID.length > 0 ? tagID.join(',') : '';
+  //   const auteurIDStr = auteurID.length > 0 ? auteurID.join(',') : '';
+
+  //   if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}`;
+  //   } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length > 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titre)}`;
+  //   } else if (tagIDStr.length === 0 && tagIDStr.length > 0 && titre.length === 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
+  //   } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titre)}`;
+  //   } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length === 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
+  //   } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length > 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
+  //   } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
+  //   } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0) {
+  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
+  //   }
+
+  //   const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
+  //   console.log(uploadUrl);
+
+  //   return this.http.post(uploadUrl, formData, { reportProgress: true, observe: 'events' }).pipe(
+  //     map(event => {
+  //       if (event.type === HttpEventType.UploadProgress) {
+  //         if (event.total !== undefined) {
+  //           const percentDone = Math.round(100 * event.loaded / event.total);
+  //           return { progress: percentDone }; // Renvoie la progression
+  //         }
+  //       } else if (event instanceof HttpResponse) {
+  //         return { message: 'Document ajouté avec succès✅' };
+  //         //return 'Document ajouté avec succès✅'; // Message de succès
+  //       }
+  //      return {};
+  //     }),
+  //     catchError(error => {
+  //       return throwError(() => new Error('Échec de l\'ajout du document'));
+  //     })
+  //   );
+  // }
+
+
   creerDocument(
     file: File,
     categorieID: number[],
-    tagID: number[],
-    auteurID: number[],
+    tagID: number[] | null, // Ajoutez le type null pour être sûr
+    auteurID: number[] | null, // Ajoutez le type null pour être sûr
     resume: string,
     langue: string,
-    titre: string
+    titre: string | null // Ajoutez le type null pour être sûr
   ): Observable<UploadResponse> {
     const formData: FormData = new FormData();
     formData.append('file', file);
     formData.append('resume', resume);
-    formData.append('titre', titre);
+    formData.append('titre', titre || ''); // Ajoutez un fallback pour éviter null
     formData.append('langue', langue);
-
+  
     let queryparams = '';
     const categorieIDStr = categorieID.join(',');
-    const tagIDStr = tagID.length > 0 ? tagID.join(',') : '';
-    const auteurIDStr = auteurID.length > 0 ? auteurID.join(',') : '';
-
-    if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0) {
+  
+    // Assurez-vous que tagID et auteurID ne sont pas null
+    const tagIDStr = tagID && tagID.length > 0 ? tagID.join(',') : '';
+    const auteurIDStr = auteurID && auteurID.length > 0 ? auteurID.join(',') : '';
+    const titreStr = titre && titre.length > 0 ? titre : '';
+  
+    if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length === 0) {
       queryparams = `?categorieID=${categorieIDStr}`;
-    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titre)}`;
-    } else if (tagIDStr.length === 0 && tagIDStr.length > 0 && titre.length === 0) {
+    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
+    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
+    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titreStr.length === 0) {
       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
-    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titre)}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length === 0) {
+    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titreStr.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titreStr.length === 0) {
       queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0) {
+    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titreStr.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titreStr.length === 0) {
       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
+    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titreStr.length > 0) {
+      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
     }
-
+  
     const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
     console.log(uploadUrl);
-
+  
     return this.http.post(uploadUrl, formData, { reportProgress: true, observe: 'events' }).pipe(
       map(event => {
         if (event.type === HttpEventType.UploadProgress) {
@@ -219,16 +285,16 @@ export class DocumentService {
             return { progress: percentDone }; // Renvoie la progression
           }
         } else if (event instanceof HttpResponse) {
-          return { message: 'Document ajouté avec succès✅' };
-          //return 'Document ajouté avec succès✅'; // Message de succès
+          return { message: 'Document ajouté et mis à jour avec succès✅' };
         }
-       return {};
+        return {};
       }),
       catchError(error => {
         return throwError(() => new Error('Échec de l\'ajout du document'));
       })
     );
   }
+  
 
   getDocumentByKeyword(keysword: string): Observable<Document[]>{
     const formData = new FormData();
@@ -270,6 +336,10 @@ export class DocumentService {
 
   likeIllustration(documentID: number | undefined){
     return this.http.put(`${this.apiUrl}/documents/public/${documentID}/like`, null);
+  }
+
+  unLikeIllustration(documentID: number | undefined){
+    return this.http.put(`${this.apiUrl}/documents/public/${documentID}/unlike`, null);
   }
 
   likeCount(documentID: number | undefined): Observable<any>{

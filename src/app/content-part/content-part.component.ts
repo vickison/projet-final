@@ -31,6 +31,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
   @ViewChild('videoContainer') videoContainer: ElementRef | undefined
+  @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
 
   isHovered = false;
   private previewTimer: any;
@@ -410,7 +411,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   @Output() documentClicked = new EventEmitter<Document>();
 
-  onDocumentDBLClicked(document: Document): void {
+  onDocumentClicked(document: Document): void {
     this.documentClicked.emit(document);
     console.log("Card dblclicked"+document);
   }

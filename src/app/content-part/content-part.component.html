@@ -1,14 +1,14 @@
 <!-- <p class="content">content-part works!</p>-->
 <div class="container" id="grid"  style="width: auto;"> 
 
-    <mat-card class="card" *ngFor="let document of documents; trackBy: trackById" (dblclick)="onDocumentDBLClicked(document)">
+    <mat-card class="card" *ngFor="let document of documents; trackBy: trackById">
     
-      <mat-card-header style="background-color: white; border-top-right-radius: 5%; border-top-left-radius: 5%; ">
+      <mat-card-header (click)="onDocumentClicked(document)" style="background-color: white; border-top-right-radius: 5%; border-top-left-radius: 5%; ">
         <div class="card-content" >
           <mat-card-title style="font-size: small;">{{ document.titre }}</mat-card-title>
           <mat-card-subtitle style="font-size: smaller;">Taille: {{ formatFileSize(document.taille) }}</mat-card-subtitle>
         </div>
-        <div  class="like-dislike-container">
+        <!-- <div  class="like-dislike-container">
           <div class="like" >
               <mat-icon svgIcon="like" ></mat-icon>
               <span>{{ document.like }}</span>
@@ -17,9 +17,9 @@
               <mat-icon svgIcon="dislike" ></mat-icon>
               <span >{{ document.unlike }}</span>
           </div>
-        </div>
+        </div> -->
       </mat-card-header>
-      <div style="display: flex; width: 100%; background-color: rgb(244, 246, 248);">
+      <div (click)="onDocumentClicked(document)" style="display: flex; width: 100%; background-color: rgb(244, 246, 248);">
         <ng-container [ngSwitch]="document.format">
           <div *ngSwitchCase="'application/pdf'" class="iframe-container" >
             <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: scale-down;">

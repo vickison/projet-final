@@ -1,0 +1,40 @@
+$snackbar-background: #323232;
+$snackbar-text-color: white;
+$snackbar-padding: 16px;
+$snackbar-border-radius: 8px;
+$snackbar-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+$button-hover-background: #444; // Couleur de fond lorsque le bouton est survolé
+
+.custom-snackbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $snackbar-background;
+    color: $snackbar-text-color;
+    padding: $snackbar-padding;
+    border-radius: $snackbar-border-radius;
+    box-shadow: $snackbar-shadow;
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+
+    span {
+        flex-grow: 1;
+        margin-right: 8px;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: $snackbar-text-color;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease; // Animation pour la couleur de fond et la transformation
+
+        &:hover {
+            background-color: $button-hover-background; // Changement de couleur de fond au survol
+            transform: scale(1.1); // Léger agrandissement au survol
+            opacity: 0.8; // Réduction de l'opacité pour un effet de survol
+        }
+    }
+}

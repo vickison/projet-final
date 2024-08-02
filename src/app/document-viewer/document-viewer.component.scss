@@ -1,42 +1,78 @@
+
 .overlay {
-  height: 100%;
-  width: 100%;
-  display: flex;
   position: fixed;
-  z-index: 1000;
   top: 0;
   left: 0;
-  right: 0;
-  background-color: rgba(0,0,0, 0.55);
-}
-.content {
-  position: relative;
   width: 100%;
   height: 100%;
-  text-align: center;
-  //margin-top: 30px;
+  background: rgba(0, 0, 0, 0.8); /* Fond sombre semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Assurez-vous que l'overlay est au-dessus des autres éléments */
 }
-.iframe-contain{
-    height: 100%;
-    width: 90%;
-    margin-left: 4rem;
+
+/* Styles pour le conteneur du contenu */
+.content {
+  position: relative;
+  width: 80%; /* Largeur ajustée pour occuper la majorité de l'espace */
+  height: 80%; /* Hauteur ajustée pour occuper la majorité de l'espace */
+  max-width: 1200px; /* Largeur maximale pour les très grands écrans */
+  max-height: 800px; /* Hauteur maximale pour les très grands écrans */
+  background: white; /* Fond blanc pour le contenu */
+  padding: 20px; /* Padding pour espacer le contenu du bord */
+  border-radius: 10px; /* Bord arrondi pour le conteneur */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ombre portée pour le conteneur */
+  overflow: hidden; /* Pour que les éléments ne débordent pas */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styles pour les éléments de média */
+.iframe-contain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .btn-back {
-  position: absolute;
-  top: 2%;
-  left: 1%;
-  font-size: 20px;
-  background-color: rgba(10, 1, 87, 0.9);
-  color: white;
-  border-radius: 3px;
-  text-align: center;
-  padding: 15px;
+  position: fixed; /* Utilisez fixed pour que le bouton reste dans une position fixe */
+  top: 20px; /* Distance du bord supérieur */
+  left: 20px; /* Distance du bord gauche */
+  background-color: #ffffff; /* Fond blanc pour contraster avec les autres éléments */
+  color: #333333; /* Couleur du texte */
+  border: 2px solid #333333; /* Bordure sombre */
+  padding: 10px 15px; /* Padding autour du texte */
+  border-radius: 8px; /* Bord arrondi pour le bouton */
+  font-size: 16px; /* Taille de la police */
+  cursor: pointer; /* Curseur en forme de main pour indiquer que c'est cliquable */
+  z-index: 1100; /* Assurez-vous que le bouton est au-dessus des autres éléments */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre portée pour un effet 3D */
 }
-  
+
+.btn-back i {
+  margin-right: 8px; /* Espacement entre l'icône et le texte */
+}
+
 .btn-back:hover {
-  cursor: pointer;
-  background-color: rgb(15, 1, 78);
+  background-color: #f0f0f0; /* Changer la couleur de fond au survol */
+}
+
+.btn-back:focus {
+  outline: none; /* Retirer le contour par défaut lors du focus */
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2); /* Ajouter une bordure de focus */
+}
+
+iframe, audio, video, img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 
