@@ -82,6 +82,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   documents: Document[] = [];
   searchResults: Document[] = [];
   tempDocuments: Document[] = [];
+  catDocuments: Document[] = [];
   filteredDocuments: Document[] = [];
   orderedDocuments: Document[] = [];
   documentID?: number;
@@ -142,9 +143,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       });
     }
 
+  
     
-    
-
 
     this.refreshSubscription = this.refresherService.shouldRefresh$.subscribe((shouldRefresh) => {
       if (shouldRefresh) {
@@ -162,7 +162,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
               this.categorieService.setFlag(true);
     
               if (this.searchService.getSearchKeyword() === '' && 
-                  this.filterService.getFilter() === '' && 
+                  (this.filterService.getFilter() === '' || this.filterService.getFilter() === 'all') && 
                   this.orderService.getOrder() === '') {
                 return this.fetchDocuments(this.categoryID); // Retourner l'observable de fetchDocuments
               } else {
@@ -185,80 +185,82 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         });
       }
     });
-  
-
-    if(this.searchService.getSearchKeyword() !== '' || 
-      this.filterService.getFilter() !== '' || 
-      this.orderService.getOrder() !== ''){
-                this.orderSubscription = this.orderService.order$.subscribe(order => {
-                  if(order.trim() !== ''){
-                    this.getDocumentsByOrder(order);
-                    this.categoryID = null;
-                    this.orderService.setOrder('');
-                  }
-                  else if(this.categoryID !== null){
-                    this.fetchDocuments(this.categoryID);
-                  }
-                });
-            
-                this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
-                  if(filter.trim() !== ''){
-                    this.getDocumentsByFilter(filter);
-                    this.categoryID = null;
-                    this.filterService.setFilter('');
-                  }
-                  else if (this.categoryID !== null){
-                    this.fetchDocuments(this.categoryID);
-                  }
-                });
-            
-                
-                this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
-                  if(keywords.trim() !== ''){
-                    this.getDocumentBySearch(keywords);
-                    this.categoryID = null;
-                    this.searchService.setSearchKeyword('');
-                  }
-                  else if (this.categoryID !== null){
-                    this.fetchDocuments(this.categoryID);
-                  }
-                });
-    }
-
-   
-    // this.orderSubscription = this.orderService.order$.subscribe(order => {
-    //   if(order.trim() !== ''){
-    //     this.getDocumentsByOrder(order);
-    //     this.categoryID = null;
-    //     this.orderService.setOrder('');
-    //   }
-    //   else if(this.categoryID !== null){
-    //     this.fetchDocuments(this.categoryID);
-    //   }
-    // });
-
-    // this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
-    //   if(filter.trim() !== ''){
-    //     this.getDocumentsByFilter(filter);
-    //     this.categoryID = null;
-    //     this.filterService.setFilter('');
-    //   }
-    //   else if (this.categoryID !== null){
-    //     this.fetchDocuments(this.categoryID);
-    //   }
-    // });
 
     
-    // this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
-    //   if(keywords.trim() !== ''){
-    //     this.getDocumentBySearch(keywords);
-    //     this.categoryID = null;
-    //     this.searchService.setSearchKeyword('');
-    //   }
-    //   else if (this.categoryID !== null){
-    //     this.fetchDocuments(this.categoryID);
-    //   }
-    // });
+  
+
+    // if(this.searchService.getSearchKeyword() !== '' ||
+    //   this.filterService.getFilter() !== '' ||
+    //   this.orderService.getOrder() !== ''){
+    //             this.orderSubscription = this.orderService.order$.subscribe(order => {
+    //               if(order.trim() !== ''){
+    //                 this.getDocumentsByOrder(order);
+    //                 this.categoryID = null;
+    //                 this.orderService.setOrder('');
+    //               }
+    //               else if(this.categoryID !== null){
+    //                 this.fetchDocuments(this.categoryID);
+    //               }
+    //             });
+            
+    //             this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
+    //               if(filter.trim() !== ''){
+    //                 this.getDocumentsByFilter(filter);
+    //                 this.categoryID = null;
+    //                 this.filterService.setFilter('');
+    //               }
+    //               else if (this.categoryID !== null){
+    //                 this.fetchDocuments(this.categoryID);
+    //               }
+    //             });
+            
+                
+    //             this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
+    //               if(keywords.trim() !== ''){
+    //                 this.getDocumentBySearch(keywords);
+    //                 this.categoryID = null;
+    //                 this.searchService.setSearchKeyword('');
+    //               }
+    //               else if (this.categoryID !== null){
+    //                 this.fetchDocuments(this.categoryID);
+    //               }
+    //             });
+    // }
+
+   
+    this.orderSubscription = this.orderService.order$.subscribe(order => {
+      if(order.trim() !== ''){
+        this.getDocumentsByOrder(order);
+        this.categoryID = null;
+        this.orderService.setOrder('');
+      }
+      else if(this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
+    });
+
+    this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
+      if(filter.trim() !== ''){
+        this.getDocumentsByFilter(filter);
+        this.categoryID = null;
+        this.filterService.setFilter('');
+      }
+      else if (this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
+    });
+
+    
+    this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
+      if(keywords.trim() !== ''){
+        this.getDocumentBySearch(keywords);
+        this.categoryID = null;
+        this.searchService.setSearchKeyword('');
+      }
+      else if (this.categoryID !== null){
+        this.fetchDocuments(this.categoryID);
+      }
+    });
     
   }
 
@@ -269,6 +271,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
           // Mise à jour des documents filtrés
           this.documents = documents.filter(doc => !doc.supprimerDocument);
           this.tempDocuments = this.documents; // Mettre à jour tempDocuments si nécessaire
+          this.catDocuments = this.documents;
           console.log('Documents mis à jour: ', this.documents);
   
           // Exemple de mise à jour d'un service ou autre logique nécessaire après récupération des documents
@@ -283,7 +286,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   fetchDocuments2(categorieID: number) {
     
-    this.tempDocuments = this.documents;
+    //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByCategorie(categorieID)
       .subscribe((documents: Document[]) => {
@@ -316,11 +319,13 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     this.documents = [];
     this.documentService.getDocumentByKeyword(keywords).subscribe((documents: Document[]) => {
       this.documents = documents.filter(doc => !doc.supprimerDocument);
-      if(this.tempDocuments.length > 0){
+      if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.searchResults = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
         console.log('Search in category: ', this.searchResults);
         this.documents = this.searchResults;
         this.categorieService.setFlag(true);
+      }else{
+        this.tempDocuments = this.documents;
       }
     },(error: any) =>{
       console.error('Error loading documents', error);
@@ -330,15 +335,26 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   getDocumentsByFilter(type: string): void{
     //this.tempDocuments = this.documents;
-    this.documents = [];
+    //this.documents = [];
     this.documentService.getDocumentsByType(type).subscribe((documents: Document[]) =>{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
-      if(this.tempDocuments.length > 0){
+      if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.filteredDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
         console.log('Filter in category: ', this.filteredDocuments);
+        console.log('Filter type: ', type);
         this.documents = this.filteredDocuments;
         this.categorieService.setFlag(true);
-        //this.tempDocuments = [];
+
+      }
+      // else if(this.tempDocuments.length > 0 && this.catDocuments.length === 0){
+      //   this.filteredDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
+      //   console.log('Filter in category: ', this.filteredDocuments);
+      //   console.log('Filter type: ', type);
+      //   this.documents = this.filteredDocuments;
+      //   this.categorieService.setFlag(true);
+      // }
+      else{
+        this.tempDocuments = this.documents;
       }
     }, (error: any) =>{
       console.log('Error fetching documents ', error);
@@ -350,9 +366,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     this.documents = [];
     this.documentService.getDocumentsByOrder(order).subscribe((documents: Document[]) =>{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
-      if(this.tempDocuments.length > 0){
+      if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.orderedDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
         this.documents = this.orderedDocuments;
+      }else{
+        this.tempDocuments = this.documents;
       }
     }, (error: any ) => {
       console.log('Error fetching documents ', error);
@@ -475,13 +493,34 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     }
   }
 
-  copyLink(){
-    const link = window.location.href;
-    console.log(link);
-    navigator.clipboard.writeText(link).then(() => {
-      alert("Lien copié dans le clipboard...");
-    }).catch(err =>{
-      console.error("Echec de copier le lien...");
+  // copyLink(){
+  //   const link = window.location.href;
+  //   console.log(link);
+  //   navigator.clipboard.writeText(link).then(() => {
+  //     alert("Lien copié dans le clipboard...");
+  //   }).catch(err =>{
+  //     console.error("Echec de copier le lien...");
+  //   });
+  // }
+
+  copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(
+      () => {
+        this.showSnackBar('URL copié dans le Cliboard!');
+      },
+      (err) => {
+        console.error('Echec de copier URL: ', err);
+        this.showSnackBar('Echec de copier URL.');
+      }
+    );
+  }
+
+  private showSnackBar(message: string) {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 2000, // Duration in milliseconds
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
     });
   }
 

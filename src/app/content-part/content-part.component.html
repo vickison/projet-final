@@ -1,6 +1,17 @@
-<!-- <p class="content">content-part works!</p>-->
-<div class="container" id="grid"  style="width: auto;"> 
 
+<div *ngIf="tempDocuments.length === 0" class="welcome-container">
+  <div class="welcome-message animate__animated animate__fadeInUp">
+    <h1 class="animate__animated animate__fadeIn">Bonjour chers internautes</h1>
+    <p class="animate__animated animate__fadeIn animate__delay-1s">
+    </p>
+    <ul class="instructions-list">
+      <li><span role="img" aria-label="pointing-left">👈</span> Cliquer à gauche sur une catégorie pour explorer ses illustrations.</li>
+      <li><span role="img" aria-label="pointing-up">👆</span> Cliquer sur l'un des boutons en haut de la page pour rechercher ou filtrer.</li>
+    </ul>
+  </div>
+</div>
+
+<div *ngIf="tempDocuments.length > 0" class="container" id="grid"  style="width: auto;"> 
     <mat-card class="card" *ngFor="let document of documents; trackBy: trackById">
     
       <mat-card-header (click)="onDocumentClicked(document)" style="background-color: white; border-top-right-radius: 5%; border-top-left-radius: 5%; ">

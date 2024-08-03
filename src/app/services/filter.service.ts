@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 })
 export class FilterService {
 
-  private filterSubject = new BehaviorSubject<string>('all');
+  private filterSubject = new BehaviorSubject<string>('');
   filter$: Observable<string> = this.filterSubject.asObservable();
  
 
