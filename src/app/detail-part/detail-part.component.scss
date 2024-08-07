@@ -1,7 +1,13 @@
-.detail-dialog-container{
+.detail-dialog-container {
   padding: 5%;
   width: 20rem;
   height: 15rem;
+
+}
+
+.detail-dialog-title {
+  text-align: center;
+  width: 100%; /* Assure que le texte est centré par rapport à la largeur du conteneur */
 }
 
 // @media screen and (min-width: 768px) and (max-width: 1023px) {

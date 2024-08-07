@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur';
 import { Observable } from 'rxjs/internal/Observable';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dashboard-part',
@@ -37,7 +38,9 @@ export class DashboardPartComponent implements OnInit {
   constructor(public dialog: MatDialog, 
     private tokenService: TokenStorageService,
     private router: Router,
-    private utilisateurService: UtilisateurService) { 
+    private utilisateurService: UtilisateurService,
+    private snackBar: MatSnackBar
+  ) { 
       //this.utilisateur = this.utilisateurService.getUser(Number(this.tokenService.getIdUser()));
     }
 
@@ -47,8 +50,6 @@ export class DashboardPartComponent implements OnInit {
     if(!this.tokenService.isLoggedIn()){
       this.router.navigate(['/admin/login']);
     }
-    
-    console.log(this.tokenService.getIdUser());
     this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
       next: data => {
         if(data.superAdmin){
@@ -103,11 +104,15 @@ export class DashboardPartComponent implements OnInit {
       case 'Admin':
         if(this.isSuperAdmin){
           if (button === 'Ajouter') {
-            console.log("toto");
             this.dialog.open(ManageAdminComponent, { width: '40%' });
           }
         }else{
-          alert("Oupps! Il semblerait que l'autorisation est interdite...");
+          this.snackBar.open('Oupps! Il semblerait que l\'autorisation est interdite...', 'Fermer', {
+            duration: 2000, // Duration in milliseconds
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+        
         }
         // Ajoutez d'autres cas pour les boutons Modifier et Supprimer
         break;

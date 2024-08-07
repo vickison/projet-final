@@ -174,35 +174,47 @@ export class AppModule {
    
   constructor(private matIconRegistry: MatIconRegistry,
               private domSanitizer: DomSanitizer){
-    this.matIconRegistry.addSvgIcon("folder",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/folder6.svg"));
-  
-    this.matIconRegistry.addSvgIcon("telecharger",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/preview.svg"));
-  
-    this.matIconRegistry.addSvgIcon("partage",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/link.svg"));
-  
-    this.matIconRegistry.addSvgIcon("contenupdf",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/contenupdf.svg"));
+      this.matIconRegistry.addSvgIcon("folder",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/folder6.svg"));
+    
+      this.matIconRegistry.addSvgIcon("telecharger",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/preview.svg"));
+    
+      this.matIconRegistry.addSvgIcon("partage",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/link.svg"));
+    
+      this.matIconRegistry.addSvgIcon("contenupdf",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/contenupdf.svg"));
 
-    this.matIconRegistry.addSvgIcon("image",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/image.svg"));
+      this.matIconRegistry.addSvgIcon("image",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/image.svg"));
 
-    this.matIconRegistry.addSvgIcon("video",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/video.svg"));
+      this.matIconRegistry.addSvgIcon("video",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/video.svg"));
 
-    this.matIconRegistry.addSvgIcon("aud",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/aud.svg"));
+      this.matIconRegistry.addSvgIcon("aud",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/aud.svg"));
 
-    this.matIconRegistry.addSvgIcon("selectall",
-    this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/selectall.svg"));
-  
-    this.matIconRegistry.addSvgIcon("like",
+      this.matIconRegistry.addSvgIcon("selectall",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/selectall.svg"));
+    
+      this.matIconRegistry.addSvgIcon("like",
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/like.svg"));
 
       this.matIconRegistry.addSvgIcon("dislike",
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/dislike.svg"));
+
+      this.matIconRegistry.addSvgIcon("hand-hello",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/hand-hello.svg")
+      );
+
+      this.matIconRegistry.addSvgIcon("hand-gauche",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/hand-gauche.svg")
+      );
+
+      this.matIconRegistry.addSvgIcon("hand-haut",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/hand-haut.svg")
+      );
     }
  }
 

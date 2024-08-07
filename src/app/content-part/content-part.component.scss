@@ -1,3 +1,10 @@
+.contenu {
+  width: 85%; /* Définit la largeur du conteneur */
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur totale */
+  //background-color: #8b0404;
+  margin-left: 15%;
+}
+
 .contenair{
   width: 75%;
 }
@@ -22,8 +29,23 @@
 }
 
 .iframe-container{
-  width: 100%;
-  height: 4rem;
+  //width: 100%;
+  //height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 8rem; /* Largeur fixe du conteneur */
+  height: 6rem; /* Hauteur fixe du conteneur */
+  background-color: rgb(244, 246, 248);
+  box-sizing: border-box;
+  margin: auto;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+  width: 7rem; /* Largeur fixe de l'image */
+  height: 6rem; /* Hauteur fixe de l'image */
 }
 
 mat-card-title {
@@ -51,12 +73,19 @@ mat-card-title {
 .buttons {
   display: flex; /* On active le mode flexbox */
   justify-content: space-around; /* On répartit les boutons horizontalement avec un espace égal entre eux */
+  padding: 0.5rem;  // Ajuster le padding pour diminuer la hauteur
+  height: auto;  // Permet d'ajuster automatiquement la hauteur en fonction du contenu
+  padding-bottom: 0; 
+  padding-top: 0;
+  // background-color: red;
+  border-top: 0.1px solid rgba(128, 128, 128, 0.26);  /* Surligne en bas en gris clair */
 }
 
 
 
 #grid{
-  margin-left: 13rem;
+  //margin-left: 13rem;
+  margin-left: 0;
   margin-top: 5rem;
   display: grid;
   grid-auto-flow: row; 
@@ -185,6 +214,48 @@ width: auto;
   margin-right: 7px; /* Espacement entre l'emoji et le texte */
 }
 
+/* Animation pour la rotation */
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(17deg); } 
+  100% { transform: rotate(0deg); }
+}
+
+/* Styles pour l'icône animée */
+.hand-rotation {
+  animation: rotate 1s infinite; /* Ajustez la durée selon vos besoins */
+  display: inline-block; /* Important pour que l'animation fonctionne correctement */
+  transform-origin: bottom center; /* Fixe la partie basse de l'icône */
+}
+
+@keyframes moveLeftRight {
+  0% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(-5px); }
+}
+
+/* Animation pour le déplacement gauche/droite des autres icônes */
+.icon-left {
+  animation: moveLeftRight 1s infinite;
+}
+
+/* Animation pour le déplacement haut/bas des autres icônes */
+@keyframes moveUpDown {
+  0% { transform: translateY(-5px); }
+  50% { transform: translateY(5px); }
+  100% { transform: translateY(-5px); }
+}
+
+.icon-up {
+  animation: moveUpDown 1s infinite;
+}
+
+// .hand-icon {
+//   width: 48px; /* Ajustez la largeur */
+//   height: 48px; /* Ajustez la hauteur */
+//   font-size: 48px; /* Ajustez la taille du texte pour la compatibilité */
+// }
+
 @media screen and (min-width: 768px) and (max-width: 1023px) {
 
   .card-header {
@@ -255,14 +326,14 @@ width: auto;
     margin-bottom: -0.2rem;
    }
 
-   .iframe-container{
-    width: 100%;
-    //height: 4rem;
-  }
+  //  .iframe-container{
+  //   width: 100%;
+  //   //height: 4rem;
+  // }
 
-  .iframe-container img{
-    object-fit: cover;
-  }
+  // .iframe-container img{
+  //   object-fit: cover;
+  // }
 }
 
 @media screen and (max-width: 767px) {
@@ -337,10 +408,10 @@ width: auto;
     margin-bottom: -0.1rem;
    }
 
-   .iframe-container{
-    width: 100%;
-    //height: 4rem;
-  }
+  //  .iframe-container{
+  //   width: 100%;
+  //   //height: 4rem;
+  // }
 
 }
 

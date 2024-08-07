@@ -11,7 +11,7 @@
 
             <nav>
                 <ul style="padding-top: 1.5rem">
-                    <li *ngFor="let categorie of categories" style="font-size: 125%">
+                    <li *ngFor="let categorie of categories">
                         <a (click)="onCategoryClick($event,categorie.categorieID)">
                             {{ categorie.nom }}
                         </a>
@@ -25,7 +25,7 @@
                         <span style="color: gray; text-align: center;  display: block; margin: 0 auto; font-size: small;">IN MEMORIAM
                         </span>
                         <span style="color: white; text-align: center;  display: block; font-size: smaller;">Jacques Faubert Étienne</span>
-                        <span style="color: white; text-align: center;  display: block; font-size: x-small;">Naissance - 2022</span>
+                        <span style="color: white; text-align: center;  display: block; font-size: x-small;">24-02-1982 - 22-02-2022</span>
                         <span style="color: white; text-align: center;  display: block; font-size: x-small;">Ingénieur - Professeur</span>
                         <span style="color: white; text-align: center;  display: block; font-size: x-small;">FDS | UEH</span>
         

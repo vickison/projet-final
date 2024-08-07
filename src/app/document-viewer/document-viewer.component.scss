@@ -41,35 +41,50 @@
   overflow: hidden;
 }
 
+
 .btn-back {
-  position: fixed; /* Utilisez fixed pour que le bouton reste dans une position fixe */
-  top: 20px; /* Distance du bord supérieur */
-  left: 20px; /* Distance du bord gauche */
-  background-color: #ffffff; /* Fond blanc pour contraster avec les autres éléments */
-  color: #333333; /* Couleur du texte */
-  border: 2px solid #333333; /* Bordure sombre */
-  padding: 10px 15px; /* Padding autour du texte */
-  border-radius: 8px; /* Bord arrondi pour le bouton */
-  font-size: 16px; /* Taille de la police */
-  cursor: pointer; /* Curseur en forme de main pour indiquer que c'est cliquable */
-  z-index: 1100; /* Assurez-vous que le bouton est au-dessus des autres éléments */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #ffffff;
+  color: #333333;
+  border: 2px solid #333333;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre portée pour un effet 3D */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-back i {
-  margin-right: 8px; /* Espacement entre l'icône et le texte */
+  margin-right: 8px;
 }
 
 .btn-back:hover {
-  background-color: #f0f0f0; /* Changer la couleur de fond au survol */
+  background-color: #f0f0f0;
 }
 
 .btn-back:focus {
-  outline: none; /* Retirer le contour par défaut lors du focus */
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2); /* Ajouter une bordure de focus */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles pour les petits écrans */
+@media (max-width: 600px) {
+  .btn-back {
+    top: 10px; /* Réduire la distance du bord supérieur */
+    left: 10px; /* Réduire la distance du bord gauche */
+    padding: 8px 12px; /* Réduire le padding */
+    font-size: 14px; /* Réduire la taille de la police */
+  }
+
+  .btn-back i {
+    margin-right: 6px; /* Réduire l'espacement entre l'icône et le texte */
+  }
 }
 
 iframe, audio, video, img {
@@ -112,4 +127,20 @@ iframe, audio, video, img {
     font-size: 15px;
   }
   
+}
+
+@media (max-width: 600px) {
+  .content {
+    width: 90%; /* Réduire la largeur pour mieux s'adapter aux petits écrans */
+    height: auto; /* Laisser la hauteur s'ajuster automatiquement */
+    max-width: 100%; /* Assurer que le contenu ne dépasse pas l'écran */
+    max-height: none; /* Supprimer la hauteur maximale */
+    padding: 10px; /* Réduire le padding pour les petits écrans */
+    border-radius: 8px; /* Réduire le rayon des bordures pour les petits écrans */
+  }
+
+  .iframe-contain {
+    width: 100%; /* Assurer que le conteneur de l'iframe occupe toute la largeur disponible */
+    height: auto; /* Ajuster la hauteur automatiquement */
+  }
 }

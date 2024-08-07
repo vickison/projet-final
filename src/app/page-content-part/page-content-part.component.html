@@ -8,7 +8,8 @@
 <mat-sidenav-content class="page_content"> 
     <app-header-part></app-header-part>
     <app-left-part ></app-left-part> 
-    <app-content-part (documentClicked)="openDocumentViewer($event)" class="contenu"></app-content-part>
+    <app-content-part (documentClicked)="openDocumentViewer($event)" ></app-content-part>
+    <!-- <app-content-part (documentClicked)="openDocumentViewer($event)" ></app-content-part> -->
     <app-document-viewer [selectedDocument]="selectedDocument" (closeViewer)="closeDocumentViewer()"></app-document-viewer>
     <!-- <app-detail-part></app-detail-part> -->
     <app-footer-part></app-footer-part>
