@@ -66,33 +66,33 @@ width: 80%;
 }
 
 
-.progress-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px; /* Espace entre la barre de progression et l'input file */
-}
-
-progress {
-  width: 100%; /* Barre de progression prend la largeur complète */
-  height: 20px; /* Hauteur de la barre de progression */
-}
-
-progress::-webkit-progress-bar {
-  background-color: #f0f0f0; /* Couleur de fond de la barre de progression */
-}
-
-progress::-webkit-progress-value {
-  background-color: #4caf50; /* Couleur de la barre de progression remplie */
-}
-
-.prc {
-  margin-left: 10px; /* Espace entre la barre de progression et le texte du pourcentage */
-  font-weight: bold; /* Style du texte du pourcentage */
-}
 
 .custom-snackbar {
   background-color: #3f51b5; /* Couleur de fond personnalisée */
   color: white; /* Couleur du texte personnalisée */
   font-size: 14px; /* Taille de police personnalisée */
   text-align: center; /* Centrer le texte */
+}
+
+.progress-container {
+  width: 80%;
+  margin: 0 auto; /* Centre la barre de progression horizontalement */
+  padding: 1rem; /* Ajoute un peu d'espace autour de la barre */
+}
+
+mat-progress-bar {
+  width: 100%; /* La barre de progression prend toute la largeur de son conteneur */
+}
+
+.spinner-wrapper {
+  display: flex;            /* Utilise Flexbox pour le centrage */
+  justify-content: center; /* Centre le contenu horizontalement */
+  align-items: center;     /* Centre le contenu verticalement */
+  height: 100vh;           /* Prend la hauteur totale de la fenêtre */
+  width: 100vw;            /* Prend la largeur totale de la fenêtre */
+  position: fixed;         /* Fixe le conteneur à la fenêtre */
+  top: 0;                  /* Positionne le conteneur en haut de la fenêtre */
+  left: 0;                 /* Positionne le conteneur à gauche de la fenêtre */
+  z-index: 1000;           /* Assure que le spinner est au-dessus des autres éléments */
+  background: rgba(114, 114, 114, 0.7); /* Optionnel : ajoute un fond semi-transparent */
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
@@ -18,10 +18,12 @@ import { SnackBarLikeComponent } from '../snack-bar-like/snack-bar-like.componen
 export class DocumentViewerComponent implements OnInit, OnChanges{
  
   @Input() selectedDocument: Document | null = null;
+  @Output() closeViewer = new EventEmitter<void>();
   documentUrl: string | null = null;
   documentID: number | undefined;
   isDocumentLiked: boolean | undefined;
   likeButtonVisible: boolean = false;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private documentService: DocumentService,
@@ -30,12 +32,29 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   ) {}
 
   ngOnInit(): void {
-    this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
-      this.selectedDocument = document;
-      console.log("Selected document: ", document);
-      this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
-      this.documentID = this.selectedDocument?.documentID;
-    });
+    // this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
+    //   this.selectedDocument = document;
+    //   console.log("Selected document: ", document);
+    //   this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
+    //   this.documentID = this.selectedDocument?.documentID;
+    // });
+
+    this.subscription.add(
+      this.documentService.selectedDocument$.subscribe((document: Document | null) => {
+        this.selectedDocument = document;
+        console.log("Selected document: ", document);
+
+        // Met à jour l'URL et l'ID du document
+        if (this.selectedDocument) {
+          this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument.documentID);
+          this.documentID = this.selectedDocument.documentID;
+        } else {
+          // Si aucun document n'est sélectionné, réinitialiser l'URL et l'ID
+          this.documentUrl = null;
+          this.documentID = undefined;
+        }
+      })
+    );
 
   }
 
@@ -46,40 +65,17 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
     
   }
 
-  closeViewer(): void {
-    let docID;
-    let isLiked;
-    this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
-      console.log('liked', res);
-      // if(confirm(res? 'Unlike 👎 cette illustration': 'Like 👍 cette illustration')){
-      //   //console.log('Hello ng...');
-      //   this.documentService.likeIllustration(this.selectedDocument?.documentID).subscribe({
-      //     next: data => {
-      //       console.log('Like or Unlike successfully...');
-      //     },
-      //     error: err => {
-      //       console.log('Failed to Like or Unlike...');
-      //     }
-      //   });
-      //   setTimeout(() => {
-      //     this.reloadPage();
-      //   }, 300);
-      // }
-      // docID = this.selectedDocument?.documentID;
-      // isLiked = res;
-
-      // this.snackBar.openFromComponent(SnackBarLikeComponent, {
-      //   data: {docID, isLiked },
-      //   duration: 6000
-      // })
-      
-
-      
-    });
+  closeViewerPage(): void {
+    // let docID;
+    // let isLiked;
+    // this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
+    //   console.log('liked', res);   
+    // });
     setTimeout(() => {
-      this.documentService.setSelectedDocument(null);
-      this.reloadPage();
-    }, 500);
+      //this.documentService.setSelectedDocument(null);
+      this.closeViewer.emit();
+      //this.reloadPage();
+    }, 100);
     
   }
 

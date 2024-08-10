@@ -47,6 +47,8 @@ export class ManageDocumentComponent implements OnInit {
    tagModalOpen: boolean = false;
    uploadProgress: number = 0;
    msg = '';
+   isUploading: boolean = false;
+   isProcessing: boolean = false;
 
    constructor(
       private fb: FormBuilder,
@@ -137,38 +139,25 @@ export class ManageDocumentComponent implements OnInit {
       config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
       config.panelClass = ['custom-snackbar'];
 
-      let docUpl = false;
-
+      this.isUploading = true;
+      this.isProcessing = true;
       this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
         next: (response: any) => {
           if (response.progress !== undefined) {
-            // C'est le pourcentage de progression
             this.uploadProgress = response.progress;
-            console.log('Progression du chargement: ', event);
-            if(response.progress === 100){
-              this.snackBar.open('Ce n\'est pas terminé! Création thumbnail en cours...', 'Fermer', config);
-            }
-            // Mettre à jour la barre de progression ou tout autre indicateur visuel
-          }else if (response.message) {
+          }if (response.message) {
+            this.isProcessing = false;
             this.msg = response.message;
             this.snackBar.open(this.msg, 'Fermer', config);
-            this.uploadProgress = 0;
+            this.isUploading = false;
             setTimeout(() => {
               this.documentForm.reset();
-              
             }, 1000);
           }
-          // else if(event === 100 && docUpl){
-          //   this.msg = 'Thumbnail créée avec succès✅';
-          //   this.snackBar.open(this.msg, 'Fermer', config);
-          //   this.uploadProgress = 0;
-          // }
         },
         error: err => {
-          //this.message = 'Échec d\'ajout du document';
+          this.isProcessing = false;
           this.msg = 'Échec d\'ajouter Illustration❌';
-          // this.classCss = 'error';
-          // console.error("Échec d'ajout du document: ", err);
           this.snackBar.open(this.msg, 'Fermer', config);
         }
       });

@@ -2,6 +2,16 @@
 <div class="head">
   <span><h3>Formulaire Document</h3></span>
 </div>
+<!-- <div *ngIf="isUploading">
+  <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+</div> -->
+<div *ngIf="isProcessing" class="spinner-wrapper">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="100"
+    color="warn">
+  </mat-progress-spinner>
+</div>
 <form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
           style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 3%;">
 
@@ -10,13 +20,6 @@
       <span>Upload Document</span>
       <input type="file" id="file" formControlName="file" (change)="onFileChange($event)" accept=".pdf, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff, .mpeg" />
     </label>
-  </div>
-
-  <div *ngIf="uploadProgress > 0" class="progress-container" >
-    <!-- Barre de progression -->
-    <progress max="100" [value]="uploadProgress" style="width: 100px;"></progress>
-    <!-- Affichage du pourcentage -->
-    <span class="prc">{{ uploadProgress }}%</span>
   </div>
 
   <mat-form-field appearance="outline">

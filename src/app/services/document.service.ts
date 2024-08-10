@@ -29,6 +29,7 @@ export class DocumentService {
 
   private apiUrl = environment.apiUrl;
   private selectedDocumentSubject = new BehaviorSubject<Document | null>(null);
+  selectedDocument$ = this.selectedDocumentSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -230,6 +231,15 @@ export class DocumentService {
   //   );
   // }
 
+  private createQueryParams(categorieID: number[], tagID: number[] | null, auteurID: number[] | null, titre: string | null): string {
+    const categorieIDStr = categorieID.join(',');
+    const tagIDStr = tagID && tagID.length > 0 ? tagID.join(',') : '';
+    const auteurIDStr = auteurID && auteurID.length > 0 ? auteurID.join(',') : '';
+    const titreStr = titre && titre.length > 0 ? titre : '';
+  
+    return `?categorieID=${categorieIDStr}${tagIDStr ? '&tagID=' + tagIDStr : ''}${auteurIDStr ? '&auteurID=' + auteurIDStr : ''}${titreStr ? '&newTitle=' + encodeURIComponent(titreStr) : ''}`;
+  }
+
 
   creerDocument(
     file: File,
@@ -246,36 +256,10 @@ export class DocumentService {
     formData.append('titre', titre || ''); // Ajoutez un fallback pour éviter null
     formData.append('langue', langue);
   
-    let queryparams = '';
-    const categorieIDStr = categorieID.join(',');
-  
-    // Assurez-vous que tagID et auteurID ne sont pas null
-    const tagIDStr = tagID && tagID.length > 0 ? tagID.join(',') : '';
-    const auteurIDStr = auteurID && auteurID.length > 0 ? auteurID.join(',') : '';
-    const titreStr = titre && titre.length > 0 ? titre : '';
-  
-    if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length === 0) {
-      queryparams = `?categorieID=${categorieIDStr}`;
-    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
-    } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titreStr.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
-    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titreStr.length === 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
-    } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titreStr.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titreStr.length === 0) {
-      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titreStr.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titreStr.length === 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
-    } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titreStr.length > 0) {
-      queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titreStr)}`;
-    }
-  
+    const queryparams = this.createQueryParams(categorieID, tagID, auteurID, titre);
     const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
-    console.log(uploadUrl);
+  
+
   
     return this.http.post(uploadUrl, formData, { reportProgress: true, observe: 'events' }).pipe(
       map(event => {
@@ -294,6 +278,8 @@ export class DocumentService {
       })
     );
   }
+
+  
   
 
   getDocumentByKeyword(keysword: string): Observable<Document[]>{

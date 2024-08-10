@@ -11,7 +11,7 @@ import { FooterPartComponent } from './footer-part/footer-part.component';
 import { ContentPartComponent } from './content-part/content-part.component';
 import { DetailPartComponent } from './detail-part/detail-part.component';
 import { PageContentPartComponent } from './page-content-part/page-content-part.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+//import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +27,9 @@ import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 //import { MainPartComponent } from './main-part/main-part.component';
 import { AdminComponent } from './admin/admin.component';
@@ -139,8 +142,9 @@ export function HttpLoaderFactory(http:HttpClient){
     MatIconModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatProgressBarModule,
+    BrowserAnimationsModule,
     BrowserModule,
-    NoopAnimationsModule,
     ClientRoutineModule,
     AdminRoutineModule,
     AppRoutineModule,

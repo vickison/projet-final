@@ -42,6 +42,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   searchKeyword: string = '';
   flag: boolean = false;
   documentThumbnailUrl?: string;
+  displayWelcome: boolean = true;
   
 
 
@@ -130,9 +131,14 @@ export class ContentPartComponent implements OnInit, OnDestroy{
    }
 
   ngOnInit(): void {
+
+
+
+    this.displayWelcome = true;
     
     
     if(!this.categorieService.getFlag()){
+      this.displayWelcome = false;
       console.log('Without refresh service....');
       this.route.params.subscribe(params =>{
         const categoryID = +params['categorieID'];
@@ -149,7 +155,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     this.refreshSubscription = this.refresherService.shouldRefresh$.subscribe((shouldRefresh) => {
       if (shouldRefresh) {
         console.log('Refresh requested...');
-    
+        this.displayWelcome = false;
         // Utilisation de switchMap pour gérer les paramètres de l'URL de manière asynchrone
         this.route.params.pipe(
           switchMap(params => {
@@ -230,6 +236,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
    
     this.orderSubscription = this.orderService.order$.subscribe(order => {
       if(order.trim() !== ''){
+        this.displayWelcome = false;
         this.getDocumentsByOrder(order);
         this.categoryID = null;
         this.orderService.setOrder('');
@@ -241,6 +248,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
     this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
       if(filter.trim() !== ''){
+        this.displayWelcome = false;
         this.getDocumentsByFilter(filter);
         this.categoryID = null;
         this.filterService.setFilter('');
@@ -253,6 +261,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     
     this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
       if(keywords.trim() !== ''){
+        this.displayWelcome = false;
         this.getDocumentBySearch(keywords);
         this.categoryID = null;
         this.searchService.setSearchKeyword('');
@@ -265,6 +274,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   fetchDocuments(categorieID: number): Observable<null> {
+    this.displayWelcome = false;
     return this.documentService.getDocumentsByCategorie(categorieID)
       .pipe(
         switchMap((documents: Document[]) => {
@@ -285,7 +295,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
 
   fetchDocuments2(categorieID: number) {
-    
+    this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByCategorie(categorieID)
@@ -315,6 +325,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentBySearch(keywords: string): void{
+    this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentByKeyword(keywords).subscribe((documents: Document[]) => {
@@ -334,6 +345,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentsByFilter(type: string): void{
+    this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     //this.documents = [];
     this.documentService.getDocumentsByType(type).subscribe((documents: Document[]) =>{
@@ -362,6 +374,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   getDocumentsByOrder(order: string): void{
+    this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     this.documents = [];
     this.documentService.getDocumentsByOrder(order).subscribe((documents: Document[]) =>{
