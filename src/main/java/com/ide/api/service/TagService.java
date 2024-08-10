@@ -35,18 +35,6 @@ public class TagService {
         this.utilisateurTagRepository = utilisateurTagRepository;
     }
 
-//    public void createTag(Tag tag,
-//                          Integer idUtilisateur){
-//        Tag tagSaved = this.tagRepository.save(tag);
-//        UtilisateurTag utilisateurTag = new UtilisateurTag();
-//        Utilisateur utilisateur = this.utilisateurRepository.findById(idUtilisateur)
-//                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + idUtilisateur + " introuvable"));
-//        utilisateurTag.setUtilisateur(utilisateur);
-//        utilisateurTag.setTag(tagSaved);
-//        utilisateurTag.setTypeGestion(TypeGestion.Ajouter);
-//        this.utilisateurTagRepository.save(utilisateurTag);
-//    }
-
     @Transactional
     public void createTag(Tag tag, Integer idUtilisateur) {
         Logger logger = LoggerFactory.getLogger(getClass());
@@ -79,11 +67,6 @@ public class TagService {
         }
     }
 
-
-//    public List<Tag> findTags(){
-//        return this.tagRepository.findAll();
-//    }
-
     public List<Tag> findTags() {
         try {
             List<Tag> tags = this.tagRepository.findAll();
@@ -94,11 +77,6 @@ public class TagService {
             throw new RuntimeException("Erreur lors de la récupération des tags", e);
         }
     }
-
-//    public Tag findTag(Integer id){
-//        return this.tagRepository.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Etiquette avec identifiant: " + id + " introuvable"));
-//    }
 
     public Tag findTag(Integer id) {
         try {
@@ -115,10 +93,6 @@ public class TagService {
         }
     }
 
-//    public List<Tag> findTagsByDocumentId(Document document){
-//        return this.tagRepository.findByDocumentTagsDocumentID(document);
-//    }
-
     public List<Tag> findTagsByDocumentId(Document document) {
         if (document == null) {
             logger.error("Document fourni est null");
@@ -134,10 +108,6 @@ public class TagService {
             throw new RuntimeException("Erreur lors de la recherche des Tags", e);
         }
     }
-
-//    public List<Tag> findTagsByUtilisateurId(Utilisateur utilisateur){
-//        return this.tagRepository.findByUtilisateurTagsUtilisateurID(utilisateur);
-//    }
 
     public List<Tag> findTagsByUtilisateurId(Utilisateur utilisateur) {
         if (utilisateur == null) {

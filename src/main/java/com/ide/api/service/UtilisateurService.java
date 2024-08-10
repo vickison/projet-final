@@ -36,13 +36,6 @@ public class UtilisateurService {
         this.adminUtilisateurRepository = adminUtilisateurRepository;
     }
 
-//    public void createUtilisateur(Utilisateur utilisateur){
-//        String hashedPassword = passwordEncoder.encode(utilisateur.getPassword());
-//        utilisateur.setPassword(hashedPassword);
-//        this.utilisateurRepository.save(utilisateur);
-//
-//    }
-
     public void createUtilisateur(Utilisateur utilisateur) {
         if (utilisateur == null) {
             logger.error("Utilisateur fourni est null");
@@ -65,21 +58,6 @@ public class UtilisateurService {
             throw new RuntimeException("Erreur lors de la création de l'utilisateur", e);
         }
     }
-
-//    public void creerUtilisateur(Utilisateur utilisateur,
-//                                 Integer adminID){
-//        String hashedPassword = passwordEncoder.encode(utilisateur.getPassword());
-//        utilisateur.setPassword(hashedPassword);
-//        Utilisateur utilisateurSaved = this.utilisateurRepository.save(utilisateur);
-//        AdminUtilisateur adminUtilisateur = new AdminUtilisateur();
-//        Utilisateur admin = this.utilisateurRepository.findById(adminID)
-//                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
-//        adminUtilisateur.setAdminID(admin);
-//        adminUtilisateur.setUtilisateurID(utilisateurSaved);
-//        adminUtilisateur.setTypeGestion(TypeGestion.Ajouter);
-//        this.adminUtilisateurRepository.save(adminUtilisateur);
-//
-//    }
 
 
     @Transactional
@@ -120,10 +98,6 @@ public class UtilisateurService {
         }
     }
 
-//    public List<Utilisateur> findUtilisateurs(){
-//        return this.utilisateurRepository.findAll();
-//    }
-
     public List<Utilisateur> findUtilisateurs() {
         try {
             List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
@@ -156,19 +130,6 @@ public class UtilisateurService {
         }
     }
 
-//    public boolean utilisateurAuthentifieParEmail(String email, String password){
-//        Utilisateur utilisateur = this.utilisateurRepository.findByEmail(email);
-//
-//        if(utilisateur == null)
-//            return false;
-//        if(!utilisateur.isAdmin()){
-//            return passwordEncoder.matches(password, utilisateur.getPassword());
-//        }else{
-//            return false;
-//        }
-//
-//    }
-
 
     public boolean utilisateurAuthentifieParEmail(String email, String password) {
         try {
@@ -199,19 +160,6 @@ public class UtilisateurService {
         }
     }
 
-//    public boolean adminAuthentifieParEmail(String email, String password){
-//        Utilisateur utilisateur = this.utilisateurRepository.findByEmail(email);
-//
-//        if(utilisateur == null)
-//            return false;
-//        if(utilisateur.isAdmin()){
-//            return passwordEncoder.matches(password, utilisateur.getPassword());
-//        }else{
-//            return false;
-//        }
-//
-//    }
-
 
     public boolean adminAuthentifieParEmail(String email, String password) {
         try {
@@ -241,19 +189,6 @@ public class UtilisateurService {
             throw new RuntimeException("Erreur lors de l'authentification", e);
         }
     }
-
-//    public boolean utilisateurAuthentifieParUsername(String username, String password){
-//        Utilisateur utilisateur = this.utilisateurRepository.findByUsername(username);
-//
-//        if(utilisateur == null)
-//            return false;
-//        if(!utilisateur.isAdmin()){
-//            return passwordEncoder.matches(password, utilisateur.getPassword());
-//        }else{
-//            return false;
-//        }
-//
-//    }
 
 
     public boolean utilisateurAuthentifieParUsername(String username, String password) {
@@ -286,20 +221,6 @@ public class UtilisateurService {
             throw new RuntimeException("Erreur lors de l'authentification", e);
         }
     }
-
-//    public boolean adminAuthentifieParUsername(String username, String password){
-//        Utilisateur utilisateur = this.utilisateurRepository.findByUsername(username);
-//
-//        if(utilisateur == null)
-//            return false;
-//        if(utilisateur.isAdmin()) {
-//            return passwordEncoder.matches(password, utilisateur.getPassword());
-//        }else{
-//            return false;
-//        }
-//
-//    }
-
 
     public boolean adminAuthentifieParUsername(String username, String password) {
         try {

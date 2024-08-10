@@ -31,21 +31,6 @@ public class AuteurService {
         this.utilisateurAuteurRepository = utilisateurAuteurRepository;
     }
 
-//    public void createAuteur(Auteur auteur,
-//                             Integer idUtilisateur){
-//        Auteur savedAuteur = this.auteurRepository.save(auteur);
-//        UtilisateurAuteur utilisateurAuteur = new UtilisateurAuteur();
-//        Utilisateur utilisateur = this.utilisateurRepository.findById(idUtilisateur)
-//                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + idUtilisateur + " introuvable"));
-//
-//        utilisateurAuteur.setAuteur(savedAuteur);
-//        utilisateurAuteur.setUtilisateur(utilisateur);
-//        utilisateurAuteur.setTypeGestion(TypeGestion.Ajouter);
-//        this.utilisateurAuteurRepository.save(utilisateurAuteur);
-//    }
-
-
-
     @Transactional
     public void createAuteur(Auteur auteur, Integer idUtilisateur) {
         Logger logger = LoggerFactory.getLogger(getClass());
@@ -78,10 +63,6 @@ public class AuteurService {
     }
 
 
-//    public List<Auteur> findAuteurs(){
-//        return this.auteurRepository.findAll();
-//    }
-
     public List<Auteur> findAuteurs() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -94,11 +75,6 @@ public class AuteurService {
             throw new RuntimeException("Erreur lors de la récupération des auteurs", e);
         }
     }
-
-//    public Auteur findAuteur(Integer id){
-//        return this.auteurRepository.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Auteur avec identifiant: " + id + " introuvable"));
-//    }
 
 
     public Auteur findAuteur(Integer id) {
@@ -118,10 +94,6 @@ public class AuteurService {
         }
     }
 
-
-//    public List<Auteur> findAuteursByUtilisateurId(Utilisateur utilisateur){
-//        return this.auteurRepository.findByUtilisateurAuteursUtilisateurID(utilisateur);
-//    }
 
     public List<Auteur> findAuteursByUtilisateurId(Utilisateur utilisateur) {
         Logger logger = LoggerFactory.getLogger(getClass());

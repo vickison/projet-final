@@ -8,6 +8,7 @@ import com.ide.api.entities.*;
 import com.ide.api.enums.Mention;
 import com.ide.api.enums.TypeFichier;
 import com.ide.api.enums.TypeGestion;
+import com.ide.api.message.DocumentCreationResponse;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.*;
 import com.ide.api.service.*;
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
@@ -118,31 +121,30 @@ public class DocumentController {
     @PostMapping(value = "/admin/ajouter",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseMessage> ajouterDocument(
+    public ResponseEntity<DocumentCreationResponse> ajouterDocument(
             @ModelAttribute DocumentDTO documentDTO,
             @RequestParam(name = "newTitle", required = false) String newTitle,
             @RequestParam(name = "categorieID", required = true) List<Integer> categorieID,
             @RequestParam(name = "auteurID", required = false) List<Integer> auteurID,
             @RequestParam(name = "tagID", required = false) List<Integer> tagID) throws IOException {
 
-        // Récupération des détails de l'utilisateur connecté
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer utilisateurID = userDetails.getId();
 
         MultipartFile file = documentDTO.getFile();
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(new ResponseMessage("Le fichier ne peut pas être vide."));
+            return ResponseEntity.badRequest().body(new DocumentCreationResponse("Le fichier ne peut pas être vide."));
         }
 
-        // Préparer les informations pour le stockage
+
         String originalFilename = file.getOriginalFilename();
         String baseDirectory = creerDossier(originalFilename);
         String filePath = createFileUrl(file, newTitle, baseDirectory);
 
-        // Stocker le fichier
+
         fileService.storeFile(updateFileName(file, newTitle), baseDirectory, Base64.getEncoder().encodeToString(file.getBytes()));
 
-        // Créer l'objet Document
+
         Document document = new Document();
         document.setTitre(updateFileName(file, newTitle));
         document.setTaille(file.getSize());
@@ -157,23 +159,26 @@ public class DocumentController {
             document.setAuteurCreationDocument(utilisateur.getUsername());
 
             if (utilisateur.isAdmin()) {
-                // Créer le document et enregistrer l'association avec l'utilisateur
-                documentService.creerDocument(document, categorieID, tagID, auteurID);
+
+//                documentService.creerDocument(document, categorieID, tagID, auteurID);
+                DocumentCreationResponse response = documentService.creerDocument(document, categorieID, tagID, auteurID);
+
+                //generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
+
                 UtilisateurDocument utilisateurDocument = new UtilisateurDocument();
                 utilisateurDocument.setDocument(document);
                 utilisateurDocument.setUtilisateur(utilisateur);
                 utilisateurDocument.setTypeGestion(TypeGestion.Ajouter);
                 utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
 
-                // Répondre avec succès
-                return ResponseEntity.ok(new ResponseMessage("Succès de chargement du fichier : " + originalFilename));
+                return ResponseEntity.ok(response);
             } else {
                 // Répondre si l'utilisateur n'est pas un admin
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseMessage("Utilisateur non privilégié..."));
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new DocumentCreationResponse("Utilisateur non privilégié..."));
             }
         } catch (Exception e) {
             // Répondre en cas d'échec
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Échec de chargement du fichier : " + originalFilename + " !"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new DocumentCreationResponse("Échec de chargement du fichier : " + originalFilename + " !"));
         }
     }
 
@@ -191,96 +196,6 @@ public class DocumentController {
         return parts.length > 1 ? "." + parts[1] : "";
 
     }
-//    ResponseEntity<ResponseMessage> ajouterDocument(@ModelAttribute DocumentDTO documentDTO,
-//                                                    @RequestParam(name = "newTitle", required = false) String newTitle,
-//                                                    @RequestParam(required = true, name = "categorieID") List<Integer> categorieID,
-//                                                    @RequestParam(name = "auteurID", required = false) List<Integer> auteurID,
-//                                                    @RequestParam(name = "tagID", required = false) List<Integer> tagID) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-//        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Integer utilisateurID = userDetails.getId();
-//        fileService.storeFile(updateFileName(documentDTO.getFile(),newTitle),
-//                creerDossier(documentDTO.getFile().getOriginalFilename()),
-//                Base64.getEncoder().encodeToString(documentDTO.getFile().getBytes()));
-//        Document document = new Document();
-//        String msg = "";
-//        System.out.println("------------------------------");
-//        document.setTitre(updateFileName(documentDTO.getFile(),newTitle));
-//        document.setTaille(documentDTO.getFile().getSize());
-//        document.setFormat(documentDTO.getFile().getContentType());
-//        document.setResume(documentDTO.getResume());
-//        if(newTitle != null){
-//            switch (Objects.requireNonNull(documentDTO.getFile().getContentType())){
-//                case "application/pdf":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".pdf");
-//                    break;
-//                case "video/mp4":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".mp4");
-//                    break;
-//                case "audio/mp3":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".mp3");
-//                    break;
-//                case "audio/mpeg":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".mp3");
-//                    break;
-//                case "image/jpeg":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".jpeg");
-//                    break;
-//                case "image/jpg":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".jpg");
-//                    break;
-//                case "image/png":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".png");
-//                    break;
-//                case "image/gif":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".gif");
-//                    break;
-//                case "image/tiff":
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+newTitle+".tiff");
-//                    break;
-//                default:
-//                    document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+documentDTO.getFile().getOriginalFilename());
-//            }
-//        }else{
-//            document.setUrl(basePath+creerDossier(documentDTO.getFile().getOriginalFilename())+"/"+documentDTO.getFile().getOriginalFilename());
-//        }
-//        document.setLangue(documentDTO.getLangue());
-//        document.setTypeFichier(typeFichier(documentDTO.getFile().getOriginalFilename()));
-//        System.out.println("------------------------------");
-//        try{
-//            Utilisateur existingutilisateur = utilisateurService.findUtilisateur(utilisateurID);
-//            document.setAuteurCreationDocument(existingutilisateur.getUsername());
-//            if(existingutilisateur.isAdmin()){
-//                System.out.println(">Admin user...");
-//                System.out.println("Path: "+document.getUrl());
-//                System.out.println(document.getTaille());
-//                this.documentService.creerDocument(document, categorieID, tagID, auteurID);
-//                //this.documentRepository.save(document);
-//                UtilisateurDocument utilisateurDocument = new UtilisateurDocument();
-//                utilisateurDocument.setDocument(document);
-//                utilisateurDocument.setUtilisateur(existingutilisateur);
-//                utilisateurDocument.setTypeGestion(TypeGestion.Ajouter);
-//                utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
-//
-//                msg = "Succès de chargement du fichier : " + documentDTO.getFile().getOriginalFilename();
-//                return ResponseEntity
-//                        .status(HttpStatus.OK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .body(new ResponseMessage(msg));
-//            }else {
-//                msg = "Utilisateur non privilégié...";
-//                return ResponseEntity
-//                        .status(HttpStatus.EXPECTATION_FAILED)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .body(new ResponseMessage(msg));
-//            }
-//        } catch (Exception e){
-//            msg = "Echec de chargement du fichier : " + documentDTO.getFile().getOriginalFilename() + "!";
-//            return ResponseEntity
-//                    .status(HttpStatus.EXPECTATION_FAILED)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .body(new ResponseMessage(msg));
-//        }
-//    }
 
     @GetMapping(value = "/public", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Document> retrieveAllDocuments(){

@@ -19,6 +19,9 @@ public final class FilePaths {
 
     public static final Path THUMBNAIL_LOCATION = Paths.get(THUMBNAIL_BASE_PATH);
 
+    //public static final String SLASH_VS_ANTI_SLASH = "/";
+    public static final String SLASH_VS_ANTI_SLASH = "\\";
+
 
 
 

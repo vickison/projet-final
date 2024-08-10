@@ -20,16 +20,11 @@ import java.util.Optional;
 
 @Service
 public class ThumbnailService {
-
-    //private final String thumbnailBasePath = "C:\\Users\\avicky\\libeil\\thumbnail\\";
-    //private final String thumbnailBasePath = "/libeilBack-End/LibEIlH/thumbnail/";
     String thumbnailBasePath = FilePaths.THUMBNAIL_BASE_PATH;
     String thumbnailVideoTempLoc = FilePaths.THUMBNAIL_VIDEO_TEMP_LOC;
 
 
     public byte[] generateThumbnail(byte[] fileData, Integer fileId, String fileName, int thumbnailWidth, int thumbnailHeight) throws IOException {
-        //byte[] fileData = documentService.getDocumentData(fileId);
-        //Optional<Document> documentOptional = documentService.findDocument(fileId);
         String fileExtension = getFileExtension(fileName);
         String thumbnailFileName = fileId+ "-thumbnail.jpg";
 

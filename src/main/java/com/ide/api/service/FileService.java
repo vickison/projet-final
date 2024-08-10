@@ -17,12 +17,13 @@ import java.util.Base64;
 public class FileService {
 
     String basePath = FilePaths.BASE_PATH;
+    String slashVsAntiSlash = FilePaths.SLASH_VS_ANTI_SLASH;
     public void storeFile(String nomFichier,
                           String dossierFichier,
                           String base64){
         String path = basePath + dossierFichier;
         File nFichier = new File(nomFichier);
-        String locFichier = new File(path).getAbsolutePath()+ "/"+ nFichier;
+        String locFichier = new File(path).getAbsolutePath()+ slashVsAntiSlash+ nFichier;
         try(FileOutputStream fileOutputStream = new FileOutputStream(locFichier);) {
             byte[] decoder = Base64.getDecoder().decode(base64);
             fileOutputStream.write(decoder);
@@ -43,7 +44,7 @@ public class FileService {
             Path filePath = Paths.get(basePath).resolve(fileId);
             return Files.readAllBytes(filePath);
         } catch (IOException ex) {
-            throw new RuntimeException("Failed to read file " + fileId, ex);
+            throw new RuntimeException("Echec de lecture de fichier:  " + fileId, ex);
         }
     }
 

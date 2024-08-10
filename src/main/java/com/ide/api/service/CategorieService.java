@@ -39,18 +39,6 @@ public class CategorieService {
         this.utilisateurCategorieRepository = utilisateurCategorieRepository;
     }
 
-//    public void createCategorie(Categorie categorie,
-//                                Integer idUtilisateur) {
-//        Categorie categorieSaved = this.categorieRepository.save(categorie);
-//        UtilisateurCategorie utilisateurCategorie = new UtilisateurCategorie();
-//        Utilisateur utilisateur = this.utilisateurRepository.findById(idUtilisateur)
-//                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + idUtilisateur + " introuvable"));
-//        utilisateurCategorie.setCategorieID(categorieSaved);
-//        utilisateurCategorie.setUtilisateurID(utilisateur);
-//        utilisateurCategorie.setTypeGestion(TypeGestion.Ajouter);
-//        this.utilisateurCategorieRepository.save(utilisateurCategorie);
-//    }
-
     @Transactional
     public void createCategorie(Categorie categorie, Integer idUtilisateur) {
         Logger logger = LoggerFactory.getLogger(getClass());
@@ -77,11 +65,6 @@ public class CategorieService {
         }
     }
 
-
-//    public List<Categorie> findAllCategories() {
-//        return this.categorieRepository.findAll();
-//    }
-
     public List<Categorie> findAllCategories() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -98,12 +81,6 @@ public class CategorieService {
         }
     }
 
-
-//    public Categorie findCategory(Integer id){
-//        return this.categorieRepository.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + id + " introuvable"));
-//    }
-
     public Categorie findCategory(Integer id) {
         try {
             // Rechercher la catégorie par ID
@@ -116,13 +93,6 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la recherche de la catégorie avec ID: " + id, e);
         }
     }
-
-
-//    public List<Categorie> findCategoriesByUtilisateurId(Utilisateur utilisateur){
-//        return this.categorieRepository.findByUtilisateurCategoriesUtilisateurID(utilisateur);
-//    }
-
-
 
     public List<Categorie> findCategoriesByUtilisateurId(Utilisateur utilisateur) {
         try {
@@ -143,15 +113,6 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la recherche des catégories pour l'utilisateur avec ID: " + (utilisateur != null ? utilisateur.getUtilisateurID() : "inconnu"), e);
         }
     }
-
-
-//    public void updateCategorie(Integer documentID,
-//                               Integer adminID){
-//        Categorie existingCategorie = this.categorieRepository.findById(documentID)
-//                .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + documentID + " introuvable"));
-//
-//    }
-
 
     @Transactional
     public void updateCategorie(Integer categorieID, Integer adminID, Categorie updatedCategorieData) {
