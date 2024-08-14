@@ -9,6 +9,8 @@ import com.ide.api.repository.CategorieRepository;
 import com.ide.api.repository.UtilisateurCategorieRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,19 +38,22 @@ public class CategorieController {
 
     private UtilisateurCategorieService utilisateurCategorieService;
     private DocumentService documentService;
+    private CacheManager cacheManager;
 
     public CategorieController(CategorieService categorieService,
                                UtilisateurService utilisateurService,
                                UtilisateurCategorieService utilisateurCategorieService,
                                UtilisateurRepository utilisateurRepository,
                                DocumentService documentService,
-                               CategorieRepository categorieRepository) {
+                               CategorieRepository categorieRepository,
+                               CacheManager cacheManager) {
         this.categorieService = categorieService;
         this.utilisateurService = utilisateurService;
         this.utilisateurCategorieService = utilisateurCategorieService;
         this.utilisateurRepository = utilisateurRepository;
         this.documentService = documentService;
         this.categorieRepository = categorieRepository;
+        this.cacheManager = cacheManager;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -106,56 +111,46 @@ public class CategorieController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/update/{categorieID}")
     //@PutMapping("/update/{id}")
-    public ResponseEntity<Categorie> updateCategorie(@PathVariable Integer categorieID,
+    public ResponseEntity<ResponseMessage> updateCategorie(@PathVariable Integer categorieID,
                                                      @Valid @RequestBody Categorie categorieDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        Categorie categorie = this.categorieService.findCategory(categorieID);
-        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
-        categorie.setNom(categorieDetails.getNom());
-        categorie.setAuteurModificationCategorie(utilisateur.getUsername());
-        final Categorie categorieUpdate = this.categorieRepository.save(categorie);
-        Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieService.findByCatAndUtil(categorieUpdate, utilisateur);
-        if(utilCat.isPresent()){
-            UtilisateurCategorie utilisateurCategorie= utilCat.get();
-            utilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
-            this.utilisateurCategorieService.createUtilisateurCategorie(utilisateurCategorie);
-            System.out.println("Inside condition");
-        }else {
-            UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
-            newUtilCat.setUtilisateurID(utilisateur);
-            newUtilCat.setCategorieID(categorieUpdate);
-            newUtilCat.setTypeGestion(TypeGestion.Modifier);
-            this.utilisateurCategorieService.createUtilisateurCategorie(newUtilCat);
-            System.out.println("Not inside condition");
+        String message = "";
+        try{
+            this.categorieService.updateCategorie(categorieID, adminID, categorieDetails);
+            message = "Categorie mise à jour avec succès...";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
+        }catch (Exception e){
+            message = "Echec de mise à jour de categorie...";
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
         }
-        return ResponseEntity.ok(categorieUpdate);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/delete/{categorieID}")
     //@PutMapping("/update/{id}")
-    public ResponseEntity<Categorie> deleteteCategorie(@PathVariable Integer categorieID){
+    public ResponseEntity<ResponseMessage> deleteteCategorie(@PathVariable Integer categorieID){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        Categorie categorie = this.categorieService.findCategory(categorieID);
-        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
-        categorie.setSupprimerCategorie(true);
-        categorie.setAuteurModificationCategorie(utilisateur.getUsername());
-        final Categorie deletedCategorie = this.categorieRepository.save(categorie);
-        Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieService.findByCatAndUtil(deletedCategorie, utilisateur);
-        if(utilCat.isPresent()){
-            UtilisateurCategorie utilisateurCategorie= utilCat.get();
-            utilisateurCategorie.setTypeGestion(TypeGestion.Supprimer);
-            this.utilisateurCategorieService.createUtilisateurCategorie(utilisateurCategorie);
-            System.out.println("Inside condition");
-        }else {
-            UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
-            newUtilCat.setUtilisateurID(utilisateur);
-            newUtilCat.setCategorieID(deletedCategorie);
-            newUtilCat.setTypeGestion(TypeGestion.Supprimer);
-            this.utilisateurCategorieService.createUtilisateurCategorie(newUtilCat);
-            System.out.println("Not inside condition");
+        String message = "";
+        try{
+            this.categorieService.deleteCategorie(categorieID, adminID);
+            message = "Categorie supprimée avec succès...";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
+        }catch (Exception e){
+            message = "Echec de suppression de categorie...";
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
         }
-        return ResponseEntity.ok(deletedCategorie);
     }
 }

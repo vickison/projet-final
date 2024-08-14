@@ -12,6 +12,9 @@ import com.ide.api.message.DocumentCreationResponse;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.*;
 import com.ide.api.service.*;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -60,6 +63,7 @@ public class DocumentController {
 
     String basePath = FilePaths.BASE_PATH;
     Path thumbnailLocation = FilePaths.THUMBNAIL_LOCATION;
+    String slash_vs_antislash = FilePaths.SLASH_VS_ANTI_SLASH;
 
     private DocumentRepository documentRepository;
     private DocumentService documentService;
@@ -78,6 +82,7 @@ public class DocumentController {
     private FileService fileService;
     private LikeIllustrationService likeIllustrationService;
     private ThumbnailService thumbnailService;
+    private CacheManager cacheManager;
 
     //Le contructeur de notre classe
 
@@ -97,7 +102,9 @@ public class DocumentController {
                               CategorieDocumentService categorieDocumentService,
                               FileService fileService,
                               LikeIllustrationService likeIllustrationService,
-                              ThumbnailService thumbnailService) {
+                              ThumbnailService thumbnailService,
+                              CacheManager cacheManager
+                              ) {
         this.documentService = documentService;
         this.documentRepository = documentRepository;
         this.utilisateurService = utilisateurService;
@@ -115,6 +122,7 @@ public class DocumentController {
         this.fileService = fileService;
         this.likeIllustrationService = likeIllustrationService;
         this.thumbnailService = thumbnailService;
+        this.cacheManager = cacheManager;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -159,11 +167,7 @@ public class DocumentController {
             document.setAuteurCreationDocument(utilisateur.getUsername());
 
             if (utilisateur.isAdmin()) {
-
-//                documentService.creerDocument(document, categorieID, tagID, auteurID);
                 DocumentCreationResponse response = documentService.creerDocument(document, categorieID, tagID, auteurID);
-
-                //generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
 
                 UtilisateurDocument utilisateurDocument = new UtilisateurDocument();
                 utilisateurDocument.setDocument(document);
@@ -183,18 +187,46 @@ public class DocumentController {
     }
 
     // Crée une URL de fichier en fonction du type MIME
+//    private String createFileUrl(MultipartFile file, String newTitle, String baseDirectory) {
+//        String contentType = file.getContentType();
+//        String extension = MIME_TO_EXTENSION_MAP.getOrDefault(contentType, getDefaultExtension(file));
+//        String fileName = (newTitle != null ? newTitle : file.getOriginalFilename()) + extension;
+//        return basePath + baseDirectory + "\\" + fileName;
+//    }
     private String createFileUrl(MultipartFile file, String newTitle, String baseDirectory) {
         String contentType = file.getContentType();
         String extension = MIME_TO_EXTENSION_MAP.getOrDefault(contentType, getDefaultExtension(file));
-        String fileName = (newTitle != null ? newTitle : file.getOriginalFilename()) + extension;
-        return basePath + baseDirectory + "/" + fileName;
+        String fileName = (newTitle != null ? newTitle + extension : file.getOriginalFilename());
+        String filePath = Paths.get(baseDirectory, fileName).toString();
+        return Paths.get(basePath, filePath).toString();
     }
 
     // Obtenir l'extension par défaut si le type MIME n'est pas trouvé
-    private String getDefaultExtension(MultipartFile file) {
-        String[] parts = file.getOriginalFilename().split("\\.");
-        return parts.length > 1 ? "." + parts[1] : "";
+//    private String getDefaultExtension(MultipartFile file) {
+//        String[] parts = file.getOriginalFilename().split("\\.");
+//        return parts.length > 1 ? "." + parts[1] : "";
+//
+//    }
 
+//    private String getDefaultExtension(MultipartFile file) {
+//        // Obtenez l'extension du fichier en utilisant FilenameUtils
+//        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+//        return extension.isEmpty() ? "" : "." + extension;
+//    }
+
+    private String getDefaultExtension(MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (filename == null || filename.isEmpty()) {
+            return ""; // Pas d'extension si le nom du fichier est vide
+        }
+
+        // Utilisation de String.lastIndexOf pour trouver le dernier point dans le nom du fichier
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex == -1 || dotIndex == filename.length() - 1) {
+            return ""; // Pas d'extension si le point est absent ou est le dernier caractère
+        }
+
+        return filename.substring(dotIndex);
     }
 
     @GetMapping(value = "/public", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -264,67 +296,46 @@ public class DocumentController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/admin/update/{documentID}")
-    public ResponseEntity<Document> updateDocument(@PathVariable Integer documentID,
+    public ResponseEntity<ResponseMessage> updateDocument(@PathVariable Integer documentID,
                                                    @ModelAttribute Document document) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        Optional<Document> selectedDocument = this.documentService.findDocument(documentID);
-        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
-        if(selectedDocument.isPresent()){
-            Document existingDocument = selectedDocument.get();
-            existingDocument.setResume(document.getResume());
-            existingDocument.setLangue(document.getLangue());
-            existingDocument.setAuteurModificationDocument(utilisateur.getUsername());
-            final Document updatedDocument = this.documentRepository.save(existingDocument);
-            Optional<UtilisateurDocument> utilDoc = this.utilisateurDocumentService.findByDocAndUtil(updatedDocument, utilisateur);
-            if(utilDoc.isPresent()){
-                UtilisateurDocument utilisateurDocument= utilDoc.get();
-                utilisateurDocument.setTypeGestion(TypeGestion.Modifier);
-                this.utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
-                System.out.println("Inside condition");
-            }else {
-                UtilisateurDocument newUtilDoc = new UtilisateurDocument();
-                newUtilDoc.setUtilisateurID(utilisateur);
-                newUtilDoc.setDocumentID(updatedDocument);
-                newUtilDoc.setTypeGestion(TypeGestion.Modifier);
-                this.utilisateurDocumentService.createUtilisateurDocument(newUtilDoc);
-                System.out.println("Not inside condition");
-            }
-            return ResponseEntity.ok(updatedDocument);
-        }else{
-            return ResponseEntity.notFound().build();
+        String message = "";
+        try{
+            this.documentService.updateDocument(documentID, adminID, document);
+            message = "Document mis à jour avec succès...";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
+        }catch (Exception e){
+            message = "Echec  de mis à jour du document...";
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
         }
 
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/admin/delete/{documentID}")
-    public ResponseEntity<Document> deleteDocument(@PathVariable Integer documentID) throws IOException{
+    public ResponseEntity<ResponseMessage> deleteDocument(@PathVariable Integer documentID) throws IOException{
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        Optional<Document> selectedDocument = this.documentService.findDocument(documentID);
-        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(adminID);
-        if(selectedDocument.isPresent()){
-            Document existingDoc = selectedDocument.get();
-            existingDoc.setSupprimerDocument(true);
-            existingDoc.setAuteurModificationDocument(utilisateur.getUsername());
-            final Document deleteDoc = this.documentRepository.save(existingDoc);
-            Optional<UtilisateurDocument> utilDoc = this.utilisateurDocumentService.findByDocAndUtil(deleteDoc, utilisateur);
-            if(utilDoc.isPresent()){
-                UtilisateurDocument utilisateurDocument= utilDoc.get();
-                utilisateurDocument.setTypeGestion(TypeGestion.Supprimer);
-                this.utilisateurDocumentService.createUtilisateurDocument(utilisateurDocument);
-                System.out.println("Inside condition");
-            }else {
-                UtilisateurDocument newUtilDoc = new UtilisateurDocument();
-                newUtilDoc.setUtilisateurID(utilisateur);
-                newUtilDoc.setDocumentID(deleteDoc);
-                newUtilDoc.setTypeGestion(TypeGestion.Supprimer);
-                this.utilisateurDocumentService.createUtilisateurDocument(newUtilDoc);
-                System.out.println("Not inside condition");
-            }
-            return ResponseEntity.ok(deleteDoc);
-        }else {
-            return ResponseEntity.notFound().build();
+        String message = "";
+        try{
+            this.documentService.deleteDocument(documentID, adminID);
+            message = "Document supprimé avec succès...";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
+        }catch (Exception e){
+            message = "Echec  de suppression du document...";
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResponseMessage(message));
         }
     }
 

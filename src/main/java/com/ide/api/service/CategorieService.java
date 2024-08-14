@@ -6,11 +6,14 @@ import com.ide.api.enums.TypeGestion;
 import com.ide.api.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -64,7 +67,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la création de la catégorie ou de la relation utilisateur-catégorie", e);
         }
     }
-
+    @Cacheable("categoriesCache")
     public List<Categorie> findAllCategories() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -80,17 +83,17 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la récupération des catégories", e);
         }
     }
-
-    public Categorie findCategory(Integer id) {
+    @Cacheable(value = "categorieCache", key = "#categorieID")
+    public Categorie findCategory(Integer categorieID) {
         try {
             // Rechercher la catégorie par ID
-            return this.categorieRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + id + " introuvable"));
+            return this.categorieRepository.findByCategorieID(categorieID)
+                    .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + categorieID + " introuvable"));
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
             Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", id, e);
-            throw new RuntimeException("Erreur lors de la recherche de la catégorie avec ID: " + id, e);
+            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", categorieID, e);
+            throw new RuntimeException("Erreur lors de la recherche de la catégorie avec ID: " + categorieID, e);
         }
     }
 
@@ -113,42 +116,74 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la recherche des catégories pour l'utilisateur avec ID: " + (utilisateur != null ? utilisateur.getUtilisateurID() : "inconnu"), e);
         }
     }
-
+    @CachePut(value = "categoriCache", key = "#categorieData.categorieID")
     @Transactional
-    public void updateCategorie(Integer categorieID, Integer adminID, Categorie updatedCategorieData) {
+    public void updateCategorie(Integer categorieID, Integer adminID, Categorie categorieData) {
         try {
-            // Vérifier si l'identifiant de la catégorie est valide
             if (categorieID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant de la catégorie ou de l'administrateur est nul.");
             }
 
-            // Trouver la catégorie existante
+            Utilisateur utilisateur = this.utilisateurRepository.findById(adminID)
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
             Categorie existingCategorie = this.categorieRepository.findById(categorieID)
                     .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + categorieID + " introuvable"));
-
-            // Mettre à jour les champs de la catégorie avec les nouvelles données
-            existingCategorie.setNom(updatedCategorieData.getNom());
-            // Ajoutez ici d'autres champs à mettre à jour si nécessaire
-
-            // Vérifier si l'administrateur existe (si nécessaire)
-            Utilisateur admin = this.utilisateurRepository.findById(adminID)
-                    .orElseThrow(() -> new EntityNotFoundException("Administrateur avec identifiant: " + adminID + " introuvable"));
-
-            // Optionnel: Enregistrer une entrée dans l'historique des modifications ou des logs
-            // HistoriqueModification modification = new HistoriqueModification();
-            // modification.setCategorie(existingCategorie);
-            // modification.setAdmin(admin);
-            // modification.setAction(TypeGestion.Modifier);
-            // this.historiqueModificationRepository.save(modification);
-
-            // Sauvegarder les modifications dans la base de données
-            this.categorieRepository.save(existingCategorie);
+            existingCategorie.setNom(categorieData.getNom());
+            existingCategorie.setAuteurModificationCategorie(utilisateur.getUsername());
+            final Categorie categorieUpdate = this.categorieRepository.save(existingCategorie);
+            Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieRepository.findByUtilisateurIDAndCategorieID(utilisateur, categorieUpdate);
+            if(utilCat.isPresent()){
+                UtilisateurCategorie utilisateurCategorie= utilCat.get();
+                utilisateurCategorie.setTypeGestion(TypeGestion.Modifier);
+                this.utilisateurCategorieRepository.save(utilisateurCategorie);
+            }else {
+                UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
+                newUtilCat.setUtilisateurID(utilisateur);
+                newUtilCat.setCategorieID(categorieUpdate);
+                newUtilCat.setTypeGestion(TypeGestion.Modifier);
+                this.utilisateurCategorieRepository.save(newUtilCat);
+            }
 
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.error("Erreur lors de la mise à jour de la catégorie avec ID: {}", categorieID, e);
             throw new RuntimeException("Erreur lors de la mise à jour de la catégorie avec ID: " + categorieID, e);
+        }
+    }
+    @CachePut(value = "categoriCache", key = "#categorieID")
+    @Transactional
+    public void deleteCategorie(Integer categorieID, Integer adminID) {
+        try {
+            if (categorieID == null || adminID == null) {
+                throw new IllegalArgumentException("L'identifiant de la catégorie ou de l'administrateur est nul.");
+            }
+
+            Utilisateur utilisateur = this.utilisateurRepository.findById(adminID)
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
+            Categorie existingCategorie = this.categorieRepository.findById(categorieID)
+                    .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + categorieID + " introuvable"));
+            existingCategorie.setSupprimerCategorie(true);
+            existingCategorie.setAuteurModificationCategorie(utilisateur.getUsername());
+            final Categorie categorieDelete = this.categorieRepository.save(existingCategorie);
+            Optional<UtilisateurCategorie> utilCat = this.utilisateurCategorieRepository.findByUtilisateurIDAndCategorieID(utilisateur, categorieDelete);
+            if(utilCat.isPresent()){
+                UtilisateurCategorie utilisateurCategorie= utilCat.get();
+                utilisateurCategorie.setTypeGestion(TypeGestion.Supprimer);
+                this.utilisateurCategorieRepository.save(utilisateurCategorie);
+            }else {
+                UtilisateurCategorie newUtilCat = new UtilisateurCategorie();
+                newUtilCat.setUtilisateurID(utilisateur);
+                newUtilCat.setCategorieID(categorieDelete);
+                newUtilCat.setTypeGestion(TypeGestion.Supprimer);
+                this.utilisateurCategorieRepository.save(newUtilCat);
+            }
+
+        } catch (Exception e) {
+            // Logger l'erreur et lancer une exception Runtime
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.error("Erreur lors de Suppresion de la catégorie avec ID: {}", categorieID, e);
+            throw new RuntimeException("Erreur lors de la Suppresion de la catégorie avec ID: " + categorieID, e);
         }
     }
 

@@ -5,6 +5,8 @@ import java.nio.file.Paths;
 
 public final class FilePaths {
 
+    private static final String BASE_DIR = "libeil";
+
     // Définissez les chemins de fichiers ici
     //public static final String BASE_PATH = "/libeilBack-End/LibEIlH/";
     public static final String BASE_PATH = "C:\\Users\\avicky\\libeil\\";
