@@ -1,8 +1,18 @@
-.about-dialog-container{
-    padding: 2%;
+.about-dialog-container
+{padding: 2%;
 }
 
 .about-dialog-title{
     text-align: center;
     width: 100%; 
+    font-family: 'Quicksand', cursive;
 }
+
+p
+{
+    font-family: 'Quicksand', cursive;
+    font-weight: bold;
+}
+
+
+@import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');

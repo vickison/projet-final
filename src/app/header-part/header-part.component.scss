@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: space-between;
   position: fixed;
+//  height: 8.2%;
   height: 4rem;
   top: 0;
   left: 0;
@@ -75,7 +76,7 @@
   display: flex;
   gap: 0.5rem;
   padding: 0.1rem;
-  border-radius: 3%;
+  border-radius: 5px;
 }
 
 .responsive_bar {
@@ -100,6 +101,7 @@
     right: 0;
     z-index: 1000;
     background-color: white;
+
     padding: 0 1rem;
  
   }
@@ -152,8 +154,6 @@
 
 
 
-
- 
 @media screen and (max-width: 767px) {
 
   .header_container {
@@ -224,6 +224,17 @@
     margin-right: 0.5rem;
     //color: white;
    }
+
+   .icon_bar {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: -33.3vw;
+    background-color: #dae5f5ba;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.1rem;
+    border-radius: 3%;
+  }
   
    .header_sort{
     margin-right: 0.7rem;
@@ -238,22 +249,7 @@
     display: none;
   }
      
-  
-  
-   .icon_bar {
-    position: absolute;
-    top: calc(100% + 1rem);
-    left: -33.3vw;
-    //margin-left: 1rem;
-    //height: 3rem;
-    border-radius: 3%;
-    //width: auto;
-    background-color: #dae5f5ba;  
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.1rem;  
-    //cursor: pointer;
-  }
+
 
 
   ng-select{

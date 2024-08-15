@@ -1,44 +1,36 @@
 <div class="contenu">
-  <!-- <div *ngIf="tempDocuments.length === 0" class="welcome-container">
-  <div class="welcome-message animate__animated animate__fadeInUp">
-    <h1 class="animate__animated animate__fadeIn">Hello!!!</h1>
-    <p class="animate__animated animate__fadeIn animate__delay-1s">
-    </p>
-    <ul class="instructions-list">
-      <li><span role="img" aria-label="pointing-left">👈</span> Ici pour explorer ses illustrations.</li>
-      <li><span role="img" aria-label="pointing-up">👆</span> Ici pour rechercher ou filtrer.</li>
-    </ul>
-  </div>
-</div> -->
 
 <div *ngIf="tempDocuments.length === 0" class="welcome-container">
   <div class="welcome-message animate__animated animate__fadeInUp">
     <!-- Remplacez "Hello!!!" par l'icône animée -->
     
     <p class="animate__animated animate__fadeIn animate__delay-1s" style="font-size: 1.5em;">
-      Hello 
+      Hello
       <mat-icon svgIcon="hand-hello" class="hand-rotation hand-icon"></mat-icon>
     </p>
     <ul class="instructions-list">
       <li>
-        <mat-icon svgIcon="hand-gauche" class="icon-left hand-icon"></mat-icon>
-        Cliquer de ce côté pour explorer les différentes catégories d'illustrations.
+        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
+        {{'Rechercher ou filtrer les illustrations ici'|translate}}.
       </li>
       <li>
-        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
-        Cliquer de ce côté pour rechercher ou filtrer les différentes d'illustrations.
+        <mat-icon svgIcon="hand-gauche" class="icon-left hand-icon"></mat-icon>
+        {{'Explorer les catégories d\'illustrations ici'|translate}}.
       </li>
     </ul>
   </div>
 </div>
 
-<div *ngIf="tempDocuments.length > 0" class="container" id="grid"  style="width: auto;"> 
+<div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
     <mat-card class="card" *ngFor="let document of documents; trackBy: trackById">
     
-      <mat-card-header (click)="onDocumentClicked(document)" style="background-color: white; border-top-right-radius: 5%; border-top-left-radius: 5%; ">
+      <mat-card-header (click)="onDocumentClicked(document)"  style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
+
         <div class="card-content" >
-          <mat-card-title style="font-size: small;">{{ document.titre }}</mat-card-title>
-          <mat-card-subtitle style="font-size: smaller;">Taille: {{ formatFileSize(document.taille) }}</mat-card-subtitle>
+          <mat-card-title style="color: aqua; font-size: 0.9rem;">{{ document.titre }}</mat-card-title>
+        </div>
+        <div class="like-dislike-container">
+          <mat-card-subtitle style="font-size: smaller; color: rgb(185, 183, 183);">{{ document.typeFichier == 'Document' ? 'pdf' :  document.typeFichier }}</mat-card-subtitle>
         </div>
         <!-- <div  class="like-dislike-container">
           <div class="like" >
@@ -51,34 +43,34 @@
           </div>
         </div> -->
       </mat-card-header>
-      <div (click)="onDocumentClicked(document)" style="display: flex; width: 100%; background-color: rgb(244, 246, 248);">
+      <div (click)="onDocumentClicked(document)">
         <ng-container [ngSwitch]="document.format">
           <div *ngSwitchCase="'application/pdf'" class="iframe-container" >
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: scale-down;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'audio/mp3'" class="iframe-container">
-            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src="assets/audio.png" alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'audio/mpeg'" class="iframe-container">
-            <img mat-card-image src="assets/audio.png" alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src="assets/audio.png" alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/png'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: scale-down;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/jpg'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/jpeg'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/gif'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/tiff'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'video/mp4'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" style="height: 4rem;  width: 100%; object-fit: contain;" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
           </div>
           <div *ngSwitchDefault>
             <p>Unknown document type</p>
@@ -86,14 +78,14 @@
         </ng-container>
       </div>
 
-      <div  style=" width: 100%; background-color: white; border-bottom-right-radius: 5%; border-bottom-left-radius: 5%;">
-        <mat-card-actions class="buttons" style="width: 100%; row-gap: 6%;">
+      <div  style=" width: 100%; background-color: white; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
+        <mat-card-actions class="buttons"style="row-gap: 6%;">
         
-        <button mat-button (click)="openDetailDialog(document)" style="display: flex;" >
+        <button mat-icon-button (click)="openDetailDialog(document)" style="display: flex;" >
             <mat-icon svgIcon="telecharger"></mat-icon>
         </button>
           
-        <button mat-button (click)="copyLink()" style="display: flex;">
+        <button mat-button (click)="copyLink()">
             <mat-icon svgIcon="partage"></mat-icon>
         </button>
         

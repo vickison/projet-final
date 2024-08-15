@@ -1,0 +1,16 @@
+{
+
+    "name" : "LIBEIL",
+    "short_name": "LIBEIL",
+    "start_url": ".",
+    "display": "Standalone",
+    "orientation": "portrait",
+
+}
+
+
+- Page-content-part
+- footer-part
+- koman li fe aranjman card yo, mwen m te container nan card lan yon margin-left ?
+- pou bouton yo, tout cadre yo rond...
+

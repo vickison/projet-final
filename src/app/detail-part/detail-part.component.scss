@@ -8,7 +8,17 @@
 .detail-dialog-title {
   text-align: center;
   width: 100%; /* Assure que le texte est centré par rapport à la largeur du conteneur */
+  font-family: 'Quicksand', cursive;
 }
+
+p
+{
+  font-family: 'Quicksand', cursive;
+  font-weight: bold;
+}
+
+
+@import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
 // @media screen and (min-width: 768px) and (max-width: 1023px) {
 //   .detail-dialog-container

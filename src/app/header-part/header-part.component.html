@@ -51,7 +51,7 @@
         
       <div class="header_sort">
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-          <mat-icon>sort</mat-icon>
+          <mat-icon style="color: rgb(24, 49, 83);">sort</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click) = "onOrderClick('date')">
@@ -86,8 +86,7 @@
        
         <mat-list-item>
           
-          <select class="form-select"  (change)="ChangeLang($event)"    name="" id="" [value]="lang">
-            
+          <select class="form-select"  (change)="ChangeLang($event)"    name="" id="lang" [value]="lang">
               <option [selected]="lang==='ht'" value="ht">Kreyòl</option>
               <option [selected]="lang==='en'" value="en">English</option>
               <option [selected]="lang==='fr'" value="fr">Français</option>

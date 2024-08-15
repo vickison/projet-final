@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); /* Fond sombre semi-transparent */
+  background: rgba(0, 0, 0, 0.9); /* Fond sombre semi-transparent */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,13 +16,13 @@
 .content {
   position: relative;
   width: 80%; /* Largeur ajustée pour occuper la majorité de l'espace */
-  height: 80%; /* Hauteur ajustée pour occuper la majorité de l'espace */
+  height: 100%; /* Hauteur ajustée pour occuper la majorité de l'espace */
   max-width: 1200px; /* Largeur maximale pour les très grands écrans */
   max-height: 800px; /* Hauteur maximale pour les très grands écrans */
-  background: white; /* Fond blanc pour le contenu */
+  background: transparent;/* Fond blanc pour le contenu */
   padding: 20px; /* Padding pour espacer le contenu du bord */
   border-radius: 10px; /* Bord arrondi pour le conteneur */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ombre portée pour le conteneur */
+  //box-shadow: 0 0 10px rgba(0, 0, 0, 0.7); /* Ombre portée pour le conteneur */
   overflow: hidden; /* Pour que les éléments ne débordent pas */
   display: flex;
   flex-direction: column;
@@ -46,8 +46,8 @@
   position: fixed;
   top: 20px;
   left: 20px;
-  background-color: #ffffff;
-  color: #333333;
+  background-color: rgb(24, 49, 83);
+  color: #ffffff;
   border: 2px solid #333333;
   padding: 10px 15px;
   border-radius: 8px;
@@ -58,20 +58,16 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-family: 'Quicksand', cursive;
+  
 }
+
+@import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
 .btn-back i {
   margin-right: 8px;
 }
 
-.btn-back:hover {
-  background-color: #f0f0f0;
-}
-
-.btn-back:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-}
 
 /* Styles pour les petits écrans */
 @media (max-width: 600px) {

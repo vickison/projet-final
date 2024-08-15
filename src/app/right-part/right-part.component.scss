@@ -1,41 +1,16 @@
 
 
-// .right_section {
-//   width: 82%;
-//   margin-left: 18%;
-//   border: 0;
-//   box-sizing: border-box;
-// }
-
-
 .sidenav-container {
-  // margin-top: 5%;
-   height: 100%;
-   //margin: 0 auto; 
- }
+  height: auto;
+  padding: 0;
+  overflow: hidden;
 
-
+}
 
 .responsive_bar{
   margin-left: 6.5rem;
 }
 
-/*#format_icon {
-    position: fixed;
-    top: 2rem;
-    left: 13.5rem;
-    z-index: 2;
-}*/
-
-// .icon_format {
-//     //position: fixed;
-//     top : 1.9rem;
-//     left: 30rem;
-//     z-index: 2;
-//     width: 3rem; 
-//     height: 2rem; 
-//     /*background-color: blue;*/
-// }
 
 .entete_menu_search{
     display: flex;
@@ -45,7 +20,7 @@
 }
 
 .entete_menu {
-    /*display: flex;
+     /*display: flex;
      flex-wrap: nowrap;
     flex-direction: horizontal;*/
     position: fixed;
@@ -64,17 +39,17 @@ nav h4 {
 
 .page_content .head {
     
-    /*margin-top: 9rem;*/
-    margin-left: 2rem;
+  /*margin-top: 9rem;*/
+  margin-left: 2rem;
 
-    position:fixed;
-    top: 4.5rem;
-    width: 70%;
-    padding-right: 2rem;
-    height: 6.1rem;
-    background-color: #ECF7FD;
-    padding-top: 5rem;
-    z-index: 0;
+  position:fixed;
+  top: 4.5rem;
+  width: 70%;
+  padding-right: 2rem;
+  height: 6.1rem;
+  background-color: #ECF7FD;
+  padding-top: 5rem;
+  z-index: 0;
 
 }
 

@@ -1,34 +1,50 @@
 .page_content {
-  margin-top: 0;
-  //top: var(--toolbar-height); 
-  //margin-top: 0.3rem;
+    // margin-top: 4.2%;
+  margin-top: 4rem;
   padding-top: 0;
-  margin-left: 0;
-  background-color: #ECF7FD;
-  //background-color: chocolate;
+  padding-bottom: 0;
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+  background-color: white; 
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 4rem); 
+  //  height: 93.8vh;
 }
 
+.contenu{
+  flex: 1 0 auto;  /*Permet au contenu de prendre tout l'espace disponible */
+ // overflow-y: auto;
+ }
 
-// .contenu {
-//  width: 85%;
-//  background-color: aqua;
-//  margin-left: 15%;
-// }
+ footer{
+  flex-shrink: 0; /* Empêche le footer de rétrécir */
+ }
+
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   .page_content {
-
+    background-color: white;
     margin-top: 4rem;
-    margin-left: 8rem;
+    margin-bottom: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 93.8vh;
   }
 
 }
 
 @media screen and (max-width: 767px) {
     .page_content {
-      margin-left : 0rem;
-      margin-top: 5rem;
-      //padding-top: 5.5rem;
+      margin-left : 0vw;
+      width: 100%;
+      margin-top: 7.5rem;
+      padding-top: 4rem;
+      background-color: #ECF7FD; 
+      padding-bottom: 0;
     }
 
 }

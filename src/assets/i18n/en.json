@@ -16,8 +16,13 @@
 "Ordre Alphabétique":"Alphabetical order",
 "Équipe de projet":"Project team",
 "Tuteur":"Tutor",
-"Réalisateur":"Directed by"
-
-
+"Réalisateur":"Directed by",
+"Titre":"Title",
+"Auteur": "Author",
+"Format": "Format",
+"Taille": "Size",
+"Résumé": "Summary",
+"Rechercher ou filtrer les illustrations ici":"Search or filter the illustrations here",
+"Explorer les catégories d'illustrations ici": "Explore the categories of illustrations here"
 
 }

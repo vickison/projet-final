@@ -3,10 +3,25 @@
   position:fixed;
   margin-top: 4rem;
   width: 13%;
-  margin-right: 2%;
-  background-color: #183153;
+  //background-color: #183153;
+  //background-color: #ecf3fd; 
+  background-color: rgb(24, 49, 83);
+  margin-left: 0;
+  border-top-right-radius: 10px;
+  border: none;
  }
-  
+
+ .Memo
+ {
+  color: white;
+  //color: black; 
+  font-weight: bold;
+  text-align: center;  
+  display: block;
+  font-family: 'Quicksand', cursive;
+ }
+ 
+ @import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
  
  
@@ -17,50 +32,51 @@
  }
  
  nav ul li a {
+  font-weight: bold;
   display: block;
   padding: 10px 15px;
-  color: #000;
+ // color: #000;
   text-decoration: none;
   -webkit-transition: 0.2s linear;
   -moz-transition: 0.2s linear;
   -ms-transition: 0.2s linear;
   -o-transition: 0.2s linear;
   transition: 0.2s linear;
-  color: #fff;
-  font-size: 125%;
-  cursor: pointer;
+   color: #fff;
+  // color: black;
+   font-size: 125%;
+   font-family: 'Quicksand', cursive;
  }
 
  nav ul li a:hover,
  nav ul li a.active
   {
-   background: #1d4f71;
-   color: #fff;
+    background: #1d4f71;
+    // color: #fff;
+    color: aqua;
  }
  
  
  nav ul li a .fa {
-   width: 16px;
-   text-align: center;
-   margin-right: 5px;
-   float:right;
+  width: 16px;
+  text-align: center;
+  margin-right: 5px;
+  float:right;
  }
  
  nav ul li ul li a {
-   
-   border-left: 4px solid transparent;
-   padding: 10px 20px;
+  border-left: 4px solid transparent;
+  padding: 10px 20px;
  }
  nav ul li ul li a:hover {
- 
-   border-left: 4px solid #3498db;
+  border-left: 4px solid #3498db;
  }
  
  /* Responsive Bar styles */
  .responsive-bar {
-     display: none;
-     cursor: pointer;
-   }
+  display: none;
+  cursor: pointer;
+  }
    
    /* Ajoutez ceci pour afficher la sidebar */
    .left_section.open {
@@ -72,14 +88,14 @@
  
  /* Menu styles */
  .menu {
-   position: fixed;
-   top: 0;
-   left: -250px; /* Masquer le menu à gauche */
-   width: 250px; /* Largeur du menu */
-   height: 100%;
-   background-color: #333; /* Couleur de fond du menu */
-   transition: left 0.3s ease-in-out; /* Animation de transition */
-   z-index: 998; /* Pour être au-dessus du contenu */
+  position: fixed;
+  top: 0;
+  left: -250px; /* Masquer le menu à gauche */
+  width: 250px; /* Largeur du menu */
+  height: 100%;
+  background-color: #333; /* Couleur de fond du menu */
+  transition: left 0.3s ease-in-out; /* Animation de transition */
+  z-index: 998; /* Pour être au-dessus du contenu */
  }
  
  .menu-open {
@@ -88,41 +104,52 @@
  
  
  
- @media screen and (min-width: 768px) and (max-width: 1023px) {
+@media screen and (min-width: 768px) and (max-width: 1023px) {
  
-   .sidenav{
-     width: 15%;
- }
- 
- .accueil_logo {
-   height: 5%;
- }
-    .left_section nav {
-     margin-top: 2.5rem;
-    }
-
-    nav ul li a {
-
-      font-size: 105%;
-    }
-
-
-
- 
+  .sidenav{
+    width: 14.5%;
+    margin-left: 0;
+    margin-top: 4rem;
+    padding-left: 0%;
+    padding-top: 0;
+    border-top-right-radius: 7px;
   }
  
+  .accueil_logo {
+    height: 5%;
+  }
+    .left_section nav {
+    margin-top: 2.5rem;
+  }
+
+  nav ul li a {
+    padding: 8px 10px;
+    font-size: 105%;
+  }
+
+
+ 
+}
+ 
    
-   @media screen and (max-width: 767px) {
+@media screen and (max-width: 767px) {
      /* Masquer la sidebar par défaut sur mobile */
 
    .sidenav {
-     margin-top: 7rem;
-     width: 40%;
-    
+    background-color: #183153;
+    margin-top: 7rem;
+    width: 40%;
+   }
+
+   .Memo
+   {
+    color: white; 
+    text-align: center;  
+    display: block;
    }
  
-       .left_section {
-            width: 100%;
+    .left_section {
+      width: 100%;
    }
  
      .left_section_open{
@@ -132,11 +159,25 @@
     .left_section nav {
      margin-top: 2rem;
     }
+
+    nav ul li a {
+      display: block;
+      padding: 10px 15px;
+      color: #000;
+      text-decoration: none;
+      -webkit-transition: 0.2s linear;
+      -moz-transition: 0.2s linear;
+      -ms-transition: 0.2s linear;
+      -o-transition: 0.2s linear;
+       transition: 0.2s linear;
+       color: #fff;
+       font-size: 125%;
+   
+    }
  
     .accueil_logo {
-         height: 5%;
-        // padding-top: 1.5%;
-        
+      height: 5%;
+      // padding-top: 1.5%;
     }
    
      /* Afficher le responsive bar sur mobile */
