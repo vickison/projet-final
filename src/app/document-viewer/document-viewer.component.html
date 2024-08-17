@@ -7,7 +7,7 @@
       </div> -->
 
       <button class="btn-back" role="button" (click)="closeViewerPage()">
-        <i class="fas fa-chevron-left"></i> Retour
+        <i class="fas fa-chevron-left"></i> {{ 'Retour' | translate }}
       </button>
       <div>
         <app-like-button *ngIf="likeButtonVisible" [isLiked]="isDocumentLiked" [documentID]="documentID" (closeClicked)="onCloseButtonClicked()"></app-like-button>

@@ -307,8 +307,8 @@ export class DocumentService {
 
   modifDocument(documenteID: number | undefined,
     document: Document): Observable<Document>{
-  return this.http.put<Document>(`${this.apiUrl}/documents/admin/update/${documenteID}`, document);
-}
+    return this.http.put<Document>(`${this.apiUrl}/documents/admin/update/${documenteID}`, document);
+  }
 
   deleteDocument(documenteID: number | undefined, 
     adminID: number, 
@@ -339,5 +339,9 @@ export class DocumentService {
   // getDocumentThumbnail(documentID: number): Observable<Blob> {
   //   return this.http.get(`${this.apiUrl}/documents/public/${documentID}/thumbnail`, { responseType: 'blob' });
   // }
+
+  getAuteurDoc(documentID: number | undefined): Observable<string[]>{
+    return this.http.get<string[]>(`${this.apiUrl}/documents/public/${documentID}/auteurs`)
+  }
 
 }

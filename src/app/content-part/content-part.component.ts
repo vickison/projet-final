@@ -18,6 +18,7 @@ import { DetailPartComponent } from '../detail-part/detail-part.component';
 import { CategorieService } from '../services/categorie.service';
 import { RefresherService } from '../services/refresher.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -125,7 +126,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private router: Router,
     private categorieService: CategorieService,
     private refresherService: RefresherService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private translateService: TranslateService
   ) {
     
    }
@@ -520,11 +522,16 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(
       () => {
-        this.showSnackBar('URL copié dans le Cliboard!');
+        this.translateService.get("URL copiée dans le pressse-papier").subscribe(translateMsg => {
+          this.showSnackBar(translateMsg);
+        })
+        
       },
       (err) => {
         console.error('Echec de copier URL: ', err);
-        this.showSnackBar('Echec de copier URL.');
+        this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
+          this.showSnackBar(translateMsg);
+        })
       }
     );
   }

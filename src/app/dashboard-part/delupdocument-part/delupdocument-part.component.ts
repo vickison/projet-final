@@ -74,10 +74,10 @@ export class DelupdocumentPartComponent {
         // Logique pour gérer les données mises à jour
         console.log('Dialog closed with data:', updatedDocument);
 
-        this.documentService.updateDocument(document.documentID, this.adminID, updatedDocument).subscribe(response =>{
-          const index = this.documents.findIndex(d => d.documentID === response.documentID);
-          this.documents[index] = response;
-        })
+        // this.documentService.modifDocument(document.documentID, updatedDocument).subscribe(response =>{
+        //   const index = this.documents.findIndex(d => d.documentID === response.documentID);
+        //   this.documents[index] = response;
+        // })
       }
       
     }, error => {

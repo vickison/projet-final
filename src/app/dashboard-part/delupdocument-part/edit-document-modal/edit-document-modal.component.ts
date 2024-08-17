@@ -7,6 +7,13 @@ import { UtilisateurService } from 'src/app/services/utilisateur.service';
 import { Document } from 'src/app/models/document.model';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
+enum Langue{
+  Creole='Créole',
+  Anglais='Anglais',
+  Francais='Français',
+  Espagnol='Espagnol'
+}
+
 @Component({
   selector: 'app-edit-document-modal',
   templateUrl: './edit-document-modal.component.html',
@@ -21,6 +28,9 @@ export class EditDocumentModalComponent {
   message: string = '';
   classCss: string = '';
   msg = '';
+  selectedLangue: Langue = Langue.Creole;
+  langues: Langue[] = [Langue.Anglais, Langue.Creole, Langue.Espagnol, Langue.Francais];
+  langueData: Langue[] = [];
   
 
 
@@ -39,6 +49,7 @@ export class EditDocumentModalComponent {
     //   // password: [data.password, [Validators.required, Validators.minLength(8)]]
     // });
     this.updatedDocumentData = { ...data.document};
+    console.log('Data updated contuctor: ', this.updatedDocumentData);
     this.fetchUsers();
   }
 
@@ -65,18 +76,18 @@ export class EditDocumentModalComponent {
     config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
     config.panelClass = ['custom-snackbar'];
     
-    this.documentService.modifDocument(this.updatedDocumentData.documentID, 
-      this.updatedDocumentData).subscribe({
+    this.documentService.modifDocument(this.updatedDocumentData.documentID, this.updatedDocumentData).subscribe({
         next:response => {
+          console.log('Data updated: ', response);
           this.msg = 'Document mis à jour avec succès✅';
           this.snackBar.open(this.msg, 'Fermer', config);
-        const index = this.documents.findIndex(d => d.documentID === response.documentID)
-        if(index !== -1){
-          this.documents[index] = response;
-        }
-        setTimeout(() => {
-          this.dialogRef.close(this.updatedDocumentData);
-        }, 1000);
+          const index = this.documents.findIndex(d => d.documentID === response.documentID)
+          if(index !== -1){
+            this.documents[index] = response;
+          }
+          setTimeout(() => {
+            this.dialogRef.close(this.updatedDocumentData);
+          }, 1000);
       },
       error: err => {
         this.msg = 'Échec de mise à jour de Document❌';

@@ -19,17 +19,38 @@ export class AuthInterceptor implements HttpInterceptor{
             withCredentials: true
         })
         return next.handle(req).pipe(
-            catchError((error) => {
+            catchError((error: HttpErrorResponse) => {
                 if(error.status === 401){
-                    //alert('Session expired, please reconnect via the login page');
-                    this.snackBar.open('Probème autorisation. Reconnectez-vous', 'Fermer', {
-                        duration: 2000, // Duration in milliseconds
-                        horizontalPosition: 'center',
-                        verticalPosition: 'top'
-                      });
+                    const errorMessage = error.error?.message || 'Une erreur est survenue.';
+                    if (errorMessage === 'Identifiants incorrects.') {
+                        this.snackBar.open('Identifiants incorrects. Veuillez réessayer.', 'Fermer', {
+                          duration: 5000,
+                          horizontalPosition: 'center',
+                          verticalPosition: 'top'
+                        });
+                    }else{
+                        this.snackBar.open('Session expirée. Veuillez vous reconnecter.', 'Fermer', {
+                            duration: 5000, 
+                            horizontalPosition: 'center',
+                            verticalPosition: 'top'
+                        });
+                    }
                     this.tokenService.signOut();
-                    window.location.reload();
-                    this.router.navigate(['/admin/login'])
+                    //window.location.reload();
+                    // setTimeout(() => {
+                    //     this.router.navigate(['/admin/login']);
+                    // }, 2000);
+                }else if (error.status === 403) {
+                    
+                    this.snackBar.open('Accès refusé. Veuillez vérifier vos autorisations.', 'Fermer', {
+                      duration: 2000,
+                      horizontalPosition: 'center',
+                      verticalPosition: 'top'
+                    });
+
+                    setTimeout(() => {
+                        this.router.navigate(['/admin/login']);
+                    }, 2000);
                 }
 
                 return throwError(() => error);
