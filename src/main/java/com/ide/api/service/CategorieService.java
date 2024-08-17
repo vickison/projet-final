@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -116,9 +117,8 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la recherche des catégories pour l'utilisateur avec ID: " + (utilisateur != null ? utilisateur.getUtilisateurID() : "inconnu"), e);
         }
     }
-    @CachePut(value = "categoriCache", key = "#categorieData.categorieID")
     @Transactional
-    public void updateCategorie(Integer categorieID, Integer adminID, Categorie categorieData) {
+    public Categorie updateCategorie(Integer categorieID, Integer adminID, Categorie categorieData) {
         try {
             if (categorieID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant de la catégorie ou de l'administrateur est nul.");
@@ -143,6 +143,7 @@ public class CategorieService {
                 newUtilCat.setTypeGestion(TypeGestion.Modifier);
                 this.utilisateurCategorieRepository.save(newUtilCat);
             }
+            return categorieUpdate;
 
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
@@ -151,9 +152,8 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la mise à jour de la catégorie avec ID: " + categorieID, e);
         }
     }
-    @CachePut(value = "categoriCache", key = "#categorieID")
     @Transactional
-    public void deleteCategorie(Integer categorieID, Integer adminID) {
+    public Categorie deleteCategorie(Integer categorieID, Integer adminID) {
         try {
             if (categorieID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant de la catégorie ou de l'administrateur est nul.");
@@ -179,6 +179,8 @@ public class CategorieService {
                 this.utilisateurCategorieRepository.save(newUtilCat);
             }
 
+            return categorieDelete;
+
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -186,5 +188,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la Suppresion de la catégorie avec ID: " + categorieID, e);
         }
     }
+
+
 
 }

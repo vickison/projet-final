@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.persistence.EntityNotFoundException;
+import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -29,7 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 
 @Service
@@ -132,6 +133,7 @@ public class DocumentService {
             throw new RuntimeException("Erreur inattendue lors de la création du document.", e);
         }
     }
+    @Cacheable(value = "documentsCache")
     public List<Document> findDocuments() {
         List<Document> documents = new ArrayList<>();
         try {
@@ -338,9 +340,8 @@ public class DocumentService {
         }
     }
 
-    @CachePut(value = "categoriCache", key = "#documentData.documentID")
     @Transactional
-    public void updateDocument(Integer documentID, Integer adminID, Document documentData) {
+    public Document updateDocument(Integer documentID, Integer adminID, Document documentData) {
         try {
             if (documentID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant du document ou de l'administrateur est nul.");
@@ -367,6 +368,8 @@ public class DocumentService {
                 this.utilisateurDocumentRepository.save(newUtilDoc);
             }
 
+            return documentUpdate;
+
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -377,9 +380,9 @@ public class DocumentService {
 
     }
 
-    @CachePut(value = "categoriCache", key = "#documentID")
+
     @Transactional
-    public void deleteDocument(Integer documentID, Integer adminID) {
+    public Document deleteDocument(Integer documentID, Integer adminID) {
         try {
             if (documentID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant du document ou de l'administrateur est nul.");
@@ -404,6 +407,7 @@ public class DocumentService {
                 newUtilDoc.setTypeGestion(TypeGestion.Modifier);
                 this.utilisateurDocumentRepository.save(newUtilDoc);
             }
+            return documentDelete;
 
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
@@ -437,8 +441,25 @@ public class DocumentService {
             e.printStackTrace();
             throw new RuntimeException("Erreur inattendue lors de la génération et la sauvegarde de minuature pour le document ID: ", e);
         }
+
+
     }
 
+    public List<String> auteursDocument(Integer documentID) {
+        try {
+            Document document = this.documentRepository.findByDocumentID(documentID)
+                    .orElseThrow(() -> new EntityNotFoundException("Document avec identifiant: " + documentID + " introuvable"));
+            Set<AuteurDocument> auteurDocuments = document.getAuteurDocuments();
+            return auteurDocuments.stream()
+                    .map(auteurDocument -> auteurDocument.getAuteur().getPrenom()+" "+auteurDocument.getAuteur().getNom())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Logger l'erreur et lancer une exception Runtime
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", documentID, e);
+            return Collections.emptyList();
+        }
 
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.ide.api.service;
 
+import com.ide.api.configurations.JwtTokenProvider;
 import com.ide.api.entities.AdminUtilisateur;
 import com.ide.api.entities.Utilisateur;
 import com.ide.api.enums.TypeGestion;
@@ -26,14 +27,18 @@ public class UtilisateurService {
     private UtilisateurRepository utilisateurRepository;
     private AdminUtilisateurRepository adminUtilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public UtilisateurService(PasswordEncoder passwordEncoder,
                               UtilisateurRepository utilisateurRepository,
-                              AdminUtilisateurRepository adminUtilisateurRepository) {
+                              AdminUtilisateurRepository adminUtilisateurRepository,
+                              JwtTokenProvider jwtTokenProvider
+                              ) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminUtilisateurRepository = adminUtilisateurRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public void createUtilisateur(Utilisateur utilisateur) {
@@ -250,6 +255,10 @@ public class UtilisateurService {
             logger.error("Erreur lors de l'authentification de l'administrateur avec le nom d'utilisateur {}", username, e);
             throw new RuntimeException("Erreur lors de l'authentification", e);
         }
+    }
+
+    public boolean isJwtIsValid(String jwt){
+        return this.jwtTokenProvider.validateJwtToken(jwt);
     }
 
 }

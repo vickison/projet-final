@@ -11,6 +11,8 @@ import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +27,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "categories")
 public class CategorieController {
+    private static final Logger logger = LoggerFactory.getLogger(CategorieController.class);
 
     //Injection de la couche service
     private CategorieRepository categorieRepository;
@@ -108,49 +114,40 @@ public class CategorieController {
     public @ResponseBody Categorie findCategory(@PathVariable Integer id){
        return this.categorieService.findCategory(id);
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/update/{categorieID}")
-    //@PutMapping("/update/{id}")
-    public ResponseEntity<ResponseMessage> updateCategorie(@PathVariable Integer categorieID,
+    @PreAuthorize("hasRole('ADMIN')")
+    @CachePut(value = "categorieCache", key = "#categorieID")
+    public Categorie updateCategorie(@PathVariable Integer categorieID,
                                                      @Valid @RequestBody Categorie categorieDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         String message = "";
         try{
-            this.categorieService.updateCategorie(categorieID, adminID, categorieDetails);
+            Categorie categorie = this.categorieService.updateCategorie(categorieID, adminID, categorieDetails);
+            logger.info("Mise à jour de la catégorie ID {}", categorieID);
             message = "Categorie mise à jour avec succès...";
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            return categorie;
         }catch (Exception e){
+            logger.error("Erreur lors de la mise à jour de la catégorie ID {}: {}", categorieID, e.getMessage());
             message = "Echec de mise à jour de categorie...";
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            throw new RuntimeException("Erreur lors de la mise à jour de la catégorie avec ID: " + categorieID, e);
         }
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/delete/{categorieID}")
-    //@PutMapping("/update/{id}")
-    public ResponseEntity<ResponseMessage> deleteteCategorie(@PathVariable Integer categorieID){
+    @PreAuthorize("hasRole('ADMIN')")
+    @CachePut(value = "categorieCache", key = "#categorieID")
+    public Categorie deleteteCategorie(@PathVariable Integer categorieID){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         String message = "";
         try{
-            this.categorieService.deleteCategorie(categorieID, adminID);
+            Categorie categorie = this.categorieService.deleteCategorie(categorieID, adminID);
             message = "Categorie supprimée avec succès...";
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            return categorie;
         }catch (Exception e){
+            logger.error("Erreur lors de la suppression de la catégorie ID {}: {}", categorieID, e.getMessage());
             message = "Echec de suppression de categorie...";
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            throw new RuntimeException("Erreur lors de la suppression de la catégorie avec ID: " + categorieID, e);
         }
     }
 }

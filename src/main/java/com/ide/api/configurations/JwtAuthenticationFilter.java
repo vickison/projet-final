@@ -6,6 +6,8 @@ import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,24 +40,35 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws  ServletException, IOException{
         try{
-            String jwt = parseJwt(request);
-            if(jwt != null && jwtTokenProvider.validateJwtToken(jwt)){
-                String username = jwtTokenProvider.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }catch (Exception e){
-            logger.error("Cannot set user authentication: {}", e);
+        String jwt = parseJwt(request);
+        if(jwt != null && jwtTokenProvider.validateJwtToken(jwt)){
+            String username = jwtTokenProvider.getUserNameFromJwtToken(jwt);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        filterChain.doFilter(request, response);
+        else if(jwt != null && !jwtTokenProvider.validateJwtToken(jwt)){
+            ResponseCookie cookie = jwtTokenProvider.deleteJwtCookie();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expiré ou invalidé");
+            return;
+        }
+    }catch (Exception e){
+        logger.error("Impossible de définir l'authentification de l'utilisateur: {}", e);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.getWriter().write("Erreur interne du serveur...");
+        return;
     }
+        filterChain.doFilter(request, response);
+}
 
     private String parseJwt(HttpServletRequest request){
         String jwt = jwtTokenProvider.getJwtFromCookie(request);

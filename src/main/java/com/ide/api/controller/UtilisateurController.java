@@ -17,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -260,33 +261,108 @@ public class UtilisateurController {
         }
     }
 
+
     @PostMapping("/signin")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        logger.info("Inside login controller...");
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            // Authentifie l'utilisateur
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //String jwt = jwtTokenProvider.generateJwtToken(authentication);
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        if (userDetails.isDelete()) {
-            logger.warn("User with username {} is deleted and cannot log in.", userDetails.getUsername());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User account is deleted.");
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            // Vérifie si l'utilisateur est supprimé
+            if (userDetails.isDelete()) {
+                logger.warn("Utilisateur avec username {} a été supprimé.", userDetails.getUsername());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("Forbidden", "Compte utilisateur a été supprimé."));
+            }
+
+            // Génère le cookie JWT
+            ResponseCookie jwtCookie = jwtTokenProvider.generateJwtCookie(userDetails);
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+
+            // Retourne la réponse avec le cookie
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(new UserResponse(userDetails.getId(), userDetails.getUsername(), roles));
+
+        } catch (BadCredentialsException e) {
+            // Gestion des identifiants incorrects
+            logger.error("Identifiants incorrects: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Unauthorized", "Identifiants incorrects."));
+        } catch (UsernameNotFoundException e) {
+            // Gestion des utilisateurs non trouvés
+            logger.error("Utilisateur non trouvé: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Unauthorized", "Utilisateur non trouvé."));
+        } catch (Exception e) {
+            // Gestion d'autres exceptions
+            logger.error("Erreur inattendue: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Error", "Une erreur est survenue."));
         }
-        ResponseCookie jwtCookie = jwtTokenProvider.generateJwtCookie(userDetails);
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserResponse(userDetails.getId(),
-                        userDetails.getUsername(),
-                        roles
-        ));
     }
+
+    private static class ErrorResponse {
+        private String error;
+        private String message;
+
+        public ErrorResponse(String error, String message) {
+            this.error = error;
+            this.message = message;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
+
+
+//    @PostMapping("/signin")
+//    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+//        logger.info("Inside login controller...");
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        loginRequest.getUsername(),
+//                        loginRequest.getPassword()
+//                )
+//        );
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        //String jwt = jwtTokenProvider.generateJwtToken(authentication);
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        if (userDetails.isDelete()) {
+//            logger.warn("Utilisateur avec username {} a été supprimé.", userDetails.getUsername());
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Compte utilisateur a été supprimé.");
+//        }
+//        ResponseCookie jwtCookie = jwtTokenProvider.generateJwtCookie(userDetails);
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+//                .body(new UserResponse(userDetails.getId(),
+//                        userDetails.getUsername(),
+//                        roles
+//        ));
+//    }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<Utilisateur> updateUsers(@PathVariable Integer id,

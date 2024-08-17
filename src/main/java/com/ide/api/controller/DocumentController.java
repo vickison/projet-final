@@ -15,6 +15,7 @@ import com.ide.api.service.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -292,50 +294,38 @@ public class DocumentController {
         }
     }
 
-
-
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/admin/update/{documentID}")
-    public ResponseEntity<ResponseMessage> updateDocument(@PathVariable Integer documentID,
-                                                   @ModelAttribute Document document) throws IOException {
+    @PreAuthorize("hasRole('ADMIN')")
+    @CachePut(value = "documentCache", key = "#documentID")
+    public Document updateDocument(@PathVariable Integer documentID,
+                                   @Valid @RequestBody Document document) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         String message = "";
         try{
-            this.documentService.updateDocument(documentID, adminID, document);
+            Document document1 = this.documentService.updateDocument(documentID, adminID, document);
             message = "Document mis à jour avec succès...";
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            return document1;
         }catch (Exception e){
             message = "Echec  de mis à jour du document...";
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            throw new RuntimeException("Erreur lors de la mise à jour du document avec ID: " + documentID, e);
         }
 
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/admin/delete/{documentID}")
-    public ResponseEntity<ResponseMessage> deleteDocument(@PathVariable Integer documentID) throws IOException{
+    @PreAuthorize("hasRole('ADMIN')")
+    @CachePut(value = "documentCache", key = "#documentID")
+    public Document deleteDocument(@PathVariable Integer documentID) throws IOException{
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         String message = "";
         try{
-            this.documentService.deleteDocument(documentID, adminID);
+            Document document = this.documentService.deleteDocument(documentID, adminID);
             message = "Document supprimé avec succès...";
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            return document;
         }catch (Exception e){
             message = "Echec  de suppression du document...";
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
+            throw new RuntimeException("Erreur lors de la suppression du document avec ID: " + documentID, e);
         }
     }
 
@@ -445,6 +435,12 @@ public class DocumentController {
             return  false;
         }
         return false;
+    }
+
+
+    @GetMapping(value = "/public/{documentID}/auteurs")
+    public List<String> getAuteursDocument(@PathVariable Integer documentID){
+        return this.documentService.auteursDocument(documentID);
     }
 
 //    @GetMapping(value = "/public/{documentID}/thumbnail", produces = MediaType.IMAGE_JPEG_VALUE)

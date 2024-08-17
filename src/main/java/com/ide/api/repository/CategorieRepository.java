@@ -11,6 +11,5 @@ import java.util.Optional;
 
 public interface CategorieRepository extends JpaRepository<Categorie, Integer> {
     List<Categorie> findByUtilisateurCategoriesUtilisateurID(Utilisateur utilisateur);
-    @EntityGraph(attributePaths = {"categorieDocuments"})
     Optional<Categorie> findByCategorieID(Integer categorieId);
 }

@@ -46,8 +46,21 @@ public class JwtTokenProvider {
 
     public ResponseCookie generateJwtCookie(CustomUserDetails userDetails){
         String jwt = generateTokenFromUsername(userDetails.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24*60*60).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).
+                path("/api").
+                maxAge(2*60*60).
+                httpOnly(true).
+                build();
         return cookie;
+    }
+
+    public ResponseCookie deleteJwtCookie() {
+        return ResponseCookie.from(jwtCookie, "")
+                .path("/api") // Assure que le cookie est supprimé de toutes les routes
+                .maxAge(0) // Définit l'âge du cookie à 0 pour le supprimer
+                .httpOnly(true) // Le cookie est accessible uniquement par le serveur
+                //.secure(true) // Le cookie est envoyé uniquement via HTTPS (si en production)
+                .build();
     }
 
     public ResponseCookie getCleanJwtCookie(){

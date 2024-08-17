@@ -33,6 +33,31 @@
         </heap-store-settings>
     </cache>
 
+    <cache alias="documentsCache">
+        <key-type>org.springframework.cache.interceptor.SimpleKey</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <listeners>
+            <listener>
+                <class>com.ide.api.configurations.CacheLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+                <events-to-fire-on>EVICTED</events-to-fire-on>
+            </listener>
+        </listeners>
+        <resources>
+            <heap unit="MB">500</heap>
+        </resources>
+        <heap-store-settings>
+            <max-object-graph-size>50000</max-object-graph-size>
+            <max-object-size unit="MB">200</max-object-size>
+        </heap-store-settings>
+    </cache>
+
     <cache alias="categorieCache">
         <key-type>java.lang.Integer</key-type>
         <value-type>com.ide.api.entities.Categorie</value-type>
