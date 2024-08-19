@@ -27,11 +27,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -240,22 +242,71 @@ public class DocumentController {
         return this.documentService.findDocumentsByType(type);
     }
 
+
+//    private String determineContentType(String filename) {
+//        String extension = getFileExtension(filename);
+//        for (Map.Entry<String, String> entry : MIME_TO_EXTENSION_MAP.entrySet()) {
+//            if (entry.getValue().equalsIgnoreCase(extension)) {
+//                return entry.getKey();
+//            }
+//        }
+//        return MediaType.APPLICATION_OCTET_STREAM_VALUE; // Default MIME type
+//    }
+
+    private String getFileExtension(String filename) {
+        int lastIndexOfDot = filename.lastIndexOf('.');
+        return (lastIndexOfDot == -1) ? "" : filename.substring(lastIndexOfDot + 1);
+    }
+
+//    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id) throws MalformedURLException {
+//        Optional<Document> optionalDocument = documentService.findDocument(id);
+//        if(optionalDocument.isPresent()){
+//            Document document = optionalDocument.get();
+//            Path filePath = Paths.get(document.getUrl());
+//            Resource resource = new UrlResource(filePath.toUri());
+//            String contentType = determineContentType(document.getTitre());
+//            return ResponseEntity.ok()
+//                    .header("Content-Disposition","inline")
+//                    .header("Content-Type", contentType)
+//                    .body(resource);
+//        }else {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//    }
     @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id) throws MalformedURLException {
+    public ResponseEntity<StreamingResponseBody> recupererUnDocument(@PathVariable Integer id) {
         Optional<Document> optionalDocument = documentService.findDocument(id);
-        if(optionalDocument.isPresent()){
+        if (optionalDocument.isPresent()) {
             Document document = optionalDocument.get();
             Path filePath = Paths.get(document.getUrl());
-            Resource resource = new UrlResource(filePath.toUri());
             String contentType = determineContentType(document.getTitre());
-            return ResponseEntity.ok()
-                    .header("Content-Disposition","inline")
-                    .header("Content-Type", contentType)
-                    .body(resource);
-        }else {
+            try {
+                InputStream inputStream = Files.newInputStream(filePath);
+                StreamingResponseBody responseBody = outputStream -> {
+                    byte[] buffer = new byte[8192]; // Taille du tampon
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    inputStream.close();
+                };
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set(HttpHeaders.CONTENT_TYPE, contentType);
+                headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline"); // Affiche le fichier dans le navigateur
+                headers.set(HttpHeaders.CACHE_CONTROL, "public, max-age=3600"); // Cache pour 1 heure
+
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(responseBody);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } else {
             return ResponseEntity.notFound().build();
         }
-
     }
 
 
