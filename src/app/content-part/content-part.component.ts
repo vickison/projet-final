@@ -520,20 +520,40 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   copyLink() {
     const url = window.location.href;
-    navigator.clipboard.writeText(url).then(
-      () => {
-        this.translateService.get("URL copiée dans le pressse-papier").subscribe(translateMsg => {
+    console.log('Attempting to copy URL:', url);
+  
+    // Créez un élément temporaire pour stocker l'URL
+    const tempInput = document.createElement('input');
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+  
+    // Sélectionnez le texte dans l'élément temporaire
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // Pour les appareils mobiles
+  
+    try {
+      // Essayez de copier le texte dans le presse-papiers
+      const successful = document.execCommand('copy');
+      if (successful) {
+        console.log('URL copied successfully');
+        this.translateService.get("URL copiée dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
-        })
-        
-      },
-      (err) => {
-        console.error('Echec de copier URL: ', err);
+        });
+      } else {
+        console.error('Failed to copy URL');
         this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
-        })
+        });
       }
-    );
+    } catch (err) {
+      console.error('Error copying URL:', err);
+      this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
+        this.showSnackBar(translateMsg);
+      });
+    }
+  
+    // Nettoyez l'élément temporaire
+    document.body.removeChild(tempInput);
   }
 
   private showSnackBar(message: string) {

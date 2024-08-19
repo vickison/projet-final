@@ -1,9 +1,9 @@
 <div class="detail-dialog-container">
     <h2 class="detail-dialog-title">{{'Détails'|translate }}</h2>
-    <p>{{'Titre'|translate }} : {{ selectedDocument.titre }}</p>
-    <p> {{'Auteur'|translate }} : {{ getAuteurFormat() }}</p>
-    <p>{{'Format'|translate }} : {{ selectedDocument.typeFichier }}</p>
-    <p>{{'Taille'|translate }} : {{ formatFileSize(selectedDocument.taille) }}</p>
-    <p>{{'Résumé'|translate }} : {{ (selectedDocument.resume !== 'undefined') ? selectedDocument.resume : '' }}</p>
+    <p><span>{{'Titre'|translate }}</span> : {{ selectedDocument.titre }}</p>
+    <p><span>{{'Auteur'|translate }}</span> : {{ getAuteurFormat() }}</p>
+    <p><span>{{'Format'|translate }}</span> : {{ selectedDocument.typeFichier }}</p>
+    <p><span>{{'Taille'|translate }}</span> : {{ formatFileSize(selectedDocument.taille) }}</p>
+    <p><span>{{'Résumé'|translate }}</span> : {{ (selectedDocument.resume !== 'undefined') ? selectedDocument.resume : '' }}</p>
   </div>
  

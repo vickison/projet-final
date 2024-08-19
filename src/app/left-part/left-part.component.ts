@@ -30,6 +30,8 @@ export class LeftPartComponent implements OnInit{
   @Output() categorySelected = new EventEmitter<number>();
   @Output() documentsOfCategorie = new EventEmitter<Document[]>();
 
+  
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private categorieService: CategorieService,
@@ -76,6 +78,15 @@ export class LeftPartComponent implements OnInit{
       });
   }
 
+  // setActive(event: any) {
+  //   // Remove the 'active' class from all links
+  //   const links = document.querySelectorAll('nav ul li a');
+  //   links.forEach(link => link.classList.remove('active'));
+
+  //   // Add the 'active' class to the clicked link
+  //   event.target.classList.add('active');
+  // }
+
   onCategoryClick(event: any, categoryID?: number): void {
     const links = document.querySelectorAll('nav ul li a');
     links.forEach(link => link.classList.remove('active'));
@@ -84,18 +95,18 @@ export class LeftPartComponent implements OnInit{
     this.categorieService.setFlag(false);
     // Add the 'active' class to the clicked link
     event.target.classList.add('active');
-      this.activeId = categoryID;
-      this.documentService.getDocumentsByCategorie(categoryID)
-        .subscribe(documents => {
-          this.documents = documents.filter(doc => !doc.supprimerDocument);
-          this.documentsOfCategorie.emit(documents);
-          //console.log(this.documents);
-          this.router.navigate(['/categories', categoryID]);
-          //this.reloadPage();
-      });
+    this.activeId = categoryID;
+    this.documentService.getDocumentsByCategorie(categoryID)
+      .subscribe(documents => {
+        this.documents = documents.filter(doc => !doc.supprimerDocument);
+        this.documentsOfCategorie.emit(documents);
+        //console.log(this.documents);
+        this.router.navigate(['/categories', categoryID]);
+        //this.reloadPage();
+    });
 
 
-      this.refresherService.triggerRefresh();
+    this.refresherService.triggerRefresh();
       
       
   }
