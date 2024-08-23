@@ -22,10 +22,12 @@
 "Format": "Format",
 "Taille": "Size",
 "Résumé": "Summary",
+"Hello": "Hello",
 "Rechercher ou filtrer les illustrations ici":"Search or filter the illustrations here",
 "Explorer les catégories d'illustrations ici": "Explore the categories of illustrations here",
 "Retour": "Back",
 "URL copiée dans le pressse-papier": "URL copied in the clipboard",
 "Echec de copier URL dans le presse-papier": "Failed to copy URL to clipboard"
+
 
 }

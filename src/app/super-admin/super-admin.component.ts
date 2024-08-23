@@ -61,7 +61,7 @@ export class SuperAdminComponent implements OnInit{
       next: data => {
         this.message = 'Enregistrement avec succès';
         this.classCss = 'success';
-        console.log(data);
+        //console.log(data);
         this.isSuccessful = true;
         this.isSignupFailed = false;
         setTimeout(() => {

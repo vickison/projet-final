@@ -28,18 +28,17 @@ export class AuthInterceptor implements HttpInterceptor{
                           horizontalPosition: 'center',
                           verticalPosition: 'top'
                         });
+                        this.router.navigate(['/admin/login']);
                     }else{
                         this.snackBar.open('Session expirée. Veuillez vous reconnecter.', 'Fermer', {
                             duration: 5000, 
                             horizontalPosition: 'center',
                             verticalPosition: 'top'
                         });
+                        this.router.navigate(['/admin/login']);
                     }
                     this.tokenService.signOut();
-                    //window.location.reload();
-                    // setTimeout(() => {
-                    //     this.router.navigate(['/admin/login']);
-                    // }, 2000);
+                    
                 }else if (error.status === 403) {
                     
                     this.snackBar.open('Accès refusé. Veuillez vérifier vos autorisations.', 'Fermer', {
@@ -48,9 +47,7 @@ export class AuthInterceptor implements HttpInterceptor{
                       verticalPosition: 'top'
                     });
 
-                    setTimeout(() => {
-                        this.router.navigate(['/admin/login']);
-                    }, 2000);
+                    this.router.navigate(['/admin/login']);
                 }
 
                 return throwError(() => error);

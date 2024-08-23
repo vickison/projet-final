@@ -32,14 +32,14 @@ export class DeluptagPartComponent {
       (tags: Tag[]) =>{
         for(const tag of tags){
           t.push(tag);
-          console.log('tag: ', typeof(tag.dateCreationEtiquette))
+          //console.log('tag: ', typeof(tag.dateCreationEtiquette))
         }
         this.tagSource = new MatTableDataSource(t);
         this.tagSource.paginator = this.paginator;
         this.tagSource.sort = this.sort;
       },
       (error) => {
-        console.error('Erreur: ',error);
+        //console.error('Erreur: ',error);
         
       }
     );
@@ -65,17 +65,17 @@ export class DeluptagPartComponent {
           this.tagSource.sort = this.sort;
         },
         (error) => {
-          console.error('Erreur: ',error);
+          //console.error('Erreur: ',error);
           
         }
       );
       if(updatedTag){
           // Logique pour gérer les données mises à jour
-          console.log('Dialog closed with data:', updatedTag);
+          //console.log('Dialog closed with data:', updatedTag);
         }
     },
     (error) => {
-      console.error('Error updating tag ', error);
+      //console.error('Error updating tag ', error);
       
     });
   
@@ -86,12 +86,12 @@ export class DeluptagPartComponent {
       next: data => {
         this.message = 'Suppression du label avec succès';
         this.classCss = 'success';
-        console.log("Tag supprimer avec succes: ", data);
+        //console.log("Tag supprimer avec succes: ", data);
       },
       error: err => {
         this.message = 'Echec de suppression du tag';
         this.classCss = 'error';
-        console.error("impossible de supprimer le tag: ", err);
+        //console.error("impossible de supprimer le tag: ", err);
       }
     });
   }

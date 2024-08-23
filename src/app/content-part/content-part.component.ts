@@ -141,7 +141,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     
     if(!this.categorieService.getFlag()){
       this.displayWelcome = false;
-      console.log('Without refresh service....');
+      //console.log('Without refresh service....');
       this.route.params.subscribe(params =>{
         const categoryID = +params['categorieID'];
         if(!isNaN(categoryID)){
@@ -156,7 +156,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
     this.refreshSubscription = this.refresherService.shouldRefresh$.subscribe((shouldRefresh) => {
       if (shouldRefresh) {
-        console.log('Refresh requested...');
+        //console.log('Refresh requested...');
         this.displayWelcome = false;
         // Utilisation de switchMap pour gérer les paramètres de l'URL de manière asynchrone
         this.route.params.pipe(
@@ -184,11 +184,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
           })
         ).subscribe({
           next: () => {
-            console.log('FetchDocuments completed.');
+            //console.log('FetchDocuments completed.');
             this.refresherService.clearRefresh(); // Nettoyer le rafraîchissement après le traitement
           },
           error: (error) => {
-            console.error('Error loading documents', error);
+            //console.error('Error loading documents', error);
           }
         });
       }
@@ -284,7 +284,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
           this.documents = documents.filter(doc => !doc.supprimerDocument);
           this.tempDocuments = this.documents; // Mettre à jour tempDocuments si nécessaire
           this.catDocuments = this.documents;
-          console.log('Documents mis à jour: ', this.documents);
+          //console.log('Documents mis à jour: ', this.documents);
   
           // Exemple de mise à jour d'un service ou autre logique nécessaire après récupération des documents
           this.categorieService.setFlag(false);
@@ -302,11 +302,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     this.documents = [];
     this.documentService.getDocumentsByCategorie(categorieID)
       .subscribe((documents: Document[]) => {
-        console.log('Docs Before: ', this.tempDocuments);
+        //console.log('Docs Before: ', this.tempDocuments);
         this.documents = documents.filter(doc => !doc.supprimerDocument);
         this.tempDocuments = this.documents;
       }, (error: any) => {
-        console.error('Error loading documents', error);
+        //console.error('Error loading documents', error);
       });
 
       
@@ -334,14 +334,14 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
       if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.searchResults = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
-        console.log('Search in category: ', this.searchResults);
+        //console.log('Search in category: ', this.searchResults);
         this.documents = this.searchResults;
         this.categorieService.setFlag(true);
       }else{
         this.tempDocuments = this.documents;
       }
     },(error: any) =>{
-      console.error('Error loading documents', error);
+      //console.error('Error loading documents', error);
       
     });
   }
@@ -354,8 +354,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       this.documents = documents.filter(doc => !doc.supprimerDocument);
       if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.filteredDocuments = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
-        console.log('Filter in category: ', this.filteredDocuments);
-        console.log('Filter type: ', type);
+        //console.log('Filter in category: ', this.filteredDocuments);
+        //console.log('Filter type: ', type);
         this.documents = this.filteredDocuments;
         this.categorieService.setFlag(true);
 
@@ -371,7 +371,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         this.tempDocuments = this.documents;
       }
     }, (error: any) =>{
-      console.log('Error fetching documents ', error);
+      //console.log('Error fetching documents ', error);
     });
   }
 
@@ -388,7 +388,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         this.tempDocuments = this.documents;
       }
     }, (error: any ) => {
-      console.log('Error fetching documents ', error);
+      //console.log('Error fetching documents ', error);
     })
   }
 
@@ -407,7 +407,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   onDocumentClick(fileName?: string, documentID?: number): void {
     // Handle the click event, you have access to the document ID (documentId) here
-    console.log('Clicked document ID:', documentID);
+    //console.log('Clicked document ID:', documentID);
     if(fileName){
       this.documentService.downloadDocument(documentID).subscribe((blob: Blob) => {
         // Handle the response from the service call
@@ -427,11 +427,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         document.body.removeChild(link);
       },
       (error) => {
-        console.error('Error downloading document:', error);
+        //console.error('Error downloading document:', error);
       }
       );
     }else{
-      console.error('File name is undefined.');
+      //console.error('File name is undefined.');
     }
     
     
@@ -446,7 +446,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   onDocumentClicked(document: Document): void {
     this.documentClicked.emit(document);
-    console.log("Card dblclicked"+document);
+    //console.log("Card dblclicked"+document);
   }
 
   formatBytes(bytes: number[] | undefined, decimals: number=2): string{
@@ -475,12 +475,12 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   handlePdfLoad(event: any){
-    console.log('PDF loaded successfully', event);
+    //console.log('PDF loaded successfully', event);
     
   }
 
   handlePdfError(event: any){
-    console.error('Error loadind PDF', event);
+    //console.error('Error loadind PDF', event);
     
   }
 
@@ -520,7 +520,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   copyLink() {
     const url = window.location.href;
-    console.log('Attempting to copy URL:', url);
+    //console.log('Attempting to copy URL:', url);
   
     // Créez un élément temporaire pour stocker l'URL
     const tempInput = document.createElement('input');
@@ -535,18 +535,18 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       // Essayez de copier le texte dans le presse-papiers
       const successful = document.execCommand('copy');
       if (successful) {
-        console.log('URL copied successfully');
+        //console.log('URL copied successfully');
         this.translateService.get("URL copiée dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
         });
       } else {
-        console.error('Failed to copy URL');
+        //console.error('Failed to copy URL');
         this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
         });
       }
     } catch (err) {
-      console.error('Error copying URL:', err);
+      //console.error('Error copying URL:', err);
       this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
         this.showSnackBar(translateMsg);
       });

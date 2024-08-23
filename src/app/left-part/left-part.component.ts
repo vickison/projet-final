@@ -47,7 +47,7 @@ export class LeftPartComponent implements OnInit{
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobile = result.matches;
-        console.log('isLeftSectionVisible:', this.isLeftSectionVisible);
+        //console.log('isLeftSectionVisible:', this.isLeftSectionVisible);
          if (!this.isMobile) {
           this.isLeftSectionVisible = false;
            this.isMenuOpen = false; // Fermer le menu sur les autres écrans
@@ -64,7 +64,7 @@ export class LeftPartComponent implements OnInit{
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen; // Inverse l'état du menu
     this.isLeftSectionVisible = !this.isLeftSectionVisible; // Inverse l'état de visibilité
-    console.log('menuOpen:', this.isMenuOpen);
+    //console.log('menuOpen:', this.isMenuOpen);
   }
 
   getAllCategories(): void {
@@ -72,9 +72,9 @@ export class LeftPartComponent implements OnInit{
       .subscribe({
         next: (data) => {
           this.categories = data.filter(cat => !cat.supprimerCategorie);
-          console.log(this.categories);
+          //console.log(this.categories);
         },
-        error: (e) => console.error(e)
+        //error: (e) => console.error(e)
       });
   }
 

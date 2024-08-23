@@ -88,7 +88,7 @@ export class UtilisateurService {
 
     return this.http.get<{ utilisateurID: number; username: string; email: string; supprimerUtil: boolean }[]>(url).pipe(
       catchError((error) => {
-        console.error('Error fetching utilisateurs:', error);
+        //console.error('Error fetching utilisateurs:', error);
         throw error;
       })
     );

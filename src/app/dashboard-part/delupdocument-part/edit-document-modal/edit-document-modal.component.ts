@@ -49,7 +49,7 @@ export class EditDocumentModalComponent {
     //   // password: [data.password, [Validators.required, Validators.minLength(8)]]
     // });
     this.updatedDocumentData = { ...data.document};
-    console.log('Data updated contuctor: ', this.updatedDocumentData);
+    //console.log('Data updated contuctor: ', this.updatedDocumentData);
     this.fetchUsers();
   }
 
@@ -78,7 +78,7 @@ export class EditDocumentModalComponent {
     
     this.documentService.modifDocument(this.updatedDocumentData.documentID, this.updatedDocumentData).subscribe({
         next:response => {
-          console.log('Data updated: ', response);
+          //console.log('Data updated: ', response);
           this.msg = 'Document mis à jour avec succès✅';
           this.snackBar.open(this.msg, 'Fermer', config);
           const index = this.documents.findIndex(d => d.documentID === response.documentID)
@@ -92,7 +92,7 @@ export class EditDocumentModalComponent {
       error: err => {
         this.msg = 'Échec de mise à jour de Document❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de modifier le document: ", err);
+        //console.log("Echec de modifier le document: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedDocumentData);
         }, 1000);

@@ -10,38 +10,52 @@
     <mat-table [dataSource]="auteurSource" matSort>
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.auteurID}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.auteurID}}</div> 
+        </mat-cell>
       </ng-container>
   
       
       <ng-container matColumnDef="nom">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.nom}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.nom}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="prenom">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.prenom}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.prenom}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.auteurCreationAuteur }} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.auteurCreationAuteur }}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateCreationAuteur | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.dateCreationAuteur | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.auteurModificationAuteur === 'none'? '':row.auteurModificationAuteur}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.auteurModificationAuteur === 'none'? '':row.auteurModificationAuteur}}</div> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateModificationAuteur !==row.dateCreationAuteur? (row.dateModificationAuteur | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.dateModificationAuteur !==row.dateCreationAuteur? (row.dateModificationAuteur | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}}</div> 
+        </mat-cell>
       </ng-container>
 
       <!-- Color Column -->
@@ -49,12 +63,12 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
         
-        <button *ngIf="!row.supprimerAuteur" mat-icon-button (click)="openEditModal(row)" color="primary">   
-            <mat-icon>edit</mat-icon>
+        <button *ngIf="!row.supprimerUtil" mat-icon-button color="primary" (click)="openEditModal(row)">   
+            <mat-icon svgIcon="mod"></mat-icon>
         </button>
-
-        <button *ngIf="!row.supprimerAuteur" mat-icon-button (click)="onDelete(row.auteurID, row)" color="warn">   
-            <mat-icon>delete</mat-icon>
+        <div class="button-separator-vertical"></div>
+        <button *ngIf="!row.supprimerUtil" (click)="onDelete(row.utilisateurID, row)" mat-icon-button color="warn">   
+            <mat-icon svgIcon="sup"></mat-icon>
         </button>
         </mat-cell>
       </ng-container>

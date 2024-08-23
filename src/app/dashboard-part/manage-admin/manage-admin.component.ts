@@ -78,7 +78,7 @@ export class ManageAdminComponent implements OnInit{
       next: data => {
         this.msg = 'Admin créé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log(data);
+        //console.log(data);
         this.isSuccessful = true;
         this.isSignupFailed = false;
         setTimeout(() => {
@@ -106,11 +106,11 @@ export class ManageAdminComponent implements OnInit{
       const user: Utilisateur = this.userForm.value;
       this.userService.createUser(user).subscribe(
         (response) => {
-          console.log('User created successfully:', response);
+          //console.log('User created successfully:', response);
           // Handle success (e.g., show a success message, redirect to login page)
         },
         (error) => {
-          console.error('Error creating user:', error);
+          //console.error('Error creating user:', error);
           // Handle error (e.g., show an error message)
         }
       );

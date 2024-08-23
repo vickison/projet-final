@@ -1,43 +1,49 @@
 <!-- dashboard.component.html -->
 <mat-toolbar color="warn">
+  <span>DASHBOARD | LibEIlH</span>
+  <span class="spacer"></span>
+  <span class="user-info">
+    {{ username }}
+    <button mat-raised-button style="color: rgb(197, 43, 43); background-color: rgb(253, 253, 253);" (click)="onLogout()">Deconnecter</button> <!-- Bouton Logout -->
+  </span>
+</mat-toolbar>
 
-
-    <span>DASHBOARD | LibEIlH</span>
-  </mat-toolbar>
   
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport="true" mode="side" opened="true">
-      <mat-nav-list>
-        <a mat-list-item *ngFor="let option of options" (click)="selectOption(option)" (mouseover)="showOptions(option)">
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true" mode="side" opened="true">
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let option of options" [class.selected]="option === selectedOption" (click)="selectOption(option)">
+        <div [fxLayout]="isSmallScreen ? 'column' : 'row'" [fxLayoutAlign]="isSmallScreen ? 'start start' : 'start center'" style="display: flex; align-items: center;" style="display: flex; align-items: center; width: 100%;">
           <mat-icon mat-list-icon>{{option.icon}}</mat-icon>
           <span mat-line>{{option.name}}</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content class="sidenav-content">
-      <div *ngIf="selectedOption" class="option-actions">
-          <button mat-raised-button color="accent" (click)="openDialog(selectedOption, 'Ajouter')" style="margin-right: 0;">Ajouter</button>
-        <!--<button mat-raised-button color="danger" (click)="openDialog(selectedOption, 'Modifier')">Modifier</button>
-        <button mat-raised-button color="warn" (click)="openDialog(selectedOption, 'Supprimer')">Supprimer</button>-->
-      </div>
+        </div>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="sidenav-content">
+    <div *ngIf="selectedOption" class="option-actions">
+        <button mat-raised-button color="accent" (click)="openDialog(selectedOption, 'Ajouter')" style="margin-right: 0;">Ajouter</button>
+      <!--<button mat-raised-button color="danger" (click)="openDialog(selectedOption, 'Modifier')">Modifier</button>
+      <button mat-raised-button color="warn" (click)="openDialog(selectedOption, 'Supprimer')">Supprimer</button>-->
+    </div>
 
 
-      <div>
-        <app-delupadmin-part *ngIf="selectedOption?.name === 'Admin' and isSuperAdmin === true" ></app-delupadmin-part>
-        <app-delupcategory-part *ngIf="selectedOption?.name === 'Catégories'"></app-delupcategory-part>
-        <app-delupdocument-part *ngIf="selectedOption?.name === 'Documents'"></app-delupdocument-part>
-        <app-delupauteur-part *ngIf="selectedOption?.name === 'Auteurs'"></app-delupauteur-part>
-        <app-deluptag-part *ngIf="selectedOption?.name === 'Etiquettes'"></app-deluptag-part>
-      </div>
+    <div>
+      <app-delupadmin-part *ngIf="selectedOption?.name === 'Admin' and isSuperAdmin === true" ></app-delupadmin-part>
+      <app-delupcategory-part *ngIf="selectedOption?.name === 'Catégories'"></app-delupcategory-part>
+      <app-delupdocument-part *ngIf="selectedOption?.name === 'Documents'"></app-delupdocument-part>
+      <app-delupauteur-part *ngIf="selectedOption?.name === 'Auteurs'"></app-delupauteur-part>
+      <app-deluptag-part *ngIf="selectedOption?.name === 'Etiquettes'"></app-deluptag-part>
+    </div>
 
-      <!--<div *ngIf="hoveredOption" class="option-details">
-        <h2>{{hoveredOption.name}}</h2>
-        <p>{{hoveredOption.description}}</p>
-      </div>-->
+    <!--<div *ngIf="hoveredOption" class="option-details">
+      <h2>{{hoveredOption.name}}</h2>
+      <p>{{hoveredOption.description}}</p>
+    </div>-->
 
-     
-      
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    
+    
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 

@@ -51,15 +51,15 @@ export class ManageCategoriesComponent {
         // Ajouter votre logique ici
         this.categorieService.createCategory(utilisateurID, category).subscribe(
           (response) =>{
-            console.log('Category created successfully:', response);
+            //console.log('Category created successfully:', response);
           },
           (error) => {
-            console.error('Error creating category:', error);
+            //console.error('Error creating category:', error);
             // Handle error (e.g., show an error message)
           }
         );
       }else{
-          console.log("error...");
+          //console.log("error...");
           
       }
         
@@ -82,7 +82,7 @@ export class ManageCategoriesComponent {
           next: data => {
             this.msg = 'Catégorie créée avec succès✅';
             this.snackBar.open(this.msg, 'Fermer', config);
-            console.log("Catégorie ajoutée avec succès: ", data);
+            //console.log("Catégorie ajoutée avec succès: ", data);
             setTimeout(() => {
               //this.dialog.closeAll();
               this.catForm.reset();
@@ -93,11 +93,11 @@ export class ManageCategoriesComponent {
           error: err =>{
             this.msg = 'Échec d\'ajouter Catégorie❌';
             this.snackBar.open(this.msg, 'Fermer', config);
-            console.error("Erreur d'ajouter la catégorie: ", err);
+            //console.error("Erreur d'ajouter la catégorie: ", err);
           }
         });
       }else{
-        console.log('Form invalid...');
+        //console.log('Form invalid...');
       }
     }
  

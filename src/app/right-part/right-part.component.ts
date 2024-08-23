@@ -12,7 +12,7 @@ export class RightPartComponent {
 
   openDocumentViewer(document: Document): void {
     this.selectedDocument = document;
-    console.log(this.selectedDocument);
+    //console.log(this.selectedDocument);
   }
 
   closeDocumentViewer(): void {

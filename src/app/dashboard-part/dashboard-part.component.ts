@@ -12,6 +12,8 @@ import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur';
 import { Observable } from 'rxjs/internal/Observable';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-dashboard-part',
@@ -34,22 +36,34 @@ export class DashboardPartComponent implements OnInit {
   hoveredOption: any;
   isSuperAdmin: boolean = false;
   //utilisateur: Utilisateur ;
+  username?: string;
 
   constructor(public dialog: MatDialog, 
     private tokenService: TokenStorageService,
     private router: Router,
     private utilisateurService: UtilisateurService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private breakpointObserver: BreakpointObserver,
+    private authService: AuthService,
   ) { 
       //this.utilisateur = this.utilisateurService.getUser(Number(this.tokenService.getIdUser()));
     }
 
-
+  isSmallScreen: boolean = false;
 
   ngOnInit(): void {
     if(!this.tokenService.isLoggedIn()){
       this.router.navigate(['/admin/login']);
     }
+    this.username = this.tokenService.getUser().username;
+
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall, // Correspond à des écrans < 600px
+      Breakpoints.Small,  // Correspond à des écrans < 960px et peut inclure des tablettes
+    ]).subscribe(result => {
+      this.isSmallScreen = result.matches;
+    });
+
     this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
       next: data => {
         if(data.superAdmin){
@@ -58,7 +72,7 @@ export class DashboardPartComponent implements OnInit {
         
       },
       error: err => {
-        console.log('Error fetching User: ', err);
+        //console.log('Error fetching User: ', err);
         
       }
     })
@@ -95,11 +109,11 @@ export class DashboardPartComponent implements OnInit {
         }
       },
       error: err => {
-        console.log('Error fetching User: ', err);
+        //console.log('Error fetching User: ', err);
         
       }
     })
-    console.log(this.isSuperAdmin);
+    //console.log(this.isSuperAdmin);
     switch (option.name) {
       case 'Admin':
         if(this.isSuperAdmin){
@@ -141,6 +155,23 @@ export class DashboardPartComponent implements OnInit {
         }
         break;
     }
+  }
+
+  onLogout(){
+    this.authService.logout().subscribe({
+      next: data => {
+        //console.log(data);
+        this.snackBar.open(data.message, 'Fermer', {
+          duration: 2000, // Duration in milliseconds
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+        this.router.navigate(['/admin/login']);
+      },
+      error: err =>{
+
+      }
+    })
   }
 
 

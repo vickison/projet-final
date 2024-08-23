@@ -49,11 +49,11 @@ export class ManageAuteursComponent implements OnInit{
 
         this.auteurService.craateAuteur(utilisateurID, auteur).subscribe(
           (response) => {
-            console.log('Création d\'auteur ',response, ' avec succès.');
+            //console.log('Création d\'auteur ',response, ' avec succès.');
             
           },
           (error) =>{
-            console.log('Erreur de création d\'auteur ', error);
+            //console.log('Erreur de création d\'auteur ', error);
             
           }
         );
@@ -81,7 +81,7 @@ export class ManageAuteursComponent implements OnInit{
             //this.classCss = 'success';
             //console.log("Document ajouté avec succès: ", event.data);
             this.snackBar.open(this.msg, 'Fermer', config);
-          console.log("Auteur ajouté avec succès: ", data);
+          //console.log("Auteur ajouté avec succès: ", data);
           setTimeout(() => {
             //this.dialog.closeAll();
             this.autForm.reset();
@@ -96,7 +96,7 @@ export class ManageAuteursComponent implements OnInit{
             //this.classCss = 'success';
             //console.log("Document ajouté avec succès: ", event.data);
           this.snackBar.open(this.msg, 'Fermer', config);
-          console.log("Echec d'ajouter l'auteur: ", err);
+          //console.log("Echec d'ajouter l'auteur: ", err);
         }
       });
     }

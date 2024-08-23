@@ -1,4 +1,4 @@
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+//@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 
 .head {
@@ -17,52 +17,35 @@
     padding: 20px;
   }
 
-  .success{
-    padding-top: 15px;
-    padding-left: 15px;
-    color: green;
-  }
       
   .error { 
-    padding-top: 15px;
-    padding-left: 15px;
     color: red;
   }
 
-  .file-input-container {
-    margin-top: 10px; /* Adjust spacing as needed */
-  }
-  
-  .file-input-label {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #788997; /* Use your primary color */
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+ 
+
 
 .form-button
 {
  // background-color: red;
 display: flex;
-align-items: center;
+align-items: stretch;
 width: 100%;
 justify-content: center;
-gap: 15px;
+gap: 2px;
 }
 
 .field {
-flex: 1;
-width: 80%;
+  flex: 1;
 }
 
 .button-add {
-  width: 10%;
-  height: 5%;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-shadow: none;
 }
 
 

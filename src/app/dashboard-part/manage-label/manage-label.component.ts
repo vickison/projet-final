@@ -45,18 +45,18 @@ export class ManageLabelComponent {
         const tag: Tag = this.tagForm.value;
         this.tagService.createTag(utilisateurID, tag).subscribe(
           (response) =>{
-            console.log('Tag created successfuly...', response);
+            //console.log('Tag created successfuly...', response);
           },
           (error) =>{
-            console.error('Error creating tag...', error);
+            //console.error('Error creating tag...', error);
             
           }
         );
       }else{
-        console.log('utilisateur n\'xiste pas...');
+        //console.log('utilisateur n\'xiste pas...');
       }
     }else{
-      console.log('Form invalid...');
+      //console.log('Form invalid...');
     }
   }
 
@@ -73,7 +73,7 @@ export class ManageLabelComponent {
         next: data => {
           //this.message = 'Label ajouté avec succès ';
           //this.classCss = 'success';
-          console.log("Tag ajouter avec succès: ", data);
+          //console.log("Tag ajouter avec succès: ", data);
           this.msg = 'Etiquette créée avec succès✅';
             //this.classCss = 'success';
             //console.log("Document ajouté avec succès: ", event.data);
@@ -89,12 +89,12 @@ export class ManageLabelComponent {
           this.msg = 'Échec d\'ajouter Etiquette❌';
           //this.message = 'Echec d\'ajouter le label';
           //this.classCss = 'error';
-          console.error("Echec d'enregistrement de tag: ", err);
+          //console.error("Echec d'enregistrement de tag: ", err);
           this.snackBar.open(this.msg, 'Fermer', config);
         }
       });
     }else{
-      console.log('Form invalid...');
+      //console.log('Form invalid...');
     }
   }
 

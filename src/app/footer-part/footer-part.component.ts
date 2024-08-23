@@ -21,18 +21,18 @@ export class FooterPartComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobile = result.matches;
-        if (this.isMobile) {
-          console.log("Mobile détectée.");
-         }
+        // if (this.isMobile) {
+        //   //console.log("Mobile détectée.");
+        //  }
 
       });
 
       this.breakpointObserver.observe([Breakpoints.Tablet])
       .subscribe(result => {
         this.isTablet = result.matches;
-        if (this.isTablet) {
-          console.log("Tablette détectée.");
-         }
+        // if (this.isTablet) {
+        //   console.log("Tablette détectée.");
+        //  }
 
       });
 

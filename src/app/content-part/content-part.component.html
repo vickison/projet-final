@@ -5,15 +5,23 @@
     <!-- Remplacez "Hello!!!" par l'icône animée -->
     
     <p class="animate__animated animate__fadeIn animate__delay-1s" style="font-size: 1.5em;">
-      Hello
+      {{ 'Hello'|translate }}
       <mat-icon svgIcon="hand-hello" class="hand-rotation hand-icon"></mat-icon>
     </p>
     <ul class="instructions-list">
-      <li>
+      <li class="desk">
+        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
+        {{ 'Rechercher ou filtrer les illustrations ici'|translate }}.
+      </li>
+      <li class="mob">
+        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
+        {{ 'Explorer les catégories d\'illustrations ici'|translate }}  <mat-icon svgIcon="tbars" style="font-size: smaller;"></mat-icon> <br>
+      </li>
+      <li class="mob">
         <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
         {{'Rechercher ou filtrer les illustrations ici'|translate}}.
       </li>
-      <li>
+      <li class="desk">
         <mat-icon svgIcon="hand-gauche" class="icon-left hand-icon"></mat-icon>
         {{'Explorer les catégories d\'illustrations ici'|translate}}.
       </li>

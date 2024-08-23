@@ -43,7 +43,7 @@ export class DelupcategoryPartComponent {
         this.categorySource.sort = this.sort;
       },
       (error) => {
-        console.error('Erreur: ',error);
+        //console.error('Erreur: ',error);
         
       }
     );
@@ -70,13 +70,13 @@ export class DelupcategoryPartComponent {
           this.categorySource.sort = this.sort;
         },
         (error) => {
-          console.error('Erreur: ',error);
+          //console.error('Erreur: ',error);
           
         }
       );
       if(updatedCategorie){
         // Logique pour gérer les données mises à jour
-        console.log('Dialog closed with data:', updatedCategorie);
+        //console.log('Dialog closed with data:', updatedCategorie);
 
         // this.categorieService.creerCategorie(categorie.categorieID, this.adminID, updatedCategorie).subscribe(response => {
         //   const index = this.categories.findIndex(c => c.categorieID === response.categorieID);
@@ -88,11 +88,11 @@ export class DelupcategoryPartComponent {
       
     },
     error => {
-      console.error('Error updating categorie ', error);
+      //console.error('Error updating categorie ', error);
     });
   
   }
-
+  
   onDelete(categorie: Categorie){
 
     const config = new MatSnackBarConfig();
@@ -105,7 +105,7 @@ export class DelupcategoryPartComponent {
       next: data => {
         this.msg = 'Catégorie suprrimée avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Suppresion de la catégorie: ", data);
+        //console.log("Suppresion de la catégorie: ", data);
         setTimeout(() => {
           this.reloadPage();
         }, 500);
@@ -113,7 +113,7 @@ export class DelupcategoryPartComponent {
       error: err => {
         this.msg = 'Échec de Supprimer la Catégorie❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de suppresion de la catégorie: ", err);
+        //console.log("Echec de suppresion de la catégorie: ", err);
       }
     });
   }

@@ -17,7 +17,7 @@ export class SnackBarLikeComponent {
     private documentService: DocumentService,
   ){
     this.isLiked = data.isLiked;
-    console.log('is liked: ', this.isLiked )
+    //console.log('is liked: ', this.isLiked )
   }
 
   onLikeClick(){

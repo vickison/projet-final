@@ -12,33 +12,45 @@
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.tagID}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.tagID}}</div> 
+        </mat-cell>
       </ng-container>
   
       <!-- name Column -->
       <ng-container matColumnDef="tag">
         <mat-header-cell *matHeaderCellDef mat-sort-header> nom </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.tag}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.tag}}</div> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.adminCreationEtiquette }} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.adminCreationEtiquette }}</div> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateCreationEtiquette | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.dateCreationEtiquette | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}}</div>  
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.adminModificationEtiquette === 'none'? '':row.adminModificationEtiquette}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.adminModificationEtiquette === 'none'? '':row.adminModificationEtiquette}}</div>  
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateModificationEtiquette !==row.dateCreationEtiquette? (row.dateModificationEtiquette | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.dateModificationEtiquette !==row.dateCreationEtiquette? (row.dateModificationEtiquette | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}}</div> 
+        </mat-cell>
       </ng-container>
 
       <!-- Color Column -->
@@ -46,12 +58,12 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
         
-        <button mat-icon-button (click)="openEditModal(row)" color="primary">   
-            <mat-icon>edit</mat-icon>
+        <button *ngIf="!row.supprimerUtil" mat-icon-button color="primary" (click)="openEditModal(row)">   
+            <mat-icon svgIcon="mod"></mat-icon>
         </button>
-
-        <button mat-icon-button (click)="onDelete(row.tagID, row)" color="warn">   
-            <mat-icon>delete</mat-icon>
+        <div class="button-separator-vertical"></div>
+        <button *ngIf="!row.supprimerUtil" (click)="onDelete(row.utilisateurID, row)" mat-icon-button color="warn">   
+            <mat-icon svgIcon="sup"></mat-icon>
         </button>
         </mat-cell>
       </ng-container>

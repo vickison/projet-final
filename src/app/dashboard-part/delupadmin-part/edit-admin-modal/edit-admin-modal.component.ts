@@ -68,7 +68,7 @@ export class EditAdminModalComponent {
       error: err => {
         this.msg = 'Échec de mis à jour de l\'Admin❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de modifiction d'util.: ", err);
+        //console.log("Echec de modifiction d'util.: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedUtilData);
         }, 1000)

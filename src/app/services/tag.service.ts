@@ -32,7 +32,7 @@ export class TagService {
 
     return this.http.get<{ tagID: number; tag: string ; supprimerEtiquette: boolean}[]>(url).pipe(
       catchError((error) => {
-        console.error('Error fetching categories:', error);
+        //console.error('Error fetching categories:', error);
         throw error;
       })
     );

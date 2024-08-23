@@ -50,7 +50,7 @@ export class DelupadminPartComponent implements OnInit{
         for(const utilisateur of utilisateurs){
           utilis.push(utilisateur);
         }
-        console.log(utilis);
+        //console.log(utilis);
         this.usersSource = new MatTableDataSource(utilis)
 
         this.usersSource.paginator = this.paginator;
@@ -58,7 +58,7 @@ export class DelupadminPartComponent implements OnInit{
         
       },
       (error) => {
-        console.error('Erreur: ', error);
+        //console.error('Erreur: ', error);
       }
     );
     this.usersSource = new MatTableDataSource(this.utilisateurs)
@@ -100,7 +100,7 @@ export class DelupadminPartComponent implements OnInit{
           for(const utilisateur of utilisateurs){
             utilis.push(utilisateur);
           }
-          console.log(utilis);
+          //console.log(utilis);
           this.usersSource = new MatTableDataSource(utilis)
 
           this.usersSource.paginator = this.paginator;
@@ -108,11 +108,11 @@ export class DelupadminPartComponent implements OnInit{
           
         },
         (error) => {
-          console.error('Erreur: ', error);
+          //console.error('Erreur: ', error);
         }
       );
       // Logique pour gérer les données mises à jour
-      console.log('Dialog closed with data:', updatedUtil);
+      //console.log('Dialog closed with data:', updatedUtil);
       // this.utilisateurService.modifUtilisateur(utilisateur.utilisateurID, updatedUtil).subscribe(response => {
       //   const index = this.utilisateurs.findIndex(a => a.utilisateurID === response.utilisateurID);
       //   if(index ! == -1){
@@ -136,7 +136,7 @@ export class DelupadminPartComponent implements OnInit{
       next: data => {
         this.msg = 'Admin suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Suppresion de l'utilisateur: ", data);
+        //console.log("Suppresion de l'utilisateur: ", data);
         setTimeout(() => {
           this.reloadPage();
         }, 500);
@@ -144,7 +144,7 @@ export class DelupadminPartComponent implements OnInit{
       error: err => {
         this.msg = 'Échec de Supprimer cet Admin❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de suppresion de l\'utilisateur: ", err);
+        //console.log("Echec de suppresion de l\'utilisateur: ", err);
       }
     });
   }

@@ -1,55 +1,98 @@
 /* dashboard.component.css */
 .sidenav-container {
-   // margin-top: 5%;
-    height: 90%;
-  }
+  // margin-top: 5%;
+   height: 90%;
+   //margin: 0 auto; 
+ }
+
+ mat-toolbar {
+   display: flex;
+   justify-content: space-between; /* Espace les éléments à gauche et à droite */
+   align-items: center; /* Centre les éléments verticalement */
+ }
+
+
+ .spacer {
+   flex: 1 1 auto; /* Prend tout l'espace disponible entre le titre et la zone utilisateur */
+ }
+ 
+ .user-info {
+   display: flex;
+   align-items: center; /* Centre verticalement le texte et le bouton */
+   font-size: small;
+ }
+ 
+ .user-info button {
+   margin-left: 10%; /* Ajoute un espace entre le nom d'utilisateur et le bouton */
+   font-size: medium;
   
-  .sidenav {
-    margin-top: 4.3%;
-    width: 11.5%;
-    background-color: rgba(255, 94, 0, 0.26);
-  }
-  
-  .sidenav-content {
-    padding: 20px;
-  }
-  
-  .option-actions {
-    float: right;
-  }
-  
-  .option-details {
-    border: 1px solid black;
-    padding: 10px;
-  }
-  
+ }
+ 
+
+
+ .sidenav {
+   //margin-top: 4.3%;
+   position:absolute;
+   top: var(--toolbar-height);
+   width: 12%;
+   background-color: rgba(255, 94, 0, 0.26);
+ }
+ 
+ .sidenav-content {
+   padding: 20px;
+ }
+ 
+ .option-actions {
+   display: flex;
+   justify-content: flex-end;
+   margin-bottom: 20px;
+ }
+ 
+ .option-details {
+   border: 1px solid black;
+   padding: 10px;
+ }
+ 
 
 // app.component.scss
 .options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin-bottom: 20px;
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: space-around;
+ margin-bottom: 20px;
 }
 
 .options nb-card {
-  width: 200px;
-  height: 200px;
-  cursor: pointer;
+ width: 200px;
+ height: 200px;
+ cursor: pointer;
 }
 
 .buttons {
-  display: flex;
-  justify-content: center;
+ display: flex;
+ justify-content: center;
 
-  button {
-    margin: 0 10px;
-  }
+ button {
+   margin: 0 10px;
+ }
 }
 
 .details {
-  margin-top: 20px;
-  text-align: center;
+ margin-top: 20px;
+ text-align: center;
 }
 
+
+.selected {
+ /* Styles pour l'option sélectionnée */
+ background-color: #ff730063; /* Exemple */
+ color: white;
+}
+
+
+.opt {
+ white-space: nowrap; /* Empêche le texte de passer à la ligne */
+ overflow: hidden; /* Masque le texte qui déborde du conteneur */
+ text-overflow: ellipsis; /* Ajoute des ellipses si le texte déborde */
+}
 

@@ -1,22 +1,23 @@
-input{
-  width: 100%;
-}
 
 mat-toolbar {
-    display: flex; /* Active le mode flexbox */
-    align-items: center; /* Centre les éléments verticalement */
-    justify-content: space-between; /* Répartit les éléments horizontalement */
-  }
-  
-  .titre {
-    margin-left: 1%; /* Ajoute une marge à gauche du titre */
+  display: flex; /* Active le mode flexbox */
+  align-items: center; /* Centre les éléments verticalement */
+  justify-content: space-between; /* Répartit les éléments horizontalement */
 }
-  
-   .action {
-     margin-left: 90%; /* Ajoute une marge à droite du bouton */
-     padding: 1%; /* Ajoute du remplissage au bouton */
-   }
-  
+
+@import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+.titre {
+  margin-left: 1%; /* Ajoute une marge à gauche du titre */
+  font-family: 'Quicksand', cursive;
+  font-size: 120%;
+}
+
+ .action {
+   margin-left: 90%; /* Ajoute une marge à droite du bouton */
+   padding: 1%; /* Ajoute du remplissage au bouton */
+ }
+
 
 
 #grid {
@@ -25,17 +26,17 @@ mat-toolbar {
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(6, 1fr);
 }
-  
+
 #item1 {
   background-color:#183153;
   grid-row: 1 / span 2; /* L'élément occupe les deux premières lignes de la grille */
   grid-column: 1 / span 8;
   height: 15%;
-   
+ 
 }
-  
+
 #item2 {
-  background-color: rgb(248, 248, 248);
+  background-color: rgb(242, 246, 250);
   grid-row: 3 / span 3; /* L'élément occupe les trois lignes suivantes de la grille */
   grid-column: 3 / span 4;
   height: 100%;
@@ -45,4 +46,39 @@ mat-toolbar {
 margin-top: 9%; 
 grid-row: 1 / span 1;
 grid-column: 8/ span 8;
+}
+
+
+
+mat-card-content {
+display: flex;
+justify-content: flex-end; /* Aligne le contenu à droite */
+align-items: flex-start; /* Aligne le contenu en haut */
+}
+
+form.example-form {
+display: flex;
+flex-direction: column;
+align-items: flex-end; /* Aligne les éléments à droite */
+}
+
+mat-form-field,
+button {
+width: 100%; /* Assure que les champs de formulaire prennent toute la largeur disponible */
+max-width: 300px; /* Vous pouvez ajuster cette largeur pour contrôler la taille des champs */
+margin-bottom: 10px; /* Espace entre les éléments */
+}
+
+.content-container {
+display: flex;
+justify-content: space-between; /* Espace entre l'image et le formulaire */
+align-items: flex-start; /* Aligne les éléments en haut */
+gap: 20px; /* Espace entre l'image et le formulaire */
+}
+
+.login-image {
+margin-top: 2%;
+width: 50%; /* Ajustez la taille de l'image selon vos besoins */
+height: auto; /* Maintient le ratio de l'image */
+margin-right: 20px; /* Espace entre l'image et le formulaire */
 }

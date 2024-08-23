@@ -36,11 +36,22 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
+  <!-- <mat-form-field appearance="outline">
     <mat-label>Mot de passe</mat-label>
     <input matInput type="password" id="password" formControlName="password" required>
     <mat-error *ngIf="userForm.get('password')!.invalid && userForm.get('password')!.touched">
       Le mot de passe est requis
+    </mat-error>
+  </mat-form-field> -->
+
+  <mat-form-field appearance="outline">
+    <mat-label>Mot de passe</mat-label>
+    <input matInput type="password" id="password" formControlName="password" required>
+    <mat-error *ngIf="userForm.get('password')!.hasError('required') && userForm.get('password')!.touched">
+      Le mot de passe est requis
+    </mat-error>
+    <mat-error *ngIf="userForm.get('password')!.hasError('minlength') && userForm.get('password')!.touched">
+      Le mot de passe doit contenir au moins 8 caractères
     </mat-error>
   </mat-form-field>
   

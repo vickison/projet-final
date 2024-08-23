@@ -3,6 +3,8 @@ import { UtilisateurService } from '../services/utilisateur.service';
 import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AboutDialogService } from '../services/about-dialog.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login-part',
@@ -29,7 +31,14 @@ export class LoginPartComponent implements OnInit{
     private tokenStorage: TokenStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    ){}
+    private aboutDialogService: AboutDialogService,
+    private translateService:TranslateService
+
+    ){
+      this.translateService.use('fr');
+    }
+
+
   ngOnInit(): void {
     if(this.tokenStorage.isLoggedIn()){
       this.isLoggedIn = true;
@@ -38,17 +47,21 @@ export class LoginPartComponent implements OnInit{
     }
   }
 
+  openAboutDialog(): void {
+    this.aboutDialogService.openDialog();
+  }
+
   onSubmit(): void{
     const { username, password } = this.form;
     this.authService.login(username, password).subscribe({
       next: data =>{
-        console.log(data)
+        //console.log(data)
         this.tokenStorage.saveUser(data);
 
         this.isLoggedIn = true;
         this.isLoginFailed = false;
         this.roles = this.tokenStorage.getUser().roles;
-        console.log('Login: ',this.isLoggedIn);
+        //console.log('Login: ',this.isLoggedIn);
         this.router.navigateByUrl('/admin/dashboard');
         
       },
@@ -68,15 +81,15 @@ export class LoginPartComponent implements OnInit{
     if (this.isFormValid()){
       this.utilisateurService.login(this.credentials).subscribe(
         (response) =>{
-          console.log('Login Successful...', response.token);
+          //console.log('Login Successful...', response.token);
           
         },
         (err) =>{
-          console.log('Login failed...', err);
+          //console.log('Login failed...', err);
         }
       )
     } else {
-      console.warn('Form is not valid. Please check your inputs.');
+      //console.warn('Form is not valid. Please check your inputs.');
     }
     
   }

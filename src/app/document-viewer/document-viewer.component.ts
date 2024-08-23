@@ -42,7 +42,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
     this.subscription.add(
       this.documentService.selectedDocument$.subscribe((document: Document | null) => {
         this.selectedDocument = document;
-        console.log("Selected document: ", document);
+        //console.log("Selected document: ", document);
 
         // Met à jour l'URL et l'ID du document
         if (this.selectedDocument) {

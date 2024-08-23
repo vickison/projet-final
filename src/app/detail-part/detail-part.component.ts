@@ -23,7 +23,7 @@ export class DetailPartComponent implements OnInit{
   ){
 
       this.selectedDocument = {...data.document}
-      console.log("Détail: ", this.selectedDocument.documentTags);
+      //console.log("Détail: ", this.selectedDocument.documentTags);
       
   }
 

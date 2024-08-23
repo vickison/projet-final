@@ -99,7 +99,7 @@ export class HeaderPartComponent implements OnInit {
 
   onFilterClick(filter: string): void{
     this.filterService.setFilter(filter);
-    console.log(filter);
+    //console.log(filter);
     
   }
 
@@ -122,18 +122,18 @@ export class HeaderPartComponent implements OnInit {
   this.breakpointObserver.observe([Breakpoints.Handset])
   .subscribe(result => {
     this.isMobile = result.matches;
-    if (this.isMobile) {
-      console.log("Mobile détectée.");
-      }
+    // if (this.isMobile) {
+    //   console.log("Mobile détectée.");
+    //   }
 
   });
 
   this.breakpointObserver.observe([Breakpoints.Tablet])
   .subscribe(result => {
     this.isTablet = result.matches;
-    if (this.isTablet) {
-      console.log("Tablette détectée.");
-      }
+    // if (this.isTablet) {
+    //   //console.log("Tablette détectée.");
+    //   }
 
   });
 
@@ -147,8 +147,8 @@ export class HeaderPartComponent implements OnInit {
 
   @HostListener('document:click',['$event'])
   handleClickOutside(event: Event){
-    console.log("j'y suis");
-    console.log(this.isListVisible);
+    //console.log("j'y suis");
+    //console.log(this.isListVisible);
     const clickedButton = (event.target as HTMLElement)?.closest('#format_icon');
     if( !clickedButton){
       this.isListVisible = false;

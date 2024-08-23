@@ -42,7 +42,7 @@ export class DelupauteurPartComponent {
         this.auteurSource.sort = this.sort;
       },
       (error) => {
-        console.error('Erreur: ', error);
+        //console.error('Erreur: ', error);
       }
     );
 
@@ -79,12 +79,12 @@ export class DelupauteurPartComponent {
           this.auteurSource.sort = this.sort;
         },
         (error) => {
-          console.error('Erreur: ', error);
+          //console.error('Erreur: ', error);
         }
       );
       if(updatedAuteur){
         // Logique pour gérer les données mises à jour
-        console.log('Dialog closed with data:', updatedAuteur);
+        //console.log('Dialog closed with data:', updatedAuteur);
 
         this.auteurService.modifAuteur(auteur.auteurID, updatedAuteur).subscribe(response => {
           const index = this.auteurs.findIndex(a => a.auteurID === response.auteurID);
@@ -96,7 +96,7 @@ export class DelupauteurPartComponent {
       }
       
     }, error => {
-      console.error('Error updating auteur ', error);
+      //console.error('Error updating auteur ', error);
       
     });
   
@@ -114,7 +114,7 @@ export class DelupauteurPartComponent {
       next: data => {
         this.msg = 'Auteur suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Suppresion de Auteur: ", data);
+        //console.log("Suppresion de Auteur: ", data);
         setTimeout(() => {
           this.reloadPage();
         }, 500);
@@ -122,7 +122,7 @@ export class DelupauteurPartComponent {
       error: err => {
         this.msg = 'Échec de Supprimer l\'Auteur❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de suppresion de l\'auteur: ", err);
+        //console.log("Echec de suppresion de l\'auteur: ", err);
       }
     });
   }

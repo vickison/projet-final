@@ -54,8 +54,9 @@
           <mat-icon style="color: rgb(24, 49, 83);">sort</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click) = "onOrderClick('date')">
-            <span>{{'Date dajout'|translate }}</span>
+          <button mat-menu-item >
+            <span style="order: 0;">{{'Date dajout' | translate }}</span>
+            <mat-icon style="order: 1; margin-left: 8px; font-size: small;">arrow_downward</mat-icon> <!-- Icône de flèche descendante -->
           </button>
          
           <button mat-menu-item  [matMenuTriggerFor]="menu2" aria-label="Example icon-button with a menu"  >

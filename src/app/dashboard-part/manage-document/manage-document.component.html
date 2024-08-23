@@ -1,10 +1,7 @@
 
 <div class="head">
-  <span><h3>Formulaire Document</h3></span>
+  <span><h3>Formulaire Illustration</h3></span>
 </div>
-<!-- <div *ngIf="isUploading">
-  <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
-</div> -->
 <div *ngIf="isProcessing" class="spinner-wrapper">
   <mat-progress-spinner
     mode="indeterminate"
@@ -15,12 +12,33 @@
 <form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
           style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 3%;">
 
-  <div class="file-input-container">
+  <!-- <mat-form-field appearance="outline">
+    <mat-label>Charger illustration</mat-label>
+    <input type="file" id="file" formControlName="file" (change)="onFileChange($event)" accept=".pdf, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff, .mpeg" />
+  </mat-form-field> -->
+  <!-- <mat-form-field appearance="outline">
+    <mat-label>Choisir l'illustration</mat-label>
+    <input matInput type="file" (change)="onFileChange($event)" accept=".pdf, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff, .mpeg">
+  </mat-form-field> -->
+
+  <mat-form-field appearance="outline">
+    <ngx-mat-file-input 
+    formControlName="file" 
+    placeholder="Choisir une illustration" 
+    accept=".pdf, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff, .mpeg"
+    >
+      <mat-icon ngxMatFileInputIcon >folder</mat-icon>
+    </ngx-mat-file-input>
+    
+  </mat-form-field>
+
+  <!-- <div class="file-input-container">
     <label class="file-input-label">
       <span>Upload Document</span>
       <input type="file" id="file" formControlName="file" (change)="onFileChange($event)" accept=".pdf, .mp4, .jpg, .jpeg, .png, .gif, .mp3, .tiff, .mpeg" />
     </label>
-  </div>
+  </div> -->
+ 
 
   <mat-form-field appearance="outline">
     <mat-label>Alternatif Titre</mat-label>
@@ -38,7 +56,7 @@
   
   <mat-form-field appearance="outline">
     <mat-label>Langue</mat-label>
-    <mat-select formControlName="langue" >
+    <mat-select placeholder="Toppings" formControlName="langue" >
       <mat-option *ngFor="let langue of langues" [value]="langue">
         {{langue}}
       </mat-option>
@@ -56,7 +74,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-mini-fab color="secondadry" (click)="openCatDialog()"  class="button-add">
+    <button mat-mini-fab style="background-color: rgb(220, 220, 219);"  (click)="openCatDialog()"  class="button-add">
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -70,7 +88,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-mini-fab color="secondadry" (click)="openLabelDialog()"  class="button-add">
+    <button mat-mini-fab style="background-color: rgb(220, 220, 219);"  (click)="openCatDialog()"  class="button-add">
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -85,7 +103,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-mini-fab color="secondadry" (click)="openAuthorDialog()"  class="button-add">
+    <button mat-mini-fab style="background-color: rgb(220, 220, 219);"  (click)="openCatDialog()"  class="button-add">
       <mat-icon>add</mat-icon>
     </button>
   </div>

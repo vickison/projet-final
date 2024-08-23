@@ -361,6 +361,10 @@ width: auto;
   // }
 }
 
+.mob{
+  display: none;
+}
+
 @media screen and (max-width: 767px) {
 
   .card-header {
@@ -446,6 +450,29 @@ width: auto;
   //   width: 100%;
   //   //height: 4rem;
   // }
+
+  .mob{
+    display: block;
+  }
+
+  .desk{
+    display: none;
+  }
+
+  .welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Assure que le contenu est aligné en haut */
+    height: 100vh;
+    background: linear-gradient(to right, #f0f4f8, #e2e8f0);
+    text-align: center;
+    padding-top: 50%; /* Ajuste cette valeur selon tes besoins */
+    font-family: 'Quicksand', cursive;
+    font-weight: bold;
+    margin-left: 5%;
+    margin-right: 5%;
+    border-top-left-radius: 10px;
+  }
 
 }
 

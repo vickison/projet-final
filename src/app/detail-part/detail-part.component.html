@@ -4,6 +4,6 @@
     <p><span>{{'Auteur'|translate }}</span> : {{ getAuteurFormat() }}</p>
     <p><span>{{'Format'|translate }}</span> : {{ selectedDocument.typeFichier }}</p>
     <p><span>{{'Taille'|translate }}</span> : {{ formatFileSize(selectedDocument.taille) }}</p>
-    <p><span>{{'Résumé'|translate }}</span> : {{ (selectedDocument.resume !== 'undefined') ? selectedDocument.resume : '' }}</p>
+    <p><span>{{'Résumé'|translate }}</span> : {{ (selectedDocument.resume === 'undefined' || selectedDocument.resume === null) ? ' ': selectedDocument.resume }}</p>
   </div>
  

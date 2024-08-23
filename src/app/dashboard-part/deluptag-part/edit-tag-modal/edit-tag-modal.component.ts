@@ -71,7 +71,7 @@ export class EditTagModalComponent {
       error: err => {
         this.message = 'Echec de modifier le label';
         this.classCss = 'error';
-        console.log("Impossible de modifier l'etiquette: ", err);
+        //console.log("Impossible de modifier l'etiquette: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedTagData);
         }, 1000)

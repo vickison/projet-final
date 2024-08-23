@@ -54,6 +54,8 @@ import { MatListModule } from '@angular/material/list';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatPaginatorModule} from '@angular/material/paginator';
 
+import { NgxMatFileInputModule } from '@angular-material-components/file-input';
+
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { PdfViewerModule, PdfViewerComponent } from 'ng2-pdf-viewer';
 import { DelupcategoryPartComponent } from './dashboard-part/delupcategory-part/delupcategory-part.component';
@@ -158,6 +160,7 @@ export function HttpLoaderFactory(http:HttpClient){
     MatTableModule,
     RouterModule,
     MatProgressSpinnerModule,
+    NgxMatFileInputModule ,
     FlexLayoutModule,
     TranslateModule.forRoot(
       {
@@ -218,6 +221,19 @@ export class AppModule {
 
       this.matIconRegistry.addSvgIcon("hand-haut",
         this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/hand-haut.svg")
+      );
+
+      this.matIconRegistry.addSvgIcon("add",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/add.svg"));
+
+      this.matIconRegistry.addSvgIcon("mod",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/mod.svg"));
+
+      this.matIconRegistry.addSvgIcon("sup",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/sup.svg"));
+      
+      this.matIconRegistry.addSvgIcon("tbars",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/threeBars.svg")
       );
     }
  }

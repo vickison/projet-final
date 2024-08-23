@@ -56,7 +56,7 @@ export class EditCategoryModalComponent {
   }
 
   onSaveChange() {
-    console.log(this.updatedCategorieData);
+    //console.log(this.updatedCategorieData);
     
     //const selectedUserId = this.selectedUserId;
     // Envoyer les données mises à jour au composant principal
@@ -82,7 +82,7 @@ export class EditCategoryModalComponent {
       error: err => {
         this.msg = 'Échec de mise à jour de Catégorie❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de modification: ", err);
+        //console.log("Echec de modification: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedCategorieData);
         }, 1000);

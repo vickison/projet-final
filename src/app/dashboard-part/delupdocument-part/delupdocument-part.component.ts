@@ -41,7 +41,7 @@ export class DelupdocumentPartComponent {
         this.documentSource.sort = this.sort;
       },
       (error) => {
-        console.error('Error fetching documents : ', error);
+        //console.error('Error fetching documents : ', error);
       }
     );
 
@@ -67,12 +67,12 @@ export class DelupdocumentPartComponent {
           this.documentSource.sort = this.sort;
         },
         (error) => {
-          console.error('Error fetching documents : ', error);
+          //console.error('Error fetching documents : ', error);
         }
       );
       if(updatedDocument){
         // Logique pour gérer les données mises à jour
-        console.log('Dialog closed with data:', updatedDocument);
+       // console.log('Dialog closed with data:', updatedDocument);
 
         // this.documentService.modifDocument(document.documentID, updatedDocument).subscribe(response =>{
         //   const index = this.documents.findIndex(d => d.documentID === response.documentID);
@@ -81,7 +81,7 @@ export class DelupdocumentPartComponent {
       }
       
     }, error => {
-      console.error('Error updating document ', error);
+      //console.error('Error updating document ', error);
     });
   
   }
@@ -98,7 +98,7 @@ export class DelupdocumentPartComponent {
       next: data => {
         this.msg = 'Document suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Document supprimer avec succes: ", data);
+        //console.log("Document supprimer avec succes: ", data);
         setTimeout(() => {
           //this.dialog.closeAll();
           this.reloadPage();
@@ -107,7 +107,7 @@ export class DelupdocumentPartComponent {
       error: err => {
         this.msg = 'Échec de Supprimer Document❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de supprission: ", err);
+        //console.log("Echec de supprission: ", err);
       }
     });
   }

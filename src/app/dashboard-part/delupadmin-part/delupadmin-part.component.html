@@ -10,51 +10,69 @@
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.utilisateurID}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.utilisateurID}}</div> 
+        </mat-cell>
       </ng-container>
   
       <!-- ID Column -->
       <ng-container matColumnDef="nom">
         <mat-header-cell *matHeaderCellDef mat-sort-header> nom </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.nom}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.nom}}</div>  
+        </mat-cell>
       </ng-container>
   
       <!-- Progress Column -->
       <ng-container matColumnDef="prenom">
         <mat-header-cell *matHeaderCellDef mat-sort-header> prenom </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.prenom}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.prenom}}</div>
+        </mat-cell>
       </ng-container>
   
       <!-- Name Column -->
       <ng-container matColumnDef="email">
         <mat-header-cell *matHeaderCellDef mat-sort-header> email </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.email}}</div>
+        </mat-cell>
       </ng-container>
   
       <!-- Color Column -->
       <ng-container matColumnDef="username">
         <mat-header-cell *matHeaderCellDef mat-sort-header> username </mat-header-cell>
-        <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.username}} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.username}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.auteurCreationUtil }} </mat-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="text-container">{{row.auteurCreationUtil }}</div> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="cree_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> créé le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateCreationUtil | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.dateCreationUtil | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'}} </div> 
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_par">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié par </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.auteurModificationUtil === 'none'? '':row.auteurModificationUtil}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.auteurModificationUtil === 'none'? '':row.auteurModificationUtil}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="modifie_le">
         <mat-header-cell *matHeaderCellDef mat-sort-header> modifié le </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.dateModificationUtil !==row.dateCreationUtil? (row.dateModificationUtil | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}} </mat-cell>
+        <mat-cell *matCellDef="let row"> 
+          <div class="text-container">{{row.dateModificationUtil !==row.dateCreationUtil? (row.dateModificationUtil | date: 'dd-MMM-yyyy hh:mm:ss': 'fr-FR'):''}}</div> 
+        </mat-cell>
       </ng-container>
 
 
@@ -64,11 +82,11 @@
         <mat-cell *matCellDef="let row"> 
         
         <button *ngIf="!row.supprimerUtil" mat-icon-button color="primary" (click)="openEditModal(row)">   
-            <mat-icon>edit</mat-icon>
+            <mat-icon svgIcon="mod"></mat-icon>
         </button>
-
+        <div class="button-separator-vertical"></div>
         <button *ngIf="!row.supprimerUtil" (click)="onDelete(row.utilisateurID, row)" mat-icon-button color="warn">   
-            <mat-icon>delete</mat-icon>
+            <mat-icon svgIcon="sup"></mat-icon>
         </button>
         </mat-cell>
       </ng-container>

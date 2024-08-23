@@ -81,7 +81,7 @@ export class EditAuteurModalComponent {
       error: err => {
         this.msg = 'Échec de mis à jour de l\'Auteur❌';
         this.snackBar.open(this.msg, 'Fermer', config);
-        console.log("Echec de modifiction d'auteur: ", err);
+        //console.log("Echec de modifiction d'auteur: ", err);
         setTimeout(() => {
           this.dialogRef.close(this.updatedAuteurData);
         }, 1000);

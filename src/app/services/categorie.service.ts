@@ -38,7 +38,7 @@ export class CategorieService {
 
     return this.http.get<{ categorieID: number; nom: string ; supprimerCategorie: boolean}[]>(url).pipe(
       catchError((error) => {
-        console.error('Error fetching categories:', error);
+        //console.error('Error fetching categories:', error);
         throw error;
       })
     );

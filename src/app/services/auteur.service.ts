@@ -22,7 +22,7 @@ export class AuteurService {
     const url = `${this.apiUrl}/auteurs/public`;
     return this.http.get<{auteurID: number; nom: string; prenom: string; supprimerAuteur: boolean}[]>(url).pipe(
       catchError((error) => {
-        console.log('Error fetching auteurs ', error);
+        //console.log('Error fetching auteurs ', error);
         throw error;
       })
     );
