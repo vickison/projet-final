@@ -307,6 +307,15 @@ public class UtilisateurController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Error", "Une erreur est survenue."));
         }
     }
+    
+    
+    @PostMapping("/signout")
+    public ResponseEntity<?> signout(){
+        ResponseCookie cookie = jwtTokenProvider.getCleanJwtCookie();;
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new ResponseMessage("Déconnexion réussite..."));
+    }
 
     private static class ErrorResponse {
         private String error;
