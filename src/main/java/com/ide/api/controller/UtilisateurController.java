@@ -173,28 +173,38 @@ public class UtilisateurController {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         try{
-            if(EmailValidator.isValid(utilisateurDTO.getEmail())) {
-                utilisateur.setNom(utilisateurDTO.getNom());
-                utilisateur.setPrenom(utilisateurDTO.getPrenom());
-                utilisateur.setPassword(utilisateurDTO.getPassword());
-                utilisateur.setEmail(utilisateurDTO.getEmail());
-                utilisateur.setUsername(utilisateurDTO.getUsername());
-                utilisateur.setAdmin(true);
-                utilisateur.setAddresseIP(adresseIP);
-                utilisateur.setAuteurCreationUtil(userDetails.getUsername());
-                this.utilisateurService.creerUtilisateur(utilisateur, adminID);
-                message = "Utilisateur créé avec succès...";
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(new ResponseMessage(message));
+            Utilisateur superAdm = this.utilisateurService.findUtilisateur(adminID);
+            if(superAdm.isSuperAdmin()){
+                if(EmailValidator.isValid(utilisateurDTO.getEmail())) {
+                    utilisateur.setNom(utilisateurDTO.getNom());
+                    utilisateur.setPrenom(utilisateurDTO.getPrenom());
+                    utilisateur.setPassword(utilisateurDTO.getPassword());
+                    utilisateur.setEmail(utilisateurDTO.getEmail());
+                    utilisateur.setUsername(utilisateurDTO.getUsername());
+                    utilisateur.setAdmin(true);
+                    utilisateur.setAddresseIP(adresseIP);
+                    utilisateur.setAuteurCreationUtil(userDetails.getUsername());
+                    this.utilisateurService.creerUtilisateur(utilisateur, adminID);
+                    message = "Utilisateur créé avec succès...";
+                    return ResponseEntity
+                            .status(HttpStatus.OK)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(new ResponseMessage(message));
+                }else{
+                    message = "Email incorrect...";
+                    return ResponseEntity
+                            .status(HttpStatus.EXPECTATION_FAILED)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(new ResponseMessage(message));
+                }
             }else{
-                message = "Email incorrect...";
+                message = "Accès non autorisé, super administrateur seulement...";
                 return ResponseEntity
-                        .status(HttpStatus.EXPECTATION_FAILED)
+                        .status(HttpStatus.FORBIDDEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(new ResponseMessage(message));
             }
+
 
         }catch (Exception e){
             message = "Echec de création d'utilisateur...";

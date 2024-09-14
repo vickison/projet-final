@@ -4,13 +4,11 @@ import com.ide.api.entities.*;
 import com.ide.api.enums.Langue;
 import com.ide.api.enums.TypeFichier;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +17,15 @@ public interface DocumentRepository extends JpaRepository<Document, Integer>, Jp
     List<Document> findByUtilisateurDocumentsUtilisateurID(Utilisateur utilisateur);
     List<Document> findByAuteurDocumentsAuteurID(Auteur auteur);
     List<Document> findByDocumentTagsDocumentID(Tag tag);
+//    @Transactional
+//    @Modifying
+//    @Query(value = "CALL RechercherDocuments(:mot_cles)", nativeQuery = true)
+//    void callRechercherDocuments(@Param("mot_cles") String motCles);
+
+    @Transactional
+    @Query(value = "CALL Rechercher(:mot_cles)", nativeQuery = true)
+    List<Document> callRechercherDocuments(@Param("mot_cles") String motCles);
+
     @Procedure(name = "Rechercher")
     List<Document> rechercher(String mots);
     @Query(value="SELECT DISTINCT d.* FROM tableDocuments d "+

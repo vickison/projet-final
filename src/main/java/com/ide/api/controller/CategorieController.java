@@ -116,7 +116,7 @@ public class CategorieController {
     }
     @PutMapping("/admin/update/{categorieID}")
     @PreAuthorize("hasRole('ADMIN')")
-    @CachePut(value = "categorieCache", key = "#categorieID")
+    //@CachePut(value = "categorieCache", key = "#categorieID")
     public Categorie updateCategorie(@PathVariable Integer categorieID,
                                                      @Valid @RequestBody Categorie categorieDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -135,7 +135,7 @@ public class CategorieController {
     }
     @PutMapping("/admin/delete/{categorieID}")
     @PreAuthorize("hasRole('ADMIN')")
-    @CachePut(value = "categorieCache", key = "#categorieID")
+    //@CachePut(value = "categorieCache", key = "#categorieID")
     public Categorie deleteteCategorie(@PathVariable Integer categorieID){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();

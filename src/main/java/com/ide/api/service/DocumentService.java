@@ -133,7 +133,7 @@ public class DocumentService {
             throw new RuntimeException("Erreur inattendue lors de la création du document.", e);
         }
     }
-    @Cacheable(value = "documentsCache")
+    //@Cacheable(value = "documentsCache")
     public List<Document> findDocuments() {
         List<Document> documents = new ArrayList<>();
         try {
@@ -144,7 +144,7 @@ public class DocumentService {
         }
         return documents;
     }
-    @Cacheable(value = "documentCache", key = "#documentID")
+    //@Cacheable(value = "documentCache", key = "#documentID")
     public Optional<Document> findDocument(Integer documentID) {
         try {
             return this.documentRepository.findByDocumentID(documentID);
@@ -177,7 +177,7 @@ public class DocumentService {
             throw new RuntimeException("Erreur inattendue lors de la récupération des données du document.", e);
         }
     }
-    @Cacheable(value = "documentsByCategorieCache", key = "#categorie.categorieID")
+    //@Cacheable(value = "documentsByCategorieCache", key = "#categorie.categorieID")
     public List<Document> findDocumentsByCategoryId(Categorie categorie) {
         List<Document> documents;
         try {
@@ -274,7 +274,6 @@ public class DocumentService {
     }
     public List<Document> searchDocument(String searchTerm) {
         List<Document> documents = new ArrayList<>();
-
         try {
             String[] keywords = searchTerm.split(",");
             List<Specification<Document>> specs = new ArrayList<>();

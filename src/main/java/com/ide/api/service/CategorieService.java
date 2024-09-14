@@ -68,7 +68,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la création de la catégorie ou de la relation utilisateur-catégorie", e);
         }
     }
-    @Cacheable("categoriesCache")
+    //@Cacheable("categoriesCache")
     public List<Categorie> findAllCategories() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -84,7 +84,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la récupération des catégories", e);
         }
     }
-    @Cacheable(value = "categorieCache", key = "#categorieID")
+    //@Cacheable(value = "categorieCache", key = "#categorieID")
     public Categorie findCategory(Integer categorieID) {
         try {
             // Rechercher la catégorie par ID

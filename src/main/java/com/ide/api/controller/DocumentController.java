@@ -258,56 +258,57 @@ public class DocumentController {
         return (lastIndexOfDot == -1) ? "" : filename.substring(lastIndexOfDot + 1);
     }
 
-//    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id) throws MalformedURLException {
-//        Optional<Document> optionalDocument = documentService.findDocument(id);
-//        if(optionalDocument.isPresent()){
-//            Document document = optionalDocument.get();
-//            Path filePath = Paths.get(document.getUrl());
-//            Resource resource = new UrlResource(filePath.toUri());
-//            String contentType = determineContentType(document.getTitre());
-//            return ResponseEntity.ok()
-//                    .header("Content-Disposition","inline")
-//                    .header("Content-Type", contentType)
-//                    .body(resource);
-//        }else {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//    }
     @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StreamingResponseBody> recupererUnDocument(@PathVariable Integer id) {
+    public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id) throws MalformedURLException {
         Optional<Document> optionalDocument = documentService.findDocument(id);
-        if (optionalDocument.isPresent()) {
+        if(optionalDocument.isPresent()){
             Document document = optionalDocument.get();
             Path filePath = Paths.get(document.getUrl());
+            Resource resource = new UrlResource(filePath.toUri());
             String contentType = determineContentType(document.getTitre());
-            try {
-                InputStream inputStream = Files.newInputStream(filePath);
-                StreamingResponseBody responseBody = outputStream -> {
-                    byte[] buffer = new byte[8192]; // Taille du tampon
-                    int bytesRead;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    inputStream.close();
-                };
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.set(HttpHeaders.CONTENT_TYPE, contentType);
-                headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline"); // Affiche le fichier dans le navigateur
-                headers.set(HttpHeaders.CACHE_CONTROL, "public, max-age=3600"); // Cache pour 1 heure
-
-                return ResponseEntity.ok()
-                        .headers(headers)
-                        .body(responseBody);
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        } else {
+            return ResponseEntity.ok()
+                    .header("Content-Disposition","inline")
+                    .header("Content-Type", contentType)
+                    .body(resource);
+        }else {
             return ResponseEntity.notFound().build();
         }
+
     }
+
+//    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<StreamingResponseBody> recupererUnDocument(@PathVariable Integer id) {
+//        Optional<Document> optionalDocument = documentService.findDocument(id);
+//        if (optionalDocument.isPresent()) {
+//            Document document = optionalDocument.get();
+//            Path filePath = Paths.get(document.getUrl());
+//            String contentType = determineContentType(document.getTitre());
+//            try {
+//                InputStream inputStream = Files.newInputStream(filePath);
+//                StreamingResponseBody responseBody = outputStream -> {
+//                    byte[] buffer = new byte[8192]; // Taille du tampon
+//                    int bytesRead;
+//                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                        outputStream.write(buffer, 0, bytesRead);
+//                    }
+//                    inputStream.close();
+//                };
+//
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.set(HttpHeaders.CONTENT_TYPE, contentType);
+//                headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline"); // Affiche le fichier dans le navigateur
+//                headers.set(HttpHeaders.CACHE_CONTROL, "public, max-age=3600"); // Cache pour 1 heure
+//
+//                return ResponseEntity.ok()
+//                        .headers(headers)
+//                        .body(responseBody);
+//            } catch (IOException e) {
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//            }
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 
     @GetMapping(value = "/public/download/{id}")
@@ -347,7 +348,7 @@ public class DocumentController {
 
     @PutMapping(value = "/admin/update/{documentID}")
     @PreAuthorize("hasRole('ADMIN')")
-    @CachePut(value = "documentCache", key = "#documentID")
+    //@CachePut(value = "documentCache", key = "#documentID")
     public Document updateDocument(@PathVariable Integer documentID,
                                    @Valid @RequestBody Document document) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -365,7 +366,7 @@ public class DocumentController {
     }
     @PutMapping(value = "/admin/delete/{documentID}")
     @PreAuthorize("hasRole('ADMIN')")
-    @CachePut(value = "documentCache", key = "#documentID")
+    //@CachePut(value = "documentCache", key = "#documentID")
     public Document deleteDocument(@PathVariable Integer documentID) throws IOException{
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
@@ -380,15 +381,15 @@ public class DocumentController {
         }
     }
 
-//    @GetMapping(value = "/search/{criteres}")
-//    public @ResponseBody List<Document> searchDocuments(@PathVariable String criteres){
-//        return this.documentService.rechercherDocument(criteres);
-//    }
-
     @GetMapping(value = "/public/search")
-    public @ResponseBody List<Document> searchDocuments(@RequestParam String keywords){
-        return this.documentService.searchDocumentByKeyWords(keywords);
+    public @ResponseBody List<Document> searchDocuments(@RequestParam String criteres){
+        return this.documentService.rechercherDocument(criteres);
     }
+
+//    @GetMapping(value = "/public/search")
+//    public @ResponseBody List<Document> searchDocuments(@RequestParam String keywords){
+//        return this.documentService.searchDocumentByKeyWords(keywords);
+//    }
 
     @GetMapping(value = "/public/rechercher")
     public @ResponseBody List<Document> rechercherDocuments(@RequestParam String motCles){
