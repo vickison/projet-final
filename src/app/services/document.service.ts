@@ -126,110 +126,7 @@ export class DocumentService {
       return this.http.post(uploadUrl, formData);
   }
 
-  // creerDocument(
-  //   file: File,
-  //   categorieID: number[], 
-  //   tagID: number[],
-  //   auteurID: number[],
-  //   resume: string,
-  //   langue: string,
-  //   titre: string
-  //   ): Observable<any> {
-
-  //     let uploadUrl = '';
-  //     let queryparams = '';
-  //     const categorieIDStr = categorieID.join(',');
-  //     const tagIDStr = tagID  === null ? '' : tagID.join(',');
-  //     const auteurIDStr = auteurID === null ? '' : auteurID.join(',');
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-  //     formData.append('resume', resume);
-  //     formData.append('titre', titre);
-  //     formData.append('langue', langue);
-  //     //formData.append('paysPublication', paysPublication);
-
-  //     if(tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0 ){
-  //       queryparams = `?categorieID=${categorieIDStr}`;
-  //     }else if(tagIDStr.length ===0 && auteurIDStr.length === 0 && titre.length > 0 ){
-  //       queryparams = `?categorieID=${categorieIDStr}&newTitle=${titre}`;
-  //     }else if(tagIDStr.length ===0 && tagIDStr.length > 0 && titre.length === 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
-  //     }else if(auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${titre}`;
-  //     }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length === 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
-  //     }else if(auteurIDStr.length > 0 && tagIDStr.length ===0 && titre.length > 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}}&newTitle=${titre}`;
-  //     }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
-  //     }else if(auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0){
-  //       queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${titre}`;
-  //     }
-  //     uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
-  //     console.log(uploadUrl);
-  //     return this.http.post(uploadUrl, formData);
-  // }
-
-
-  // creerDocument(
-  //   file: File,
-  //   categorieID: number[],
-  //   tagID: number[],
-  //   auteurID: number[],
-  //   resume: string,
-  //   langue: string,
-  //   titre: string
-  // ): Observable<UploadResponse> {
-  //   const formData: FormData = new FormData();
-  //   formData.append('file', file);
-  //   formData.append('resume', resume);
-  //   formData.append('titre', titre);
-  //   formData.append('langue', langue);
-
-  //   let queryparams = '';
-  //   const categorieIDStr = categorieID.join(',');
-  //   const tagIDStr = tagID.length > 0 ? tagID.join(',') : '';
-  //   const auteurIDStr = auteurID.length > 0 ? auteurID.join(',') : '';
-
-  //   if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length === 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}`;
-  //   } else if (tagIDStr.length === 0 && auteurIDStr.length === 0 && titre.length > 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&newTitle=${encodeURIComponent(titre)}`;
-  //   } else if (tagIDStr.length === 0 && tagIDStr.length > 0 && titre.length === 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}`;
-  //   } else if (auteurIDStr.length === 0 && tagIDStr.length > 0 && titre.length > 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&newTitle=${encodeURIComponent(titre)}`;
-  //   } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length === 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}`;
-  //   } else if (auteurIDStr.length > 0 && tagIDStr.length === 0 && titre.length > 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
-  //   } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length === 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}`;
-  //   } else if (auteurIDStr.length > 0 && tagIDStr.length > 0 && titre.length > 0) {
-  //     queryparams = `?categorieID=${categorieIDStr}&tagID=${tagIDStr}&auteurID=${auteurIDStr}&newTitle=${encodeURIComponent(titre)}`;
-  //   }
-
-  //   const uploadUrl = `${this.apiUrl}/documents/admin/ajouter${queryparams}`;
-  //   console.log(uploadUrl);
-
-  //   return this.http.post(uploadUrl, formData, { reportProgress: true, observe: 'events' }).pipe(
-  //     map(event => {
-  //       if (event.type === HttpEventType.UploadProgress) {
-  //         if (event.total !== undefined) {
-  //           const percentDone = Math.round(100 * event.loaded / event.total);
-  //           return { progress: percentDone }; // Renvoie la progression
-  //         }
-  //       } else if (event instanceof HttpResponse) {
-  //         return { message: 'Document ajouté avec succès✅' };
-  //         //return 'Document ajouté avec succès✅'; // Message de succès
-  //       }
-  //      return {};
-  //     }),
-  //     catchError(error => {
-  //       return throwError(() => new Error('Échec de l\'ajout du document'));
-  //     })
-  //   );
-  // }
+  
 
   private createQueryParams(categorieID: number[], tagID: number[] | null, auteurID: number[] | null, titre: string | null): string {
     const categorieIDStr = categorieID.join(',');
@@ -288,6 +185,14 @@ export class DocumentService {
     const url = `${this.apiUrl}/documents/public/rechercher?motCles=${keysword}`;
     return this.http.get<Document[]>(url);
   }
+
+  getDocumentByCriteria(criteres: string): Observable<Document[]>{
+    const formData = new FormData();
+    formData.append('criteres', criteres);
+    const url = `${this.apiUrl}/documents/public/search?criteres=${criteres}`;
+    return this.http.get<Document[]>(url);
+  }
+
 
   getDocumentsByType(type: string): Observable<Document[]>{
     const url = `${this.apiUrl}/documents/public/types/${type}`;

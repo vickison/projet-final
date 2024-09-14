@@ -32,3 +32,16 @@
     font-size: 14px; /* Taille de police personnalisée */
     text-align: center; /* Centrer le texte */
   }
+
+  .spinner-wrapper {
+    display: flex;            /* Utilise Flexbox pour le centrage */
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: center;     /* Centre le contenu verticalement */
+    height: 100vh;           /* Prend la hauteur totale de la fenêtre */
+    width: 100vw;            /* Prend la largeur totale de la fenêtre */
+    position: fixed;         /* Fixe le conteneur à la fenêtre */
+    top: 0;                  /* Positionne le conteneur en haut de la fenêtre */
+    left: 0;                 /* Positionne le conteneur à gauche de la fenêtre */
+    z-index: 1000;           /* Assure que le spinner est au-dessus des autres éléments */
+    background: rgba(114, 114, 114, 0.7); /* Optionnel : ajoute un fond semi-transparent */
+  }

@@ -28,6 +28,7 @@ export class ManageAdminComponent implements OnInit{
   message = '';
   classCss='';
   msg = '';
+  isProcessing: boolean = false;
 
   // Le groupe de contrôles du formulaire
   userForm: FormGroup  = new FormGroup({});
@@ -69,26 +70,32 @@ export class ManageAdminComponent implements OnInit{
     const password = this.userForm.get('password')?.value;
 
     const config = new MatSnackBarConfig();
-      config.duration = 4000; // Durée de la notification en millisecondes
-      config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-      config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-      config.panelClass = ['custom-snackbar'];
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
+
+    this.isProcessing = true;
 
     this.authService.register(nom, prenom, username, email, password).subscribe({
       next: data => {
-        this.msg = 'Admin créé avec succès✅';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log(data);
-        this.isSuccessful = true;
-        this.isSignupFailed = false;
-        setTimeout(() => {
-           
+        
+        if(data.message){
+          this.msg = 'Admin créé avec succès✅';
+          this.snackBar.open(this.msg, 'Fermer', config);
+          this.isSuccessful = true;
+          this.isSignupFailed = false;
+          this.isProcessing = false;
+          setTimeout(() => {
             this.userForm.reset();
             this.message = '';
             this.classCss = '';
-        }, 1000);
+          }, 1000);
+        }
+        
       }, 
       error: err =>{
+        this.isProcessing = false;
         this.msg = 'Échec d\'ajouter Admin❌';
         this.snackBar.open(this.msg, 'Fermer', config);
         this.isSignupFailed = true;

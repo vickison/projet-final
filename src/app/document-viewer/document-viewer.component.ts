@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation, EventEmitter, Output, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
@@ -8,6 +8,9 @@ import { takeUntil } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarLikeComponent } from '../snack-bar-like/snack-bar-like.component';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NavigationService } from '../services/navigation.service';
 
 @Component({
   selector: 'app-document-viewer',
@@ -28,8 +31,14 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   constructor(
     private documentService: DocumentService,
     private sanitizer: DomSanitizer,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private location: Location,
+    private router: Router,
+    private route: ActivatedRoute,
+    private navigationService: NavigationService,
+  ) {
+    
+  }
 
   ngOnInit(): void {
     // this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
@@ -38,6 +47,11 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
     //   this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
     //   this.documentID = this.selectedDocument?.documentID;
     // });
+
+  
+    
+    
+    
 
     this.subscription.add(
       this.documentService.selectedDocument$.subscribe((document: Document | null) => {
@@ -58,25 +72,31 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
 
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if ('selectedDocument' in changes) {
-      this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
-    }
-    
+  loadDocument(categoryID: number, documentID: number): void {
+    // Supposez que vous ayez une méthode pour obtenir le document par ID
+    this.documentService.getDocument(documentID).subscribe(doc => {
+      this.selectedDocument = doc;
+      this.documentUrl = this.documentService.getDocumentUrl(documentID);
+    });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedDocument'] && this.selectedDocument) {
+      this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
+    }
+  }
+
+
+
   closeViewerPage(): void {
-    // let docID;
-    // let isLiked;
-    // this.documentService.documentIsLiked(this.selectedDocument?.documentID).subscribe(res => {
-    //   console.log('liked', res);   
-    // });
-    setTimeout(() => {
-      //this.documentService.setSelectedDocument(null);
-      this.closeViewer.emit();
-      //this.reloadPage();
-    }, 100);
-    
+
+    this.closeViewer.emit();
+    const previousUrl = this.navigationService.getPreviousUrl();
+    if (previousUrl) {
+      console.log(previousUrl);
+      //this.router.navigate([previousUrl]);
+      window.history.pushState({}, '', previousUrl);
+    }
   }
 
   isAudioFormat(format: string): boolean {

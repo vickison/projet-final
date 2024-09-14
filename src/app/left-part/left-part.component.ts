@@ -87,7 +87,7 @@ export class LeftPartComponent implements OnInit{
   //   event.target.classList.add('active');
   // }
 
-  onCategoryClick(event: any, categoryID?: number): void {
+  onCategoryClick(event: any, categoryID?: number, nom?: string): void {
     const links = document.querySelectorAll('nav ul li a');
     links.forEach(link => link.classList.remove('active'));
     
@@ -101,7 +101,7 @@ export class LeftPartComponent implements OnInit{
         this.documents = documents.filter(doc => !doc.supprimerDocument);
         this.documentsOfCategorie.emit(documents);
         //console.log(this.documents);
-        this.router.navigate(['/categories', categoryID]);
+        this.router.navigate(['', categoryID]);
         //this.reloadPage();
     });
 

@@ -19,7 +19,7 @@ export class ManageLabelComponent {
   message: String = '';
   classCss: String = '';
   msg = '';
-
+  isProcessing: boolean = false;
 
   constructor(private fb: FormBuilder,
               private tagService: TagService,
@@ -67,29 +67,26 @@ export class ManageLabelComponent {
     config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
     config.panelClass = ['custom-snackbar'];
 
+    this.isProcessing = true;
+
     if(this.tagForm.valid){
     const tag: Tag = this.tagForm.value;
       this.tagService.creerTag(tag).subscribe({
         next: data => {
-          //this.message = 'Label ajouté avec succès ';
-          //this.classCss = 'success';
-          //console.log("Tag ajouter avec succès: ", data);
-          this.msg = 'Etiquette créée avec succès✅';
-            //this.classCss = 'success';
-            //console.log("Document ajouté avec succès: ", event.data);
-          this.snackBar.open(this.msg, 'Fermer', config);
-          setTimeout(() => {
-            //this.dialog.closeAll();
-            this.tagForm.reset();
-            this.message = '';
-            this.classCss = '';
-          }, 1000);
+          if(data.message){
+            this.isProcessing = false;
+            this.msg = 'Etiquette créée avec succès✅';
+            this.snackBar.open(this.msg, 'Fermer', config);
+            setTimeout(() => {
+              this.tagForm.reset();
+              this.message = '';
+              this.classCss = '';
+            }, 1000);
+          }
         },
         error: err =>{
+          this.isProcessing = false;
           this.msg = 'Échec d\'ajouter Etiquette❌';
-          //this.message = 'Echec d\'ajouter le label';
-          //this.classCss = 'error';
-          //console.error("Echec d'enregistrement de tag: ", err);
           this.snackBar.open(this.msg, 'Fermer', config);
         }
       });

@@ -85,6 +85,7 @@ import { AuthInterceptor } from './helper/auth.interceptor';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
 import { LikeButtonComponent } from './like-button/like-button.component';
 import { SnackBarLikeComponent } from './snack-bar-like/snack-bar-like.component';
+import { httpErrorInterceptorProviders } from './helper/http-error.interceptor';
 //import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export function HttpLoaderFactory(http:HttpClient){
@@ -173,7 +174,7 @@ export function HttpLoaderFactory(http:HttpClient){
     }
     )
   ],
-  providers: [AboutDialogService, HttpClient, DetailDialogService, authInterceptorProviders],
+  providers: [AboutDialogService, HttpClient, DetailDialogService, authInterceptorProviders, httpErrorInterceptorProviders],
   bootstrap: [AppComponent]
 })
 
@@ -186,6 +187,9 @@ export class AppModule {
     
       this.matIconRegistry.addSvgIcon("telecharger",
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/preview.svg"));
+
+      this.matIconRegistry.addSvgIcon("download",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/telecharger.svg"));
     
       this.matIconRegistry.addSvgIcon("partage",
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/link.svg"));

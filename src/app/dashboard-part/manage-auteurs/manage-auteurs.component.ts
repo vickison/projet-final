@@ -19,6 +19,7 @@ export class ManageAuteursComponent implements OnInit{
   message: String = '';
   classCss: String = '';
   msg = '';
+  isProcessing: boolean = false;
 
   constructor(private fb: FormBuilder,
               private auteurService: AuteurService,
@@ -71,32 +72,27 @@ export class ManageAuteursComponent implements OnInit{
     config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
     config.panelClass = ['custom-snackbar'];
 
+    this.isProcessing = true;
+
     if(this.autForm.valid){
       const auteur: Auteur = this.autForm.value;
       this.auteurService.creerAuteur(auteur).subscribe({
         next: data => {
-          //this.message = 'Auteur ajouté avec succès ';
-          //this.classCss = 'success';
-          this.msg = 'Auteur créé avec succès✅';
-            //this.classCss = 'success';
-            //console.log("Document ajouté avec succès: ", event.data);
+          if(data.message){
+            this.isProcessing = false;
+            this.msg = 'Auteur créé avec succès✅';
             this.snackBar.open(this.msg, 'Fermer', config);
-          //console.log("Auteur ajouté avec succès: ", data);
-          setTimeout(() => {
-            //this.dialog.closeAll();
-            this.autForm.reset();
-            this.message = '';
-            this.classCss = '';
-          }, 1000);
+            setTimeout(() => {
+              this.autForm.reset();
+              this.message = '';
+              this.classCss = '';
+            }, 1000);
+          }
         },
         error: err => {
-          //this.message = 'Echec d\'ajouter l\'auteur ';
-          //this.classCss = 'error';
+          this.isProcessing = false;
           this.msg = 'Échec d\'ajouter Auteur❌';
-            //this.classCss = 'success';
-            //console.log("Document ajouté avec succès: ", event.data);
           this.snackBar.open(this.msg, 'Fermer', config);
-          //console.log("Echec d'ajouter l'auteur: ", err);
         }
       });
     }

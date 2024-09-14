@@ -1,3 +1,11 @@
+<div *ngIf="isProcessing" class="spinner-wrapper">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="100"
+    color="warn">
+  </mat-progress-spinner>
+</div>
+
 <form [formGroup]="catForm" (ngSubmit)="addCat()" class="form" >
 
   <div class="head">

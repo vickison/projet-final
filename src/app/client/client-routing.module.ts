@@ -8,7 +8,7 @@ const routes: Routes = [
   path:'',
   component: ClientComponent,
   children : [
-    {path:'', component: ClientComponent}
+    {path:'', component: ClientComponent},
   ]
   // Ajouter des routes selon les besoins
 }

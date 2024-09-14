@@ -20,6 +20,7 @@ export class ManageCategoriesComponent {
     message: String = '';
     classCss: String = '';
     msg = '';
+    isProcessing: boolean = false;
 
     constructor(private fb: FormBuilder,
                 private categorieService: CategorieService,
@@ -73,6 +74,8 @@ export class ManageCategoriesComponent {
       config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
       config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
       config.panelClass = ['custom-snackbar'];
+
+      this.isProcessing = true;
       // Vérifier si le formulaire est valide
       if (this.catForm.valid) {
         // Récupérer les données du formulaire
@@ -80,20 +83,22 @@ export class ManageCategoriesComponent {
         // Ajouter votre logique ici
         this.categorieService.creerCategorie(categorie).subscribe({
           next: data => {
-            this.msg = 'Catégorie créée avec succès✅';
-            this.snackBar.open(this.msg, 'Fermer', config);
-            //console.log("Catégorie ajoutée avec succès: ", data);
-            setTimeout(() => {
-              //this.dialog.closeAll();
-              this.catForm.reset();
-              this.message = '';
-              this.classCss = '';
-            }, 1000);
+            if(data.message){
+              this.isProcessing = false;
+              this.msg = 'Catégorie créée avec succès✅';
+              this.snackBar.open(this.msg, 'Fermer', config);
+              setTimeout(() => {
+                this.catForm.reset();
+                this.message = '';
+                this.classCss = '';
+              }, 1000);
+            }
+            
           },
           error: err =>{
+            this.isProcessing = false;
             this.msg = 'Échec d\'ajouter Catégorie❌';
             this.snackBar.open(this.msg, 'Fermer', config);
-            //console.error("Erreur d'ajouter la catégorie: ", err);
           }
         });
       }else{

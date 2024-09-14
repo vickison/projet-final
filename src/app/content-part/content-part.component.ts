@@ -19,6 +19,9 @@ import { CategorieService } from '../services/categorie.service';
 import { RefresherService } from '../services/refresher.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { DocumentViewerComponent } from '../document-viewer/document-viewer.component';
+import { NavigationService } from '../services/navigation.service';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 
 @Component({
@@ -33,6 +36,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
   @ViewChild('videoContainer') videoContainer: ElementRef | undefined
   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   isHovered = false;
   private previewTimer: any;
@@ -101,10 +105,17 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   unLikeCounts: any = [];
   likeMap: any = new Map();
   unLikeMap: any = new Map();
+  @Output() documentClicked = new EventEmitter<Document>();
+  
 
   like: number = 0;
   unlike: number = 0;
   count: number = 0;
+
+
+  pageSize = 12; // Nombre d'éléments par page
+  pageSizeOptions: number[] = [5, 10, 20];
+  paginatedDocuments: Document[] = [];
 
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
@@ -127,18 +138,18 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private categorieService: CategorieService,
     private refresherService: RefresherService,
     private snackBar: MatSnackBar,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private navigationService: NavigationService,
+    
   ) {
     
    }
 
   ngOnInit(): void {
-
-
-
     this.displayWelcome = true;
+
     
-    
+  
     if(!this.categorieService.getFlag()){
       this.displayWelcome = false;
       //console.log('Without refresh service....');
@@ -146,13 +157,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         const categoryID = +params['categorieID'];
         if(!isNaN(categoryID)){
           this.categoryID = categoryID;
-            this.fetchDocuments2(categoryID);
+          this.fetchDocuments2(categoryID);
         }
       });
+      //this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
     }
-
-  
-    
 
     this.refreshSubscription = this.refresherService.shouldRefresh$.subscribe((shouldRefresh) => {
       if (shouldRefresh) {
@@ -191,49 +200,9 @@ export class ContentPartComponent implements OnInit, OnDestroy{
             //console.error('Error loading documents', error);
           }
         });
+        //this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
       }
     });
-
-    
-  
-
-    // if(this.searchService.getSearchKeyword() !== '' ||
-    //   this.filterService.getFilter() !== '' ||
-    //   this.orderService.getOrder() !== ''){
-    //             this.orderSubscription = this.orderService.order$.subscribe(order => {
-    //               if(order.trim() !== ''){
-    //                 this.getDocumentsByOrder(order);
-    //                 this.categoryID = null;
-    //                 this.orderService.setOrder('');
-    //               }
-    //               else if(this.categoryID !== null){
-    //                 this.fetchDocuments(this.categoryID);
-    //               }
-    //             });
-            
-    //             this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
-    //               if(filter.trim() !== ''){
-    //                 this.getDocumentsByFilter(filter);
-    //                 this.categoryID = null;
-    //                 this.filterService.setFilter('');
-    //               }
-    //               else if (this.categoryID !== null){
-    //                 this.fetchDocuments(this.categoryID);
-    //               }
-    //             });
-            
-                
-    //             this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
-    //               if(keywords.trim() !== ''){
-    //                 this.getDocumentBySearch(keywords);
-    //                 this.categoryID = null;
-    //                 this.searchService.setSearchKeyword('');
-    //               }
-    //               else if (this.categoryID !== null){
-    //                 this.fetchDocuments(this.categoryID);
-    //               }
-    //             });
-    // }
 
    
     this.orderSubscription = this.orderService.order$.subscribe(order => {
@@ -246,6 +215,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       else if(this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
+      //this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
     });
 
     this.filterSubscription = this.filterService.filter$.subscribe(filter =>{
@@ -258,24 +228,42 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       else if (this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
+      //this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
     });
 
     
     this.routeSubscription = this.searchService.searchKeyword$.subscribe(keywords =>{
       if(keywords.trim() !== ''){
+        //this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
         this.displayWelcome = false;
         this.getDocumentBySearch(keywords);
         this.categoryID = null;
         this.searchService.setSearchKeyword('');
+        
       }
       else if (this.categoryID !== null){
         this.fetchDocuments(this.categoryID);
       }
+      //this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
     });
+
+
+
+    
     
   }
 
+
+
+  paginateDocuments(event: PageEvent): void {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.paginatedDocuments = this.documents.slice(startIndex, endIndex);
+  }
+  
+
   fetchDocuments(categorieID: number): Observable<null> {
+    this.router.navigate(['', categorieID]);
     this.displayWelcome = false;
     return this.documentService.getDocumentsByCategorie(categorieID)
       .pipe(
@@ -284,7 +272,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
           this.documents = documents.filter(doc => !doc.supprimerDocument);
           this.tempDocuments = this.documents; // Mettre à jour tempDocuments si nécessaire
           this.catDocuments = this.documents;
-          //console.log('Documents mis à jour: ', this.documents);
+          this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
   
           // Exemple de mise à jour d'un service ou autre logique nécessaire après récupération des documents
           this.categorieService.setFlag(false);
@@ -297,6 +285,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
 
   fetchDocuments2(categorieID: number) {
+    this.router.navigate(['', categorieID]);
     this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     this.documents = [];
@@ -305,6 +294,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         //console.log('Docs Before: ', this.tempDocuments);
         this.documents = documents.filter(doc => !doc.supprimerDocument);
         this.tempDocuments = this.documents;
+        this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
       }, (error: any) => {
         //console.error('Error loading documents', error);
       });
@@ -326,20 +316,22 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     });
   }
 
-  getDocumentBySearch(keywords: string): void{
+  getDocumentBySearch(criteres: string): void{
     this.displayWelcome = false;
     //this.tempDocuments = this.documents;
     this.documents = [];
-    this.documentService.getDocumentByKeyword(keywords).subscribe((documents: Document[]) => {
+    this.documentService.getDocumentByCriteria(criteres).subscribe((documents: Document[]) => {
       this.documents = documents.filter(doc => !doc.supprimerDocument);
       if(this.tempDocuments.length > 0 && this.catDocuments.length > 0){
         this.searchResults = this.documents.filter(obj1 => this.tempDocuments.some(obj2 => obj1.documentID === obj2.documentID));
         //console.log('Search in category: ', this.searchResults);
         this.documents = this.searchResults;
         this.categorieService.setFlag(true);
+        //this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
       }else{
         this.tempDocuments = this.documents;
       }
+      this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
     },(error: any) =>{
       //console.error('Error loading documents', error);
       
@@ -358,6 +350,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         //console.log('Filter type: ', type);
         this.documents = this.filteredDocuments;
         this.categorieService.setFlag(true);
+        //this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
 
       }
       // else if(this.tempDocuments.length > 0 && this.catDocuments.length === 0){
@@ -370,6 +363,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       else{
         this.tempDocuments = this.documents;
       }
+      this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
     }, (error: any) =>{
       //console.log('Error fetching documents ', error);
     });
@@ -387,6 +381,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       }else{
         this.tempDocuments = this.documents;
       }
+      this.paginateDocuments({ pageIndex: 0, pageSize: 12, length: this.documents.length });
+      
     }, (error: any ) => {
       //console.log('Error fetching documents ', error);
     })
@@ -405,7 +401,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     return this.documentService.getDocumentThumbnail(documentId);
   }
 
-  onDocumentClick(fileName?: string, documentID?: number): void {
+  onDownloadBtnClick(fileName?: string, documentID?: number): void {
     // Handle the click event, you have access to the document ID (documentId) here
     //console.log('Clicked document ID:', documentID);
     if(fileName){
@@ -442,11 +438,17 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     return pathArray[pathArray.length - 1];
   }
 
-  @Output() documentClicked = new EventEmitter<Document>();
+ 
 
   onDocumentClicked(document: Document): void {
+    console.log('URL:',this.router.url);
+    this.navigationService.setPreviousUrl(this.router.url);
     this.documentClicked.emit(document);
-    //console.log("Card dblclicked"+document);
+    // setTimeout(() => {
+    //   this.router.navigate([`/${this.categoryID}/${document.documentID}`]);
+    // }, 0);
+    window.history.pushState({}, '', `/${this.categoryID}/${document.documentID}`);
+    
   }
 
   formatBytes(bytes: number[] | undefined, decimals: number=2): string{
@@ -491,7 +493,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   openDetailDialog(document: Document): void {
     const dialogRef = this.dialog.open(DetailPartComponent, {
-      width: '30%',
+      //width: '30%',
       data: {document}
     })
     //this.detailDialogService.openDialog();
@@ -520,14 +522,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   copyLink() {
     const url = window.location.href;
-    //console.log('Attempting to copy URL:', url);
-  
-    // Créez un élément temporaire pour stocker l'URL
     const tempInput = document.createElement('input');
     tempInput.value = url;
     document.body.appendChild(tempInput);
-  
-    // Sélectionnez le texte dans l'élément temporaire
+
     tempInput.select();
     tempInput.setSelectionRange(0, 99999); // Pour les appareils mobiles
   
@@ -578,6 +576,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   trackById(index: number, item: Document): number | undefined{
     return item.documentID
   }
+
 
 
 

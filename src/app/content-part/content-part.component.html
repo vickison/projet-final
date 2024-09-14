@@ -30,7 +30,7 @@
 </div>
 
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
-    <mat-card class="card" *ngFor="let document of documents; trackBy: trackById">
+    <mat-card class="card" *ngFor="let document of paginatedDocuments; trackBy: trackById">
     
       <mat-card-header (click)="onDocumentClicked(document)"  style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
 
@@ -96,12 +96,26 @@
         <button mat-icon-button (click)="copyLink()" style="cursor: copy;">
             <mat-icon svgIcon="partage"></mat-icon>
         </button>
+
+        <button mat-icon-button (click)="onDownloadBtnClick(document.titre, document.documentID)" style="display: flex;" >
+          <mat-icon svgIcon="download"></mat-icon>
+        </button>
         
         </mat-card-actions>
       </div>
     </mat-card>
     
   </div>
+  <mat-paginator
+    [length]="documents.length"
+    [pageSize]="12"
+    [hidePageSize]="true"
+    [pageSizeOptions]="[12]"
+    (page)="paginateDocuments($event)"
+    style="font-size: medium; font-weight: bold; color: rgb(24, 49, 83) ; background-color:rgba(236, 247, 253, 0.488); border-top:  0.1px solid rgba(128, 128, 128, 0.26); justify-content: center; display: flex; margin-left: 14%;"
+  >
+  </mat-paginator>
 </div>
+
 
 

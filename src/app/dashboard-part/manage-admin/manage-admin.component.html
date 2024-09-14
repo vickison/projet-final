@@ -1,4 +1,12 @@
 <!-- manage-admin.component.html -->
+
+<div *ngIf="isProcessing" class="spinner-wrapper">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="100"
+    color="warn">
+  </mat-progress-spinner>
+</div>
 <form [formGroup]="userForm" (ngSubmit)="register()" class="form">
   <div class="head">
     <span><h3>Formulaire Admin</h3></span>

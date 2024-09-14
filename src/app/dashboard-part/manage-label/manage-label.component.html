@@ -1,5 +1,12 @@
-<form [formGroup]="tagForm" (ngSubmit)="addTag()" class="form" >
+<div *ngIf="isProcessing" class="spinner-wrapper">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="100"
+    color="warn">
+  </mat-progress-spinner>
+</div>
 
+<form [formGroup]="tagForm" (ngSubmit)="addTag()" class="form" >
     <div class="head">
       <span><h3>Formulaire Lebel</h3></span>
     </div>

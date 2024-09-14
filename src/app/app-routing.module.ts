@@ -11,17 +11,19 @@ import { ManageLabelComponent } from './dashboard-part/manage-label/manage-label
 import { DashboardPartComponent } from './dashboard-part/dashboard-part.component';
 import { ClientComponent } from './client/client.component';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
+import { DocumentViewerComponent } from './document-viewer/document-viewer.component';
 // Définir les routes de l application ici
 const routes: Routes = [
   // Ajouter des routes selon les besoins
   {path: 'admin/dashboard', component: DashboardPartComponent},
   {path: 'admin/dashboard/categories', component: ManageCategoriesComponent},
-  {path: 'categories/:categorieID', component: ClientComponent},
+  {path: ':categorieID', component: ClientComponent},
   {path: 'admin/login', component: LoginPartComponent},
   {path: 'admin/register', component: ManageAdminComponent},
   {path: 'admin/dashboard/documents', component: ManageDocumentComponent},
-  {path: 'admin/dashboard/tags', component: ManageLabelComponent}
-  //{path: 'root/admin/register', component: SuperAdminComponent}
+  {path: 'admin/dashboard/tags', component: ManageLabelComponent},
+  //{path: 'root/admin/register', component: SuperAdminComponent},
+  { path: ':categorieID/:documentID', component: ClientComponent },
   
 ];
 

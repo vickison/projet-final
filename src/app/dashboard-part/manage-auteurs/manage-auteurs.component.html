@@ -1,5 +1,12 @@
-<form [formGroup]="autForm" (ngSubmit)="addAuteur()" class="form" >
+<div *ngIf="isProcessing" class="spinner-wrapper">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="100"
+    color="warn">
+  </mat-progress-spinner>
+</div>
 
+<form [formGroup]="autForm" (ngSubmit)="addAuteur()" class="form" >
     <div class="head">
       <span><h3>Formulaire Auteur</h3></span>
     </div>
