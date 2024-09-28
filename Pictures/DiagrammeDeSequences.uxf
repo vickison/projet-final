@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.baselet.element.old.element.InteractionFrame</type>
+    <coordinates>
+      <x>10</x>
+      <y>20</y>
+      <w>700</w>
+      <h>600</h>
+    </coordinates>
+    <panel_attributes>interaction frame
+--
+ </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>30</x>
+      <y>70</y>
+      <w>120</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>:Interface S_U</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>240</x>
+      <y>70</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>:Serveur d'application</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>510</x>
+      <y>70</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>:Base de données</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

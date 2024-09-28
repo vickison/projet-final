@@ -1,0 +1,125 @@
+[0] Config.pm:308> INFO - This is Biber 2.20
+[8] Config.pm:311> INFO - Logfile is 'Illustrations.blg'
+[716] biber-MSWIN64:340> INFO - === 
+[1116] Biber.pm:420> INFO - Reading 'Illustrations.bcf'
+[1679] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1681] Biber.pm:994> INFO - Found 14 citekeys in bib section 1
+[1681] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1686] Biber.pm:994> INFO - Found 32 citekeys in bib section 2
+[1687] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1688] Biber.pm:994> INFO - Found 2 citekeys in bib section 3
+[1689] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1692] Biber.pm:994> INFO - Found 3 citekeys in bib section 4
+[1695] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1696] Biber.pm:994> INFO - Found 6 citekeys in bib section 5
+[1697] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1697] Biber.pm:994> INFO - Found 0 citekeys in bib section 6
+[1698] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1698] Biber.pm:994> INFO - Found 2 citekeys in bib section 7
+[1699] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1699] Biber.pm:994> INFO - Found 4 citekeys in bib section 8
+[1700] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1701] Biber.pm:994> INFO - Found 7 citekeys in bib section 9
+[1702] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1703] Biber.pm:994> INFO - Found 2 citekeys in bib section 10
+[1703] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1704] Biber.pm:994> INFO - Found 0 citekeys in bib section 11
+[1704] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[1705] Biber.pm:994> INFO - Found 0 citekeys in bib section 12
+[1705] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[2380] Biber.pm:4463> INFO - Processing section 1
+[2464] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 1
+[2638] bibtex.pm:1713> INFO - LaTeX decoding ...
+[2940] bibtex.pm:1519> INFO - Found BibTeX data source 'References.bib'
+[3424] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[3425] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[3426] Biber.pm:4283> INFO - Sorting list 'nty/global/DD7536794B63BF90ECCFD37F9B147D7F/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[3426] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[3512] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[3513] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[3513] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[3514] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[3662] Biber.pm:4463> INFO - Processing section 2
+[3664] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 2
+[4129] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4130] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4130] Biber.pm:4283> INFO - Sorting list 'nty/global/864D72283695E6EDD1FCDCEB473DE77F/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4131] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4282] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4284] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4284] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4285] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4380] Biber.pm:4463> INFO - Processing section 3
+[4383] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 3
+[4504] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4505] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4506] Biber.pm:4283> INFO - Sorting list 'nty/global/44C29EDB103A2872F519AD0C9A0FDAAA/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4506] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4534] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4535] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4535] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4536] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4543] Biber.pm:4463> INFO - Processing section 4
+[4544] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 4
+[4691] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4692] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4692] Biber.pm:4283> INFO - Sorting list 'nty/global/6CECB22625D972562491FCF2EF35ED39/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4693] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4725] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4730] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4732] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4733] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4742] Biber.pm:4463> INFO - Processing section 5
+[4746] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 5
+[4902] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4903] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4903] Biber.pm:4283> INFO - Sorting list 'nty/global/318B2739DDC2C16C97B33C9B04B79F3E/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4904] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4950] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4951] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4952] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[4952] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[4973] Biber.pm:4463> INFO - Processing section 7
+[4975] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 7
+[5120] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5121] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5121] Biber.pm:4283> INFO - Sorting list 'nty/global/5DBC98DCC983A70728BD082D1A47546E/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5122] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5147] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5147] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5149] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5150] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5163] Biber.pm:4463> INFO - Processing section 8
+[5164] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 8
+[5326] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5327] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5328] Biber.pm:4283> INFO - Sorting list 'nty/global/F186217753C37B9B9F958D906208506E/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5328] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5365] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5365] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5367] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5368] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5384] Biber.pm:4463> INFO - Processing section 9
+[5390] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 9
+[5569] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5570] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5571] Biber.pm:4283> INFO - Sorting list 'nty/global/C08DF9BB5FB44242A6291B1EEE5D09AD/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5571] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5616] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5617] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5618] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5621] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5644] Biber.pm:4463> INFO - Processing section 10
+[5646] Biber.pm:4654> INFO - Looking for bibtex file 'References.bib' for section 10
+[5794] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5795] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5795] Biber.pm:4283> INFO - Sorting list 'nty/global/F623E75AF30E62BBD73D6DF5B50BB7B5/global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5796] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5836] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[5837] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[5837] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'fr-FR'
+[5838] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[5851] bbl.pm:676> INFO - Writing 'Illustrations.bbl' with encoding 'UTF-8'
+[6019] bbl.pm:779> INFO - Output to Illustrations.bbl
+[6037] Biber.pm:131> WARN - BibTeX subsystem: C:\Users\Jeffrey\AppData\Local\Temp\biber_tmp_dtgz\2c752702d164267d08a8792d4ccaec82_13220.utf8, line 377, warning: 657 characters of junk seen at toplevel
+[6051] Biber.pm:133> INFO - WARNINGS: 1

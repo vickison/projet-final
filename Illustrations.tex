@@ -1,0 +1,193 @@
+\documentclass[12pt,a4paper]{book}
+
+	\input{Autres/Preambule.tex}
+
+
+
+%____________QUESTIONS POUR NOS TUTEURS________________________
+% Quel pourrait \^etre une source fiable pour pr\'esenter l'URG\'eo outre son site officiel?
+%------------------------------------------------------------------------------------------------------------------------------
+
+
+
+\begin{document}
+
+	\input{Autres/PageDeCouverture.tex} 
+
+\pagenumbering{Roman}
+
+	\input{Autres/Avertissement.tex}
+
+
+
+
+	\input{Autres/Resume.tex}
+
+
+	\input{Autres/Abstract.tex}
+
+
+	\input{Autres/Remerciements.tex}
+
+
+
+
+	\tableofcontents
+
+	\listoffigures
+
+	\listoftables
+
+
+
+
+
+	\pagestyle{fancy}
+	\fancyhf{}
+	\fancyhead[LE]{\nouppercase{\includegraphics[height=2ex]{Pictures/libeil}\hfill\rightmark        }}
+	\fancyhead[RO]{\nouppercase{\leftmark\hfill\includegraphics[height=2ex]{Pictures/libeil}}}
+	\fancyfoot[LE]{\hfill\thepage}
+	\fancyfoot[RO]{\thepage\hfill}
+	\pagenumbering{arabic}
+
+	\part*{Introduction}
+
+		\newrefsection
+			\input{Introduction/Introduction.tex}
+
+		\newrefsection
+			\input{Introduction/EtatDeLArt.tex}
+
+		\newrefsection
+			\input{Introduction/PresentationDuProjet.tex}
+
+
+
+
+	\part{Analyses}
+
+		\newrefsection
+			\input{Analyse/EtudeDesRisques.tex}
+
+		\newrefsection
+			\input{Analyse/Methodologie.tex}
+
+		\newrefsection
+			\input{Analyse/Budget.tex}
+
+
+
+
+	\part{Conception}
+		\newrefsection
+			\input{Conception/Modelisation.tex}
+
+		\newrefsection
+			\input{Conception/StructureDuSysteme.tex}
+
+		\newrefsection
+			\input{Conception/ChoixDesOutilsDeDeveloppement.tex}
+
+		\newrefsection
+			\input{Conception/BaseDeDonnees.tex}
+
+		\newrefsection
+			\input{Conception/Securite.tex}
+
+		\newrefsection
+			\input{Conception/Deploiement.tex}
+
+
+	\part*{Conclusion}
+
+			\input{Conclusion/Conclusion.tex}
+
+			\input{Conclusion/Annexe.tex}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter*{Bibliographie}
+\addcontentsline{toc}{chapter}{Bibliographie}
+\printbibliography
+ \label{Bibliographie}
+
+   \bigskip
+   \newrefcontext[labelprefix={I}]
+   \printbibliography[heading=subbibintoc, section=1, title={Introduction}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+
+   \newrefcontext[labelprefix={Ar}]
+   \printbibliography[heading=subbibintoc, section=2, title={\'Etat de l'art}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={P}]
+   \printbibliography[heading=subbibintoc, section=3, title={Pr\'esentation du projet}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={Ri}]
+   \printbibliography[heading=subbibintoc, section=4, title={\'Etude des risques}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={Me}]
+   \printbibliography[heading=subbibintoc, section=5, title={M\'ethodologie}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={B}]
+   \printbibliography[heading=subbibintoc, section=6, title={Budget}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={S}]
+   \printbibliography[heading=subbibintoc, section=7, title={MPAs versus SPAs}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={O}]
+   \printbibliography[heading=subbibintoc, section=8, title={Outils de d\'eveloppement}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={Mo}]
+   \printbibliography[heading=subbibintoc, section=9, title={Modelisation}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={D}]
+   \printbibliography[heading=subbibintoc, section=10, title={Base de donn\'ees}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={D}]
+   \printbibliography[heading=subbibintoc, section=11, title={S\'ecurit\'e}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={Bdd}]
+   \printbibliography[heading=subbibintoc, section=12, title={D\'eploiement}]
+   \rule{0.5\textwidth}{2pt}
+   \bigskip
+
+   \newrefcontext[labelprefix={Au}]
+   \printbibliography[heading=subbibintoc, section=0, title={Autres}]
+\end{document}

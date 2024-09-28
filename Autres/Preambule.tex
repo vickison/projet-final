@@ -1,0 +1,132 @@
+
+\usepackage[letterpaper,
+			left=2cm,
+			right=2cm,
+			bottom=2cm,
+			headheight=18pt
+			]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{tabularx}
+\usepackage{appendix}
+\usepackage{ltablex}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\renewcommand{\arraystretch}{1.5}
+\newcolumntype{a}{>{\columncolor[HTML]{EDEBAA}} m{0.4\textwidth} }
+\newcolumntype{b}{>{\columncolor[HTML]{EDEBAA}} m{0.15\textwidth} }
+
+
+\usepackage{csquotes}
+\usepackage[style=numeric,backend=biber]{biblatex}
+\addbibresource{References.bib}
+
+
+\usepackage{graphicx}
+\usepackage{emptypage}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{calc}
+\usepackage{fourier-orns}
+
+\renewcommand{\headrule}{%
+	\vspace{-8pt}\hrulefill
+	\raisebox{-2.1pt}{\quad\decofourleft\textbf{\tiny LIBEIL}\decofourright\quad}\hrulefill
+	}
+%\renewcommand{\headheight}{17pt}
+\renewcommand{\listfigurename}{Figures}
+\renewcommand{\listtablename}{Tables}
+\newcommand{\projectName}{LibEIl}
+\newcommand{\websiteURL}{\url{https://libeil.fds.edu.ht}}
+\newcommand{\dashboardURL}{\url{https://libeil.fds.edu.ht/admin/login}}
+
+\usepackage[explicit]{titlesec}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{xpatch}
+\usepackage{lmodern}
+
+\newlength\ChapWd
+\settowidth\ChapWd{\huge\chaptertitlename}
+
+
+	\titleformat{\part}[block]
+	{\normalfont\huge\bfseries}
+	{}
+	{0pt}
+	{\newgeometry{margin=50pt}
+		\begin{minipage}{0.35\textwidth}
+			\begin{tcolorbox}[colback=lightgray, colframe=lightgray, width=\textwidth, height=\textheight, valign=top, halign=center, sharp corners]
+				\color{lightgray} some text
+			\end{tcolorbox}
+		\end{minipage}%
+		\hspace{20pt}
+		\begin{minipage}{0.6\textwidth}
+			\vspace*{\fill}
+			\centering \Large\color{myblue}\partname~\thepart:
+			{\color{myblue}\rule{\textwidth}{5pt}}
+			\Huge ~#1
+			\vspace*{\fill}
+		\end{minipage}
+		\restoregeometry
+	}
+
+
+	\titleformat{\chapter}[display]
+	{\normalfont\filcenter\huge\bfseries}
+	{\tikz[remember picture,overlay]
+		{
+			\node[fill=myblue,font=\fontsize{60}{72}\selectfont\color{white},anchor=north east,minimum size=\ChapWd]
+			at ([xshift=-15pt,yshift=-15pt]current page.north east)
+			(numb) {\thechapter};
+			\node[rotate=90,anchor=south,inner sep=0pt,font=\Large] at (numb.west) {\chaptertitlename};
+		}
+	}
+	{30pt}
+	{\fontsize{33}{40}\selectfont\color{myblue}#1}
+	[\vskip3pt\huge {\color{myblue}\rule{\textwidth}{2pt}}]
+	\titlespacing*{\chapter}
+	{0pt}{50pt}{10pt}
+
+	\titleformat{\section}
+	{\normalfont\Large\bfseries\color{myblue}}
+	{\thesection }
+	{10pt}
+	{#1}
+
+	\titleformat{\subsection}
+	{\normalfont\large\bfseries\color{myblue}}
+	{\thesubsection }
+	{10pt}
+	{#1}
+
+	\titleformat{\subsubsection}
+	{\normalfont\bfseries\color{myblue}}
+	{\thesubsubsection }
+	{10pt}
+	{#1}
+
+
+
+\usepackage[french]{babel}
+\usepackage{listings}
+
+
+\definecolor{myblue}{RGB}{0,0,70}
+\definecolor{mybrown}{RGB}{255,240,230}
+\definecolor{TetTablo}{RGB}{240,240,255}
+\definecolor{frameblue}{RGB}{150,150,150}
+\definecolor{fillblue}{RGB}{210,230,255}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks= true,
+	linktoc= all,
+	linkcolor= black,
+	urlcolor= myblue,
+	citecolor= black,
+}

@@ -1,0 +1,244 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{R\'esum\'e}{II}{Doc-Start}%
+\contentsline {paragraph}{}{II}{paragraph*.1}%
+\contentsline {paragraph}{}{II}{paragraph*.2}%
+\contentsline {paragraph}{}{II}{paragraph*.3}%
+\contentsline {paragraph}{}{II}{paragraph*.4}%
+\contentsline {paragraph}{}{II}{paragraph*.5}%
+\contentsline {paragraph}{}{II}{paragraph*.6}%
+\contentsline {chapter}{Abstract}{III}{paragraph*.6}%
+\contentsline {paragraph}{}{III}{paragraph*.7}%
+\contentsline {paragraph}{}{III}{paragraph*.8}%
+\contentsline {paragraph}{}{III}{paragraph*.9}%
+\contentsline {paragraph}{}{III}{paragraph*.10}%
+\contentsline {paragraph}{}{III}{paragraph*.11}%
+\contentsline {paragraph}{}{III}{paragraph*.12}%
+\contentsline {chapter}{Remerciements}{IV}{paragraph*.12}%
+\contentsline {part}{Introduction}{3}{part*.16}%
+\contentsline {chapter}{Mise en contexte}{7}{chapter*.17}%
+\contentsline {section}{Introduction g\'en\'erale}{7}{section*.18}%
+\contentsline {paragraph}{}{7}{paragraph*.19}%
+\contentsline {paragraph}{}{7}{paragraph*.20}%
+\contentsline {section}{La probl\'ematique}{7}{paragraph*.20}%
+\contentsline {paragraph}{}{8}{paragraph*.21}%
+\contentsline {section}{Les besoins}{8}{paragraph*.21}%
+\contentsline {subsection}{Besoins fonctionnels}{8}{section*.22}%
+\contentsline {subsection}{Besoins non-fonctionnels}{8}{section*.22}%
+\contentsline {section}{Plan et int\'er\^et du travail}{9}{section*.22}%
+\contentsline {chapter}{\numberline {1}\'Etat de l'art}{11}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Concepts cl\'es}{11}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Information num\'erique}{11}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Illustration}{12}{subsection.1.1.2}%
+\contentsline {paragraph}{}{13}{paragraph*.23}%
+\contentsline {section}{\numberline {1.2}Avanc\'ees dans le domaine des syst\`emes d'information (SI)}{14}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Stockage de fichier dans le SI}{14}{subsection.1.2.1}%
+\contentsline {subsubsection}{Supports de stockage}{14}{subsubsection*.24}%
+\contentsline {paragraph}{}{14}{paragraph*.25}%
+\contentsline {subsubsection}{Solutions et technologies de stockage}{15}{subsubsection*.26}%
+\contentsline {subsubsection}{Logiciels pour le stockage\blx@tocontentsinit {2}\cite {systemDeFichiers}\blx@tocontentsinit {2}\cite {UitiliteDesBaseDeDonnees}}{16}{subsubsection*.27}%
+\contentsline {paragraph}{}{16}{paragraph*.28}%
+\contentsline {paragraph}{}{16}{paragraph*.29}%
+\contentsline {subsection}{\numberline {1.2.2}Collecte, traitement et distribution des fichiers}{16}{subsection.1.2.2}%
+\contentsline {paragraph}{}{17}{paragraph*.30}%
+\contentsline {subsubsection}{Technologies de d\'eveloppement}{17}{subsubsection*.31}%
+\contentsline {section}{\numberline {1.3}L'illustration en Ha\"iti et dans le monde}{17}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Importance de l'illustration}{18}{subsection.1.3.1}%
+\contentsline {subsubsection}{Expliquer simplement}{18}{subsubsection*.32}%
+\contentsline {subsubsection}{Susciter l'engagement du spectateur}{18}{subsubsection*.33}%
+\contentsline {subsubsection}{Faciliter la m\'emorisation du contenu}{18}{subsubsection*.34}%
+\contentsline {subsection}{\numberline {1.3.2}Utilisations faites des illustrations}{19}{subsection.1.3.2}%
+\contentsline {subsubsection}{Attirer l'attention}{19}{subsubsection*.35}%
+\contentsline {subsubsection}{Rendre des informations plus accessibles}{19}{subsubsection*.36}%
+\contentsline {subsubsection}{Communiquer}{20}{subsubsection*.37}%
+\contentsline {subsubsection}{Identifier une entit\'e}{20}{subsubsection*.38}%
+\contentsline {subsubsection}{Aide \`a la compr\'ehension}{20}{subsubsection*.39}%
+\contentsline {subsubsection}{Art}{21}{subsubsection*.40}%
+\contentsline {section}{\numberline {1.4}Projets Similaires}{21}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Groupe 1 - Librairies en ligne}{22}{subsection.1.4.1}%
+\contentsline {subsubsection}{Open Library}{22}{subsubsection*.41}%
+\contentsline {subsection}{\numberline {1.4.2}Groupe 2 - Projet de distribution d'illustrations}{22}{subsection.1.4.2}%
+\contentsline {paragraph}{}{23}{paragraph*.42}%
+\contentsline {subsubsection}{Kurzgesagt}{23}{subsubsection*.43}%
+\contentsline {subsection}{\numberline {1.4.3}Groupe 3 - Utilisation des illustrations comme vecteur de communication}{24}{subsection.1.4.3}%
+\contentsline {subsubsection}{Alain Possible et le monde possible \blx@tocontentsinit {2}\cite {AlainPossible}}{24}{subsubsection*.44}%
+\contentsline {subsubsection}{Kimetsu no yaiba}{25}{subsubsection*.45}%
+\contentsline {subsubsection}{Le petit prince\blx@tocontentsinit {2}\cite {LePetitPrince}}{25}{subsubsection*.46}%
+\contentsline {subsubsection}{Kurzgesagt}{25}{subsubsection*.47}%
+\contentsline {chapter}{\numberline {2}Pr\'esentation du projet}{27}{chapter.2}%
+\contentsline {section}{\numberline {2.1}P\'erim\`etre du projet \blx@tocontentsinit {3}\cite {PerimetreDUnProjet}}{27}{section.2.1}%
+\contentsline {subsubsection}{Solution propos\'ee}{27}{subsubsection*.48}%
+\contentsline {subsubsection}{Entr\'ees du syst\`eme}{27}{subsubsection*.49}%
+\contentsline {subsubsection}{Sorties de syst\`eme}{27}{subsubsection*.50}%
+\contentsline {subsubsection}{Les livrables}{27}{subsubsection*.51}%
+\contentsline {subsubsection}{Facteurs de qualit\'e du syst\`eme}{28}{subsubsection*.52}%
+\contentsline {paragraph}{}{28}{paragraph*.53}%
+\contentsline {subsubsection}{Contraintes}{28}{subsubsection*.54}%
+\contentsline {paragraph}{}{28}{paragraph*.55}%
+\contentsline {subsubsection}{Exclusion du projet}{28}{subsubsection*.56}%
+\contentsline {paragraph}{}{28}{paragraph*.57}%
+\contentsline {section}{\numberline {2.2}Apport du projet}{28}{section.2.2}%
+\contentsline {paragraph}{}{28}{paragraph*.58}%
+\contentsline {paragraph}{}{28}{paragraph*.59}%
+\contentsline {part}{I\hspace {1em}Analyses}{31}{part.1}%
+\contentsline {chapter}{\numberline {3}\'Etude des risques}{35}{chapter.3}%
+\contentsline {paragraph}{}{35}{paragraph*.60}%
+\contentsline {section}{\numberline {3.1}Registre des risques}{35}{section.3.1}%
+\contentsline {subsubsection}{D\'erive des objectifs\blx@tocontentsinit {4}\cite {DeriveDesObjectifs}}{35}{subsubsection*.61}%
+\contentsline {subsubsection}{Ressources insuffisantes\blx@tocontentsinit {4}\cite {RessourcesInsuffisantes1, RessourcesInsuffisantes2}}{35}{subsubsection*.62}%
+\contentsline {subsubsection}{Incident}{36}{subsubsection*.63}%
+\contentsline {subsubsection}{Faibles performances}{36}{subsubsection*.64}%
+\contentsline {subsubsection}{S\'ecutit\'e}{36}{subsubsection*.65}%
+\contentsline {section}{\numberline {3.2}Plan de gestion des risques}{36}{section.3.2}%
+\contentsline {subsubsection}{D\'erive des objectifs\blx@tocontentsinit {4}\cite {DeriveDesObjectifs}}{36}{subsubsection*.66}%
+\contentsline {subsubsection}{Ressources insuffisantes}{36}{subsubsection*.67}%
+\contentsline {subsubsection}{Incident}{37}{subsubsection*.68}%
+\contentsline {subsubsection}{Faibles performances}{37}{subsubsection*.69}%
+\contentsline {subsubsection}{S\'ecutit\'e}{37}{subsubsection*.70}%
+\contentsline {subsubsection}{Cas exceptionnels}{37}{subsubsection*.71}%
+\contentsline {chapter}{\numberline {4}M\'ethodologie}{39}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Les m\'ethodologies de d\'eveloppement web \blx@tocontentsinit {5}\cite {MethodologieDeDeB,MethodologieDeDeA,MethodologieDeDeC}}{39}{section.4.1}%
+\contentsline {paragraph}{}{39}{paragraph*.72}%
+\contentsline {subsection}{\numberline {4.1.1}La m\'ethode Agile}{39}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}La m\'ethode Waterfall}{39}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}M\'ethodes hybrides}{40}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Les frameworks}{40}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Scrum\blx@tocontentsinit {5}\cite {Scrum}}{40}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}M\'ethodologies et frameworks choisis}{40}{section.4.3}%
+\contentsline {paragraph}{}{40}{paragraph*.73}%
+\contentsline {paragraph}{}{40}{paragraph*.74}%
+\contentsline {paragraph}{}{41}{paragraph*.75}%
+\contentsline {chapter}{\numberline {5}Budget}{43}{chapter.5}%
+\contentsline {part}{II\hspace {1em}Conception}{45}{part.2}%
+\contentsline {chapter}{\numberline {6}Mod\'elisation}{49}{chapter.6}%
+\contentsline {section}{\numberline {6.1}UML}{49}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Diagramme de contexte}{49}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Diagramme des cas d'utilisation}{49}{section.6.3}%
+\contentsline {paragraph}{}{49}{paragraph*.76}%
+\contentsline {section}{\numberline {6.4}Diagramme d'activit\'es}{50}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Diagramme de classes}{50}{section.6.5}%
+\contentsline {paragraph}{}{50}{paragraph*.77}%
+\contentsline {section}{\numberline {6.6}Diagrammes de s\'equence}{52}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Cas du simple\_utilisateur}{52}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}Cas de l'administrateur}{53}{subsection.6.6.2}%
+\contentsline {chapter}{\numberline {7}Structure du site}{55}{chapter.7}%
+\contentsline {section}{\numberline {7.1}MPAs \textit {versus} SPAs \blx@tocontentsinit {8}\cite {ArchitectureWebApp}}{55}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Pages Web traditionnels - MPAs (Multi-Page Applications)}{55}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Applications Web \`a page Unique - SPAs (Single-Page Applications)}{55}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}Diff\'erences}{56}{subsection.7.1.3}%
+\contentsline {paragraph}{}{57}{paragraph*.78}%
+\contentsline {subsubsection}{Fonctionnement du mod\`ele SPA}{57}{subsubsection*.79}%
+\contentsline {section}{\numberline {7.2}Architecture du syst\`eme\blx@tocontentsinit {8}\cite {Architecture3Niveau}}{57}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Architecture de LibEIl}{58}{subsection.7.2.1}%
+\contentsline {subsubsection}{Partie cliente - Front-End}{58}{subsubsection*.80}%
+\contentsline {subsubsection}{Partie serveur (serveur d'application)}{59}{subsubsection*.81}%
+\contentsline {subsubsection}{Partie serveur base de donn\'ees}{59}{subsubsection*.82}%
+\contentsline {chapter}{\numberline {8}Outils de construction}{61}{chapter.8}%
+\contentsline {paragraph}{}{61}{paragraph*.83}%
+\contentsline {paragraph}{}{62}{paragraph*.84}%
+\contentsline {section}{\numberline {8.1}Documentation}{62}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}\LaTeX \includegraphics [height=2ex]{Pictures/latexLogo.png}}{62}{subsection.8.1.1}%
+\contentsline {paragraph}{}{62}{paragraph*.85}%
+\contentsline {subsection}{\numberline {8.1.2}\TeX Studio \includegraphics [height=2ex]{Pictures/texstudioLogo.png}}{62}{subsection.8.1.2}%
+\contentsline {subsection}{\numberline {8.1.3}JabRef \includegraphics [height=2ex]{Pictures/jabrefLogo.png}}{62}{subsection.8.1.3}%
+\contentsline {subsection}{\numberline {8.1.4}UMLet \includegraphics [height=2ex]{Pictures/umletLogo.png}}{63}{subsection.8.1.4}%
+\contentsline {section}{\numberline {8.2}Application serveur}{63}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}Java \includegraphics [height=3ex]{Pictures/javaLogo.jpeg}}{63}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Spring Boot \includegraphics [height=2ex]{Pictures/springLogo.jpeg}}{64}{subsection.8.2.2}%
+\contentsline {section}{\numberline {8.3}Base de donn\'ees}{64}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Mariadb \includegraphics [height=2ex]{Pictures/mariadbLogo.png}}{65}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}DBeaver \includegraphics [height=2ex]{Pictures/dbeaverLogo.png}}{65}{subsection.8.3.2}%
+\contentsline {section}{\numberline {8.4}Interface utilisateur}{65}{section.8.4}%
+\contentsline {subsection}{\numberline {8.4.1}Angular \includegraphics [height=2ex]{Pictures/angularLogo.jpeg}}{65}{subsection.8.4.1}%
+\contentsline {paragraph}{}{66}{paragraph*.86}%
+\contentsline {section}{\numberline {8.5}D\'eploiement }{67}{section.8.5}%
+\contentsline {subsection}{\numberline {8.5.1}Docker \includegraphics [height=2ex]{Pictures/dockerLogo.jpeg}}{67}{subsection.8.5.1}%
+\contentsline {subsection}{\numberline {8.5.2}Nginx \includegraphics [height=2ex]{Pictures/nginxLogo.jpeg}}{67}{subsection.8.5.2}%
+\contentsline {chapter}{\numberline {9}Mod\`ele de donn\'ees}{69}{chapter.9}%
+\contentsline {paragraph}{}{69}{paragraph*.87}%
+\contentsline {paragraph}{}{69}{paragraph*.88}%
+\contentsline {paragraph}{}{69}{paragraph*.89}%
+\contentsline {section}{\numberline {9.1}Structure de donn\'ees dans la base}{70}{section.9.1}%
+\contentsline {paragraph}{}{70}{paragraph*.90}%
+\contentsline {subsection}{\numberline {9.1.1}Objectifs de la base de donn\'ees}{70}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}Les concepts}{70}{subsection.9.1.2}%
+\contentsline {subsection}{\numberline {9.1.3}Organisation des donn\'ees en relations et sp\'ecification des cl\'es primaires}{70}{subsection.9.1.3}%
+\contentsline {paragraph}{}{71}{paragraph*.91}%
+\contentsline {subsubsection}{Documents}{71}{subsubsection*.92}%
+\contentsline {subsection}{\numberline {9.1.4}Normalisation des relations}{73}{subsection.9.1.4}%
+\contentsline {subsubsection}{1$^{ere}$ forme normale}{73}{subsubsection*.93}%
+\contentsline {paragraph}{}{73}{paragraph*.94}%
+\contentsline {paragraph}{}{74}{paragraph*.95}%
+\contentsline {subsubsection}{2$^{eme}$ forme normale}{74}{subsubsection*.96}%
+\contentsline {subsubsection}{3$^{eme}$ forme normale}{74}{subsubsection*.97}%
+\contentsline {subsection}{\numberline {9.1.5}Analyser les liens entre les relations}{74}{subsection.9.1.5}%
+\contentsline {paragraph}{}{74}{paragraph*.98}%
+\contentsline {paragraph}{}{75}{paragraph*.99}%
+\contentsline {paragraph}{}{76}{paragraph*.100}%
+\contentsline {paragraph}{}{76}{paragraph*.101}%
+\contentsline {subsection}{\numberline {9.1.6}Dictionnaire de donn\'ees}{76}{subsection.9.1.6}%
+\contentsline {section}{\numberline {9.2}Triggers}{81}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Proc\'edures}{82}{section.9.3}%
+\contentsline {section}{\numberline {9.4}Sch\'ema des donn\'ees}{82}{section.9.4}%
+\contentsline {chapter}{\numberline {10}S\'ecurit\'e}{83}{chapter.10}%
+\contentsline {paragraph}{}{83}{paragraph*.102}%
+\contentsline {section}{\numberline {10.1}OWASP Application Security Verification Standard}{83}{section.10.1}%
+\contentsline {paragraph}{}{83}{paragraph*.103}%
+\contentsline {paragraph}{}{83}{paragraph*.104}%
+\contentsline {section}{\numberline {10.2}Impl\'ementation}{84}{section.10.2}%
+\contentsline {chapter}{\numberline {11}D\'eploiement}{85}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Environnement de production}{85}{section.11.1}%
+\contentsline {paragraph}{}{85}{paragraph*.105}%
+\contentsline {subsection}{\numberline {11.1.1}Syst\`eme informatique}{86}{subsection.11.1.1}%
+\contentsline {subsection}{\numberline {11.1.2}Pile logicielle}{86}{subsection.11.1.2}%
+\contentsline {subsubsection}{Ubuntu}{86}{subsubsection*.106}%
+\contentsline {paragraph}{}{86}{paragraph*.107}%
+\contentsline {subsubsection}{Docker Engine}{86}{subsubsection*.108}%
+\contentsline {paragraph}{}{86}{paragraph*.109}%
+\contentsline {subsubsection}{Nginx}{86}{subsubsection*.110}%
+\contentsline {section}{\numberline {11.2}Mise en production}{86}{section.11.2}%
+\contentsline {subsection}{\numberline {11.2.1}Cr\'eation des images docker}{86}{subsection.11.2.1}%
+\contentsline {subsubsection}{libeilfront}{87}{subsubsection*.111}%
+\contentsline {subsubsection}{libeilbackend}{87}{subsubsection*.112}%
+\contentsline {subsubsection}{libeildb}{87}{subsubsection*.113}%
+\contentsline {subsection}{\numberline {11.2.2}Docker compose}{87}{subsection.11.2.2}%
+\contentsline {subsection}{\numberline {11.2.3}+}{87}{subsection.11.2.3}%
+\contentsline {part}{Conclusion}{89}{part*.114}%
+\contentsline {chapter}{\numberline {12}Guide d'utilisation}{93}{chapter.12}%
+\contentsline {paragraph}{}{93}{paragraph*.115}%
+\contentsline {section}{\numberline {12.1}G\'erer les illustrations sur le site}{93}{section.12.1}%
+\contentsline {paragraph}{}{93}{paragraph*.116}%
+\contentsline {subsection}{\numberline {12.1.1}Authentification}{93}{subsection.12.1.1}%
+\contentsline {paragraph}{}{93}{paragraph*.117}%
+\contentsline {paragraph}{}{94}{paragraph*.118}%
+\contentsline {subsection}{\numberline {12.1.2}Ajouter}{94}{subsection.12.1.2}%
+\contentsline {subsection}{\numberline {12.1.3}Modifier}{94}{subsection.12.1.3}%
+\contentsline {subsection}{\numberline {12.1.4}Supprimer}{95}{subsection.12.1.4}%
+\contentsline {section}{\numberline {12.2}Acc\'eder aux illustrations}{95}{section.12.2}%
+\contentsline {paragraph}{}{95}{paragraph*.119}%
+\contentsline {paragraph}{}{96}{paragraph*.120}%
+\contentsline {paragraph}{}{96}{paragraph*.121}%
+\contentsline {chapter}{***}{99}{chapter*.122}%
+\contentsline {paragraph}{}{99}{paragraph*.123}%
+\contentsline {paragraph}{}{99}{paragraph*.124}%
+\contentsline {chapter}{\numberline {A}Annexes}{101}{appendix.a.A}%
+\contentsline {section}{\numberline {A.1}Links}{101}{section.a.A.1}%
+\contentsline {section}{\numberline {A.2}Credentials}{101}{section.a.A.2}%
+\contentsline {subsection}{\numberline {A.2.1}Google account}{101}{subsection.a.A.2.1}%
+\contentsline {subsection}{\numberline {A.2.2}Super\_Admin(Default)}{101}{subsection.a.A.2.2}%
+\contentsline {subsection}{\numberline {A.2.3}Mariadb Database: LIBEILDB}{101}{subsection.a.A.2.3}%
+\contentsline {subsection}{\numberline {A.2.4}AWS account}{102}{subsection.a.A.2.4}%
+\contentsline {section}{\numberline {A.3}DNS}{102}{section.a.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Single AWS host server}{102}{subsection.a.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Docker Image: Database Server}{102}{subsection.a.A.3.2}%
+\contentsline {subsection}{\numberline {A.3.3}Docker Image: Back-End Server}{102}{subsection.a.A.3.3}%
+\contentsline {subsection}{\numberline {A.3.4}Docker Image: Front-End Server}{103}{subsection.a.A.3.4}%
+\contentsline {chapter}{Bibliographie}{105}{appendix*.125}%
+\contentsline {section}{Introduction}{105}{section*.126}%
+\contentsline {section}{\'Etat de l'art}{106}{section*.126}%
+\contentsline {section}{Pr\'esentation du projet}{109}{section*.126}%
+\contentsline {section}{\'Etude des risques}{109}{section*.126}%
+\contentsline {section}{M\'ethodologie}{109}{section*.126}%
+\contentsline {section}{MPAs versus SPAs}{110}{section*.126}%
+\contentsline {section}{Outils de d\'eveloppement}{110}{section*.126}%
+\contentsline {section}{Modelisation}{110}{section*.126}%
+\contentsline {section}{Base de donn\'ees}{111}{section*.126}%

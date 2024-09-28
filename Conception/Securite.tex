@@ -1,0 +1,243 @@
+\chapter{S\'ecurit\'e}
+
+	\label{ChapSecurite}
+
+	En informatique, s\'ecuriser c'est garantir la confidentialit\'e, l'int\'egrit\'e et la disposponibilit\'e des donn\'ees d'un syst\`eme en le prot\'egeant contre les manipulations et acc\`es non authoris\'es, les violations de donn\'ees ou tout autres activit\'es visant \`a compromettre son cadre de fonctionnement.
+
+	\paragraph{} Le processus consiste, dans un premier temps, \`a identifier les vuln\'erabilt\'es du syst\`eme ainsi que les menaces qui posent sur lui. Puis, dans un second temps, \`a trouver des moyens qui permettent de prot\'eger efficacement le syst\`eme contre les menaces et de compenser ses vuln\'erabilit\'es. Et, dans un dernier \`a impl\'ementer la s\'ecurit\'e.
+
+	\section{OWASP Application Security Verification Standard}
+		Les menaces et vuln\'erabilit\'es d'un site Web sont nombreuses. Si bien qu'il devient difficile de faire une liste compl\`ete et exhaustives de tous les types d'attaques qu'un site Web pourrait subir et de tout ce qui represente une vuln\'erabilit\'e pour le site. Heureusement, l'organisation {\itshape Open Worldwide Application Security Project \bfseries(OWASP)} a produit le standard ASVS pour aider \`a la s\'ecurit\'e des applications Web.
+
+		\paragraph{} Le standard ASVS (Application Security Verification Standard) est une liste d'exigences concernant la s\'ecurit\'e fonctionnel et non-fonctionnel requis dans la construction de sites Webs. Le standard est divis\'e de fa\c{c}on modulaire en 14 chapitres qui ont chacun leur objectifs sp\'ecifiques concernant un ou plusieurs aspects de la s\'ecurit\'e de l'application.
+
+		\paragraph{} \`A travers ASVS, LeS travaux d'{\bfseries identifaction des menaces et vuln\'erabilit\'es} des sites et de {\bfseries conception de moyens de d\'efenses efficaces pour se prot\'eger contre le menaces et pour compenser les vuln\'erabilit\'es} sont donc d\'ej\`a effectu\'e et sont r\'evis\'es reguli\`erement par une communaut\'e comp\'etente et exp\'eriment\'ee en la mati\`ere. Il ne nous reste plus qu'\`a biens les utiliser pour s\'ecuriser notre site Web.
+
+	\section{Impl\'ementation}
+		Ainsi donc, en plus des m\'ethodes des spring boot pour contribuer \`a la s\'ecurit\'e des applications, nous utiliserons \textbf{ASVS 4.0.3} comme un framework qui d\'efini les t\^aches sp\'ecifiques que nous devons impl\'ementer pour avoir un produit s\'ecuris\'e. Pendant l'impl\'ementation de chacun des diff\'erentes structures constituants l'application, nous prenons en compte les consignes de \textbf{ASVS 4.0.3} sur l'impl\'ementation de la  struture en question pour nous assurer qu'elle soit construite et utilis\'ee de fa\c{c}on s\'ecuris\'ee.
+
+
+%
+%		Toutefois, pour ne pas d\'eborder du temps imparti, nous nous basons sur les objectifs de chacun des chapitre qui sont fournis dans la documentation du standard pour identifier les impl\'ementations qui sont significatives pour le projet. Ainsi nous avons s\'electionn\'e les suivants:
+%				\begin{itemize}
+%					\item[-] Authentification
+%					\item[-] Validation des entr\'ees
+%					\item[-] Protection des donn\'ees
+%					\item[-] S\'ecurit\'e de la communication
+%					\item[-] Codes malveillants
+%				\end{itemize}
+%
+%			\paragraph{}En suite, nous filtrons \`a nouveau pour \'eliminer certains contr\^oles qui ne collent pas avec notre application comme, par exemple, v4.0.3-2.8.7 concerne les donn\'ees biom\'etriques, or nous n'en utilisons pas.\\
+%			La liste compl\`ete des exigences satisfaites est pr\'esent\'ees ci-apr\`es'.
+%
+%		\begin{center}
+%			\
+%			\begin{longtable}{ >{\centering\arraybackslash\bfseries}m{0.2\textwidth} >{\raggedright\arraybackslash}m{0.05\textwidth} >{\raggedright\arraybackslash}m{0.68\textwidth}}
+%				\caption{Liste des exigences impl\'ement\'ees sur \projectName} \\
+%
+%				\hline
+%				\hline
+%				\rowcolor{TetTablo}
+%				\textbf{\textsc{\large{Area}}} & \textbf{\textsc{\large{\hfill \# \hfill}}} & \textbf{\textsc{\large{\hspace*{80pt} Requirement }}}\\
+%				\hline
+%				\hline
+%				\endfirsthead
+%
+%				\hline
+%				\hline
+%				\rowcolor{TetTablo}
+%				\textbf{\textsc{\large{Area}}} & \textbf{\textsc{\large{\hfill \# \hfill}}} & \textbf{\textsc{\large{\hspace*{80pt} Requirement}}}\\
+%				\hline
+%				\hline
+%				\endhead
+%
+%				\hline
+%				\endfoot
+%
+%				\hline
+%				\hline
+%				\endlastfoot
+%
+%				\hline
+%				\rowcolor{mybrown}
+%				\multicolumn{3}{c}{Authentication}\\
+%				\hline
+%				Password Security  & 2.1.1 & Verify that user set passwords are at least 12 characters in length (after multiple spaces are combined).\\
+%				& 2.1.2 & Verify that passwords of at least 64 characters are permitted, and that passwords of more than 128 characters are denied.\\
+%				& 2.1.3 & Verify that password truncation is not performed. However, consecutive multiple spaces may be replaced by a single space.\\
+%				& 2.1.4 & Verify that any printable Unicode character, including language neutral characters such as spaces and Emojis are permitted in passwords. \\
+%				& 2.1.5 & Verify users can change their password. \\
+%				& 2.1.6 & Verify that password change functionality requires the user's current and new password. \\
+%				& 2.1.7 & Verify that passwords submitted during account registration, login, and password change are checked against a set of breached passwords either locally (such as the top 1,000 or 10,000 most common passwords which match the system's password policy) or using an external API. If using an API a zero knowledge proof or other mechanism should be used to ensure that the plain text password is not sent or used in verifying the breach status of the password. If the password is breached, the application must require the user to set a new non-breached password.\\
+%				& 2.1.8 & Verify that a password strength meter is provided to help users set a stronger password. \\
+%				& 2.1.9 & Verify that there are no password composition rules limiting the type of characters permitted. There should be no requirement for upper or lower case or numbers or special characters.\\
+%				& 2.1.10 & Verify that there are no periodic credential rotation or password history requirements. \\
+%				& 2.1.11 & Verify that "paste" functionality, browser password helpers, and external password managers are permitted. \\
+%				& 2.1.12 & Verify that the user can choose to either temporarily view the entire masked password, or temporarily view the last typed character of the password on platforms that do not have this as built-in functionality. \\
+%				\hline
+%
+%				General Authenticator Security & 2.2.1 & Verify that anti-automation controls are effective at mitigating breached credential testing, brute force, and account lockout attacks. Such controls include blocking the most common breached passwords, soft lockouts, rate limiting, CAPTCHA, ever increasing delays between attempts, IP address restrictions, or risk-based restrictions such as location, first login on a device, recent attempts to unlock the account, or similar. Verify that no more than 100 failed attempts per hour is possible on a single account. \\
+%				& 2.2.2 & Verify that the use of weak authenticators (such as SMS and email) is limited to secondary verification and transaction approval and not as a replacement for more secure authentication methods. Verify that stronger methods are offered before weak methods, users are aware of the risks, or that proper measures are in place to limit the risks of account compromise. \\
+%				& 2.2.3 & Verify that secure notifications are sent to users after updates to authentication details, such as credential resets, email or address changes, logging in from unknown or risky locations. The use of push notifications - rather than SMS or email - is preferred, but in the absence of push notifications, SMS or email is acceptable as long as no sensitive information is disclosed in the notification. \\
+%				\hline
+%
+%				Authenticator Lifecycle & 2.3.1 & Verify system generated initial passwords or activation codes SHOULD be securely randomly generated, SHOULD be at least 6 characters long, and MAY contain letters and numbers, and expire after a short period of time. These initial secrets must not be permitted to become the long term password. \\
+%				& 2.3.2 & Verify that enrollment and use of user-provided authentication devices are supported, such as a U2F or FIDO tokens. \\
+%				& 2.3.3 & Verify that renewal instructions are sent with sufficient time to renew time bound authenticators. \\
+%				\hline
+%
+%				Credentials Storage & 2.4.1 & Verify that passwords are stored in a form that is resistant to offline attacks. Passwords SHALL be salted and hashed using an approved one-way key derivation or password hashing function. Key derivation and password hashing functions take a password, a salt, and a cost factor as inputs when generating a password hash.\\
+%				& 2.4.2 & Verify that the salt is at least 32 bits in length and be chosen arbitrarily to minimize salt value collisions among stored hashes. For each credential, a unique salt value and the resulting hash SHALL be stored.\\
+%				& 2.4.3 & Verify that if PBKDF2 is used, the iteration count SHOULD be as large as verification server performance will allow, typically at least 100,000 iterations.\\
+%				& 2.4.4 & Verify that if bcrypt is used, the work factor SHOULD be as large as verification server performance will allow, with a minimum of 10.\\
+%				& 2.4.5 & Verify that an additional iteration of a key derivation function is performed, using a salt value that is secret and known only to the verifier. Generate the salt value using an approved random bit generator [SP 800-90Ar1] and provide at least the minimum security strength specified in the latest revision of SP 800-131A. The secret salt value SHALL be stored separately from the hashed passwords (e.g., in a specialized device like a hardware security module). \\
+%				\hline
+%
+%				Credential Recovery  & 2.5.1 & Verify that a system generated initial activation or recovery secret is not sent in clear text to the user.\\
+%				& 2.5.2 & Verify password hints or knowledge-based authentication (so-called "secret questions") are not present. \\
+%				& 2.5.3 & Verify password credential recovery does not reveal the current password in any way.\\
+%				& 2.5.4 & Verify shared or default accounts are not present (e.g. "root", "admin", or "sa"). \\
+%				& 2.5.5 & Verify that if an authentication factor is changed or replaced, that the user is notified of this event. \\
+%				& 2.5.6 & Verify forgotten password, and other recovery paths use a secure recovery mechanism, such as time-based OTP (TOTP) or other soft token, mobile push, or another offline recovery mechanism.\\
+%				& 2.5.7 & Verify that if OTP or multi-factor authentication factors are lost, that evidence of identity proofing is performed at the same level as during enrollment. \\
+%				\hline
+%
+%				Look-up Secret Verifier  & 2.6.1 & Verify that lookup secrets can be used only once. \\
+%				& 2.6.2 & Verify that lookup secrets have sufficient randomness (112 bits of entropy), or if less than 112 bits of entropy, salted with a unique and random 32-bit salt and hashed with an approved one-way hash. \\
+%				& 2.6.3 & Verify that lookup secrets are resistant to offline attacks, such as predictable values. \\
+%				\hline
+%
+%				Out of Band Verifier & 2.7.1 & Verify that clear text out of band (NIST "restricted") authenticators, such as SMS or PSTN, are not offered by default, and stronger alternatives such as push notifications are offered first. \\
+%				& 2.7.2 & Verify that the out of band verifier expires out of band authentication requests, codes, or tokens after 10 minutes. \\
+%				& 2.7.3 & Verify that the out of band verifier authentication requests, codes, or tokens are only usable once, and only for the original authentication request. \\
+%				& 2.7.4 & Verify that the out of band authenticator and verifier communicates over a secure independent channel. \\
+%				& 2.7.5 & Verify that the out of band verifier retains only a hashed version of the authentication code. \\
+%				& 2.7.6 & Verify that the initial authentication code is generated by a secure random number generator, containing at least 20 bits of entropy (typically a six digital random number is sufficient). \\
+%				\hline
+%
+%				One Time Verifier & 2.8.1 & Verify that time-based OTPs have a defined lifetime before expiring. \\
+%				& 2.8.2 & Verify that symmetric keys used to verify submitted OTPs are highly protected, such as by using a hardware security module or secure operating system based key storage. \\
+%				& 2.8.3 & Verify that approved cryptographic algorithms are used in the generation, seeding, and verification of OTPs. \\
+%				& 2.8.4 & Verify that time-based OTP can be used only once within the validity period. \\
+%				& 2.8.5 & Verify that if a time-based multi-factor OTP token is re-used during the validity period, it is logged and rejected with secure notifications being sent to the holder of the device. \\
+%				& 2.8.6 & Verify physical single-factor OTP generator can be revoked in case of theft or other loss. Ensure that revocation is immediately effective across logged in sessions, regardless of location. \\
+%				\hline
+%
+%				Cryptographic Verifier & 2.9.1 & Verify that cryptographic keys used in verification are stored securely and protected against disclosure, such as using a Trusted Platform Module (TPM) or Hardware Security Module (HSM), or an OS service that can use this secure storage. \\
+%				& 2.9.2 & Verify that the challenge nonce is at least 64 bits in length, and statistically unique or unique over the lifetime of the cryptographic device. \\
+%				& 2.9.3 & Verify that approved cryptographic algorithms are used in the generation, seeding, and verification. \\
+%				Service Authentication  & 2.10.1 & Verify that intra-service secrets do not rely on unchanging credentials such as passwords, API keys or shared accounts with privileged access. \\
+%				& 2.10.2 & Verify that if passwords are required for service authentication, the service account used is not a default credential. (e.g. root/root or admin/admin are default in some services during installation). \\
+%				& 2.10.3 & Verify that passwords are stored with sufficient protection to prevent offline recovery attacks, including local system access. \\
+%				& 2.10.4 & Verify passwords, integrations with databases and third-party systems, seeds and internal secrets, and API keys are managed securely and not included in the source code or stored within source code repositories. Such storage SHOULD resist offline attacks. The use of a secure software key store (L1), hardware TPM, or an HSM (L3) is recommended for password storage. \\
+%
+%				 \hline
+%				 \rowcolor{mybrown}
+%				 \multicolumn{3}{c}{Access Control}\\
+%				 \hline
+%
+%				 General Access Control Design & 4.1.1 & Verify that the application enforces access control rules on a trusted service layer, especially if client-side access control is present and could be bypassed. \\
+%				 & 4.1.2 & Verify that all user and data attributes and policy information used by access controls cannot be manipulated by end users unless specifically authorized. \\
+%				 & 4.1.3 & Verify that the principle of least privilege exists - users should only be able to access functions, data files, URLs, controllers, services, and other resources, for which they possess specific authorization. This implies protection against spoofing and elevation of privilege.  \\
+%				 & 4.1.5 & Verify that access controls fail securely including when an exception occurs.  \\
+%				 \hline
+%
+%				 Operation Level Access Control & 4.2.1 & Verify that sensitive data and APIs are protected against Insecure Direct Object Reference (IDOR) attacks targeting creation, reading, updating and deletion of records, such as creating or updating someone else's record, viewing everyone's records, or deleting all records. \\
+%				 & 4.2.2 & Verify that the application or framework enforces a strong anti-CSRF mechanism to protect authenticated functionality, and effective anti-automation or anti-CSRF protects unauthenticated functionality. \\
+%				 \hline
+%
+%				 Other Access Control Considerations & 4.3.1 & Verify administrative interfaces use appropriate multi-factor authentication to prevent unauthorized use. \\
+%				 & 4.3.2 & Verify that directory browsing is disabled unless deliberately desired. Additionally, applications should not allow discovery or disclosure of file or directory metadata, such as Thumbs.db, .DS\_Store, .git or .svn folders. \\
+%				 & 4.3.3 & Verify the application has additional authorization (such as step up or adaptive authentication) for lower value systems, and / or segregation of duties for high value applications to enforce anti-fraud controls as per the risk of application and past fraud. \\
+%
+%				 \hline
+%				 \rowcolor{mybrown}
+%				 \multicolumn{3}{c}{Input Validation}\\
+%				 \hline
+%
+%				 Input Validation  & 5.1.1 & Verify that the application has defenses against HTTP parameter pollution attacks, particularly if the application framework makes no distinction about the source of request parameters (GET, POST, cookies, headers, or environment variables). \\
+%				 & 5.1.2 & Verify that frameworks protect against mass parameter assignment attacks, or that the application has countermeasures to protect against unsafe parameter assignment, such as marking fields private or similar.  \\
+%				 & 5.1.3 & Verify that all input (HTML form fields, REST requests, URL parameters, HTTP headers, cookies, batch files, RSS feeds, etc) is validated using positive validation (allow lists).  \\
+%				 & 5.1.4 & Verify that structured data is strongly typed and validated against a defined schema including allowed characters, length and pattern (e.g. credit card numbers, e-mail addresses, telephone numbers, or validating that two related fields are reasonable, such as checking that suburb and zip/postcode match).  \\
+%				 & 5.1.5 & Verify that URL redirects and forwards only allow destinations which appear on an allow list, or show a warning when redirecting to potentially untrusted content. \\
+%				 \hline
+%
+%				 Sanitization and Sandboxing  & 5.2.1 & Verify that all untrusted HTML input from WYSIWYG editors or similar is properly sanitized with an HTML sanitizer library or framework feature.  \\
+%				 & 5.2.2 & Verify that unstructured data is sanitized to enforce safety measures such as allowed characters and length. \\
+%				 & 5.2.3 & Verify that the application sanitizes user input before passing to mail systems to protect against SMTP or IMAP injection. \\
+%				 & 5.2.4 & Verify that the application avoids the use of eval() or other dynamic code execution features. Where there is no alternative, any user input being included must be sanitized or sandboxed before being executed. \\
+%				 & 5.2.5 & Verify that the application protects against template injection attacks by ensuring that any user input being included is sanitized or sandboxed. \\
+%				 & 5.2.6 & Verify that the application protects against SSRF attacks, by validating or sanitizing untrusted data or HTTP file metadata, such as filenames and URL input fields, and uses allow lists of protocols, domains, paths and ports. \\
+%				 & 5.2.7 & Verify that the application sanitizes, disables, or sandboxes user-supplied Scalable Vector Graphics (SVG) scriptable content, especially as they relate to XSS resulting from inline scripts, and foreignObject. \\
+%				 & 5.2.8 & Verify that the application sanitizes, disables, or sandboxes user-supplied scriptable or expression template language content, such as Markdown, CSS or XSL stylesheets, BBCode, or similar. \\
+%				 \hline
+%
+%				 Output encoding and Injection Prevention  & 5.3.1 & Verify that output encoding is relevant for the interpreter and context required. For example, use encoders specifically for HTML values, HTML attributes, JavaScript, URL parameters, HTTP headers, SMTP, and others as the context requires, especially from untrusted inputs\\
+%				 & 5.3.2 & Verify that output encoding preserves the user's chosen character set and locale, such that any Unicode character point is valid and safely handled.  \\
+%				 & 5.3.3 & Verify that context-aware, preferably automated - or at worst, manual - output escaping protects against reflected, stored, and DOM based XSS.  \\
+%				 & 5.3.4 & Verify that data selection or database queries (e.g. SQL, HQL, ORM, NoSQL) use parameterized queries, ORMs, entity frameworks, or are otherwise protected from database injection attacks.  \\
+%				 & 5.3.5 & Verify that where parameterized or safer mechanisms are not present, context-specific output encoding is used to protect against injection attacks, such as the use of SQL escaping to protect against SQL injection.  \\
+%				 & 5.3.6 & Verify that the application protects against JSON injection attacks, JSON eval attacks, and JavaScript expression evaluation.  \\
+%				 & 5.3.7 & Verify that the application protects against LDAP injection vulnerabilities, or that specific security controls to prevent LDAP injection have been implemented.  \\
+%				 & 5.3.8 & Verify that the application protects against OS command injection and that operating system calls use parameterized OS queries or use contextual command line output encoding.  \\
+%				 & 5.3.9 & Verify that the application protects against Local File Inclusion (LFI) or Remote File Inclusion (RFI) attacks. \\
+%				 & 5.3.10 & Verify that the application protects against XPath injection or XML injection attacks.  \\
+%				 \hline
+%
+%				 Memory, String and Unmanaged Code  & 5.4.1 & Verify that the application uses memory-safe string, safer memory copy and pointer arithmetic to detect or prevent stack, buffer, or heap overflows. \\
+%				 & 5.4.2 & Verify that format strings do not take potentially hostile input, and are constant. \\
+%				 \hline
+%
+%				 & 5.4.3 & Verify that sign, range, and input validation techniques are used to prevent integer overflows. \\
+%				 Deserialization Prevention  & 5.5.1 & Verify that serialized objects use integrity checks or are encrypted to prevent hostile object creation or data tampering.  \\
+%				 & 5.5.2 & Verify that the application correctly restricts XML parsers to only use the most restrictive configuration possible and to ensure that unsafe features such as resolving external entities are disabled to prevent XML eXternal Entity (XXE) attacks. \\
+%				 & 5.5.3 & Verify that de-serialization of untrusted data is avoided or is protected in both custom code and third-party libraries (such as JSON, XML and YAML parsers). \\
+%				 & 5.5.4 & Verify that when parsing JSON in browsers or JavaScript-based backends, JSON.parse is used to parse the JSON document. Do not use eval() to parse JSON. \\
+%
+%				\hline
+%				\rowcolor{mybrown}
+%				\multicolumn{3}{c}{Input Protection}\\
+%				\hline
+%
+%				General Data Protection & 8.1.1 & Verify the application protects sensitive data from being cached in server components such as load balancers and application caches. \\
+%				& 8.1.2 & Verify that all cached or temporary copies of sensitive data stored on the server are protected from unauthorized access or purged/invalidated after the authorized user accesses the sensitive data. \\
+%				& 8.1.3 & Verify the application minimizes the number of parameters in a request, such as hidden fields, Ajax variables, cookies and header values. \\
+%				& 8.1.4 & Verify the application can detect and alert on abnormal numbers of requests, such as by IP, user, total per hour or day, or whatever makes sense for the application. \\
+%				& 8.1.5 & Verify that regular backups of important data are performed and that test restoration of data is performed. \\
+%				& 8.1.6 & Verify that backups are stored securely to prevent data from being stolen or corrupted. \\
+%				\hline
+%
+%				Client-side Data Protection & 8.2.1 & Verify the application sets sufficient anti-caching headers so that sensitive data is not cached in modern browsers. \\
+%				& 8.2.2 &  Verify that data stored in browser storage (such as localStorage, sessionStorage, IndexedDB, or cookies) does not contain sensitive data. \\
+%				& 8.2.3 & Verify that authenticated data is cleared from client storage, such as the browser DOM, after the client or session is terminated. \\
+%				\hline
+%
+%				Sensitive Private Data & 8.3.1 & Verify that sensitive data is sent to the server in the HTTP message body or headers, and that query string parameters from any HTTP verb do not contain sensitive data. \\
+%				& 8.3.2 & Verify that users have a method to remove or export their data on demand. \\
+%				& 8.3.3 & Verify that users are provided clear language regarding collection and use of supplied personal information and that users have provided opt-in consent for the use of that data before it is used in any way. \\
+%				& 8.3.4 & Verify that all sensitive data created and processed by the application has been identified, and ensure that a policy is in place on how to deal with sensitive data.  \\
+%				& 8.3.5 & Verify accessing sensitive data is audited (without logging the sensitive data itself), if the data is collected under relevant data protection directives or where logging of access is required. \\
+%				& 8.3.6 & Verify that sensitive information contained in memory is overwritten as soon as it is no longer required to mitigate memory dumping attacks, using zeroes or random data. \\
+%				& 8.3.7 & Verify that sensitive or private information that is required to be encrypted, is encrypted using approved algorithms that provide both confidentiality and integrity.  \\
+%				& 8.3.8 & Verify that sensitive personal information is subject to data retention classification, such that old or out of date data is deleted automatically, on a schedule, or as the situation requires. \\
+%
+%
+%				\hline
+%				\rowcolor{mybrown}
+%				\multicolumn{3}{c}{Communication Security}\\
+%				\hline
+%
+%				Client Communications Security  & 9.1.1 & Verify that TLS is used for all client connectivity, and does not fall back to insecure or unencrypted communications.  \\
+%				& 9.1.2 & Verify using up to date TLS testing tools that only strong cipher suites are enabled, with the strongest cipher suites set as preferred. \\
+%				& 9.1.3 & Verify that only the latest recommended versions of the TLS protocol are enabled, such as TLS 1.2 and TLS 1.3. The latest version of the TLS protocol should be the preferred option. \\
+%				\hline
+%
+%				Server Communication Security  & 9.2.1 & Verify that connections to and from the server use trusted TLS certificates. Where internally generated or self-signed certificates are used, the server must be configured to only trust specific internal CAs and specific self-signed certificates. All others should be rejected. \\
+%				& 9.2.2 & Verify that encrypted communications such as TLS is used for all inbound and outbound connections, including for management ports, monitoring, authentication, API, or web service calls, database, cloud, serverless, mainframe, external, and partner connections. The server must not fall back to insecure or unencrypted protocols. \\
+%				& 9.2.3 & Verify that all encrypted connections to external systems that involve sensitive information or functions are authenticated. \\
+%				& 9.2.4 & Verify that proper certification revocation, such as Online Certificate Status Protocol (OCSP) Stapling, is enabled and configured. \\
+%				& 9.2.5 & Verify that backend TLS connection failures are logged. \\
+%
+%
+%			\end{longtable}
+%		\end{center}

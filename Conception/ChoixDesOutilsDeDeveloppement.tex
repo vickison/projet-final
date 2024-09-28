@@ -1,0 +1,205 @@
+\chapter{Outils de construction}
+\label{ChapOutilsDev}
+
+
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{| m{6cm} | m{5cm} |}
+		\hline
+		\multirow{4}{6em}{\textbf{\large{\textcolor{myblue}{Document}}}} & \TeX Live 2022 \\
+		& Jabref 3.8.2\\
+		&\TeX Studio 4.8.1\\
+		& UMLet 15.1\\ 
+		\hline
+		\textbf{\large{\textcolor{myblue}{Application serveur}}} & Spring Boot 2.7.14\\
+		\hline
+		\multirow{2}{6em}{\textbf{\large{\textcolor{myblue}{Base de donn\'ees}}}} & Mariadb Server 10.6.16\\
+		& Dbeaver 23.3.4\\
+		\hline
+		\textbf{\large{\textcolor{myblue}{Interface utilisateur}}} & Angular 17.3.5\\
+		\hline 
+		\multirow{2}{6em}{\textbf{\large{\textcolor{myblue}{D\'eploiement}}}} & Docker 26.1.3 \\
+		& Nginx 1.25.5-alpine\\
+		\hline 
+	\end{tabular}
+	\label{TabRecapOutils}
+	\caption{Tableau r\'ecapitulatif - Outils utilis\'es}
+\end{table}
+
+
+\paragraph{}Pour concevoir, d\'evelopper, d\'eployer et maintenir un syst\`eme, il est essentiel de choisir et d'utiliser de bons outils technologiques. \\
+Dans notre cas, un outil est bon s'il est:
+	\begin{itemize} 
+		\item[-] \textbf{Efficace}\\ 
+		C'est-\`a-dire qu'il effectue r\'eellement le travail pour lequel il est choisi
+		\item[-] \textbf{Gratuit}\\
+		Sauf dans un cas exceptionnel et/ou \`a la d\'ecision du client, conform\'ement aux exigences qui nos ont \'et\'e faits, nous n'utiliserons que des outils gratuits.
+		\item[-] \textbf{Dans notre champ de comp\'etence}\\
+		Ce travail \'etant r\'ealis\'e dans un cadre acad\'emique en tant que notre travail de fin d'\'etude, nous utiliserons de pr\'ef\'erence les connaissances et comp\'etence que nous avons acqu\'eri pendant l'\'etude en question. De ce fait, nous choisirons de pr\'ef\'erences outils que nous ma\^itrisons d\'ej\`a, ou dont nous disposons des pr\'erequis pour les  ma\^itriser. 
+	\end{itemize}
+
+	\paragraph{}Ainsi, nous allons \'evaluer les diff\'erentes options disponibles sur le march\'e en tenant, aussi, compte des objectifs, besoins et contraintes du projet suivant les diff\'erents crit\`eres : Performance, s\'ecurit\'e, fiabilit\'e, compatibilit\'e, \'evolutivit\'e, co\^ut, etc. pour pouvoir s\'electionner les outils que nous utiliserons. Pour chaque outils choisi, nous prendrons sa derni\`ere version \`a garantir un support sur le long terme. Ce chapitre pr\'esente nos diff\'erents choix technologiques en ce qui concerne le d\'eploiement du site, la cr\'eation du \texttt{document de m\'emoire}, de l'\texttt{Application serveur}, de l'\texttt{Interface utilisateur} ainsi que la \texttt{Base de donn\'ees}.
+	
+	\section{Documentation}
+	
+		\subsection{\LaTeX \includegraphics[height=2ex]{Pictures/latexLogo.png}}
+			Conform\'ement aux exigences de notre client, nous utilisons \LaTeX\ comme technologie pour r\'ediger ce document.\\
+			
+			\LaTeX\ est un syst\`eme de cr\'eation de documents qui favorise une composition de haute qualit\'e. Il encourage les auteurs \`a ne pas trop se soucier de l'apparence de leurs documents mais \`a se concentrer sur l'obtention du bon contenu\cite{LatexOfficiel}.\\
+			La technologie consiste en un langage de programmation qui utilise des balises\footnote{Instructions cod\'ees servant \`a caract\'eriser certains \'el\'ements d'un document\cite{BalisesLeRobert}} pour d\'efinir la structure et la mise en forme de documents et d'une distribution \TeX\footnote{Comme Mac\TeX ,\TeX Live ou Mac\TeX} qui est un logiciel qui interpr\`ete les codes source pour produire le document programm\'e. Le terme \LaTeX\ peut \^etre utilis\'e pour faire r\'ef\'erence, soit au langage, soit au moteur \TeX , soit \`a la technologie dans un sens g\'en\'eral.
+	
+			\paragraph{}Nous utilisons la distribution \TeX Live avec pdflatex comme compilateur. Elle fournit tous les services dont nous avons besoin, et est tr\`es bien document\'e en ligne ce qui facilite sa prise en main.
+				
+				
+		\subsection{\TeX Studio \includegraphics[height=2ex]{Pictures/texstudioLogo.png}}
+			\TeX Studio est un environnement de cr\'eation de documents pour \LaTeX . Le programme est libre et opensource. Il fournit une interface riche et claire facilitant la cr\'eation.\cite{TexStudio}
+				
+		\subsection{JabRef \includegraphics[height=2ex]{Pictures/jabrefLogo.png}}
+			JabRef est un logiciel gratuit et open source qui aide \`a collecter, organiser, modifier, stocker et citer la litt\'erature et les recherches scientifiques dans un document. Il prend en charge divers formats de r\'ef\'erence, l'importation de texte int\'egral, les catalogues en ligne, les styles de citation et bien plus encore.\cite{jabref}\\
+			Nous utilisons aussi JabRef pour cr\'eer un fichier de bibliographie.
+	
+		\subsection{UMLet \includegraphics[height=2ex]{Pictures/umletLogo.png}}
+			UMLet est un outil UML gratuit et open source dot\'e d'une interface utilisateur simple qui permet de dessiner rapidement des diagrammes UML \`a partir de texte brut, de les partager via des exportations vers eps, pdf, jpg, svg et presse-papiers, et de d\'evelopper de nouveaux diagrammes personnalis\'es. \cite{umlet}\\
+			Nous l'utilisons pour construire les diff\'erents diagrammes UML.
+			
+			
+			\begin{table}[ht]
+				\centering
+				\begin{tabular}[pos]{ | b | m{0.25\textwidth} m{0.25\textwidth} |}
+					\rowcolor{lightgray}
+					
+					& \textbf{\textsc{\large{Type}}} & \textbf{\textsc{\large{Commentaires}}}\\
+					\hline
+					\textbf{\LaTeX} & Langage de balisage & Permet la composition(Typesetting) d'un document\\
+					\textbf{\TeX Live} & Distribution de \LaTeX & Permet de compiler les codes sources en \LaTeX \\
+					\textbf{\TeX Studio} & Environnement de d\'eveloppement en \LaTeX & Facilite la cr\'eation en \LaTeX \\
+					\hline
+					\textbf{UMLet} & Outil de mod\'elisation & Permet le design des diagrammes de mod\'elisation \\
+					\hline
+					\textbf{JabRef} & Outil de gestion bibliographique & Aide \`a la cr\'eation d'un fichier .bib qui servira de source pour les r\'ef\'erences bibliographiques du document \\
+					\hline
+				\end{tabular}
+				\caption{Tableau r\'esumant les outils et technologies utilis\'es dans la c\'eation du document}
+				\label{TabOutilDoc}
+			\end{table}
+
+	\section{Application serveur}
+		L'application serveur g\`ere la logique et les services de l'application. Il s'agit de l'ensemble des modules, et des API traite les requ\^etes provenant de l'interface utilisateur et communique avec la base de donn\'ees. Pour le cr\'eer, nous utilisons les outils suivants:
+			
+		\subsection{Java \includegraphics[height=3ex]{Pictures/javaLogo.jpeg}}
+			Java est un langage de programmation orient\'e objet de haut niveau, bas\'e sur des classes. Il est fr\'equemment utilis\'e pour cr\'eer des solutions back-end complexes. Java est \`a la fois simple et s\^ur. Ce langage de programmation permet de cr\'eer des applications \'evolutives et faciles \`a maintenir gr\^ace \`a une grande compatibilit\'e et \`a une vari\'et\'e d'outils et de biblioth\`eques entres autres autres avantages.\\
+			Parmi les caract\'eristiques qui nous ont pouss\'es \`a choisir ce langage, nous citons les suivants :
+			\begin{itemize}
+				\item[-] \textbf{Simple et \'evolutif}\\
+					Avec l'\'edition entreprise, le serveur peut ex\'ecuter plusieurs instances Java pour une mise \`a l'\'echelle automatique.  De plus, tous les composants Java dont vous avez besoin sont disponibles et suffisamment simples \`a comprendre.
+				\item[-] \textbf{Fils multiples}\\
+					Avec Java, vous pouvez traiter les demandes dans des threads isol\'es sur le serveur. Ainsi, vous pouvez optimiser les performances des applications qui consomment \'enorm\'ement de ressources CPU.
+				\item[-] \textbf{Biblioth\`eques Open-source \'etendues}\\
+					Les missions de d\'eveloppement de serveurs peuvent \^etre r\'ealis\'ees plus rapidement gr\^ace \`a des biblioth\`eques sp\'ecialis\'ees.
+				\item[-] \textbf{Hautement s\'ecuris\'e}\\
+					Les caract\'eristiques de s\'ecurit\'e uniques de Java le distinguent des autres langages de d\'eveloppement Back-End.
+			\end{itemize}
+			
+
+			
+		\subsection{Spring Boot \includegraphics[height=2ex]{Pictures/springLogo.jpeg}}
+			Spring Boot est un framework open source qui simplifie et acc\'el\`ere le d\'eveloppement du Back-End en Java. Il offre des fonctionnalit\'es comme la configuration automatique, la gestion des d\'ependances, et l'int\'egration avec d'autres technologie. \\
+			Spring Boot  fournit une bonne plate-forme pour d\'evelopper une application Spring autonome, bien document\'e et de bonne qualit\'e. 
+
+\vspace{1cm}
+
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}[pos]{ | b | m{0.3\textwidth} | m{0.25\textwidth} |}
+		\rowcolor{lightgray}
+		
+		& \textbf{\textsc{\large{Type}}} & \textbf{\textsc{\large{Commentaires}}}\\
+		\hline
+		\textbf{Java} & Langage de programmation & Permet de cr\'eer des applications\\
+		\textbf{Spring Boot} & Framework Java & Facilite le d\'eveloppement en Java\\
+		\textbf{Intellij IDEA} & IDE & Environnement de d\'eveloppement en Java\\
+		\hline
+	\end{tabular}
+	\caption{Tableau r\'esumant les outils et technologies utilis\'es dans la cr\'eation du back-end}
+	\label{TabOutilBackEnd}
+\end{table}
+
+			
+
+			
+	\section{Base de donn\'ees}
+			
+		\subsection{Mariadb \includegraphics[height=2ex]{Pictures/mariadbLogo.png}}
+			Comme syst\`eme de gestion de base de donn\'ees, nous utilisons Mariadb. Mariadb est une extension garantit open source de Mysql, le SGBD le plus utilis\'e pour les bases de donn\'ees relationnelles. Mariadb utilise le langage SQL (Structured Query Language) que nous ma\^itrisons d\'ej\`a, et qui est bien document\'e. Le logiciel est maintenu par la fondation Mariadb garantissant sa disponibilit\'e et sa fiabilit\'e pour un usage \`a long terme. %source
+
+		\subsection{DBeaver \includegraphics[height=2ex]{Pictures/dbeaverLogo.png}}
+			DBeaver est un outil de base de donn\'ees universel gratuit et open source pour les d\'eveloppeurs et les administrateurs de bases de donn\'ees.\cite{dbeaver}. Il fournit une interface graphique qui pr\'esente les donn\'ees ainsi que la possibilt\'e d'\'effectuer certains traitements sp\'ecifiques comme g\'en\'erer un diagramme de donn\'ees pour pour une base de donn\'ees, exporter ces contenus sous diff\'erentes formes, notamment sous forme de commandes SQLs de type INSERT, etc.\\
+			Nous utilisons DBeaver surtout \`a des fin de test mais aussi pour g\'en\'erer un sch\'ema de donn\'ees.
+
+	\section{Interface utilisateur}
+		Le Front-End d'une application est la partie qui interagit directement avec les utilisateurs. Il s'agit de l'interface graphique qui permet de visualiser les donn\'ees, de saisir des informations, et de r\'ealiser des actions. Pour cr\'eer ces \'el\'ements, les d\'eveloppeurs utilisent des langages de programmation sp\'ecifiques, comme HTML, CSS, et JavaScript. Ces langages permettent de d\'efinir la structure, le style, et le comportement des \'el\'ements du Front-End. Cependant, ces langages ne sont pas suffisants pour cr\'eer des applications modernes, dynamiques, et r\'eactives. C'est pourquoi les d\'eveloppeurs ont recours \`a des outils suppl\'ementaires, appel\'es frameworks, qui facilitent et acc\'el\`erent le d\'eveloppement du Front-End. Parmi ces frameworks, il en existe un qui se distingue par sa popularit\'e et ses performances, l'outil technologique que nous avons pour d\'evelopper le Front-ENd de notre syst\`eme : Angular.
+			
+		\subsection{Angular \includegraphics[height=2ex]{Pictures/angularLogo.jpeg}}
+			Angular est un framework JavaScript qui permet de d\'evelopper des applications "efficaces et sophistiqu\'ees". Il permet notamment de cr\'eer les Single Page Applications (SPA).
+			Le d\'eveloppement Angular passe par trois langages
+			\begin{enumerate}
+				\item HTML : pour structurer
+				\item SCSS : pour les styles – Le SCSS est une surcouche du CSS qui y apporte des fonctionnalit\'es suppl\'ementaires, mais qui permet \'egalement d'\'ecrire du CSS pur si on le souhaite
+				\item TypeScript : Pour tout ce qui est dynamique, comportement et donn\'ees – un peu comme le JavaScript sur un site sans framework.
+			\end{enumerate}
+			
+			\paragraph{} L'architecture d'une application Angular repose sur certains concepts fondamentaux. Les blocs de construction de base du framework Angular sont des composants Angular organis\'es en NgModules. Les NgModules collectent le code associ\'e dans des ensembles fonctionnels ; une application Angular est d\'efinie par un ensemble de NgModules.\\
+			Les composants d\'efinissent des vues, qui sont des ensembles d'\'el\'ements d'\'ecran qu'Angular peut choisir et modifier en fonction de la logique et des donn\'ees de votre programme.
+			Les composants utilisent des services, qui fournissent des fonctionnalit\'es sp\'ecifiques non directement li\'ees aux vues. Les fournisseurs de services peuvent \^etre inject\'es dans les composants en tant que d\'ependances, ce qui rend le code modulaire, r\'eutilisable et efficace.
+			Les NgModules sont des concepts cl\'es dans Angular qui font partie de chaque application et qui aident \'a configurer certains d\'etails importants pour le compilateur et le runtime de l'application. Ils sont particuli\`erement utiles pour organiser le code en fonctionnalit\'es, charger les routes de mani\`ere paresseuse (Charger les routes de mani\`ere paresseuse signifie charger les modules de fonctionnalit\'es \`a la demande, au lieu de les charger au d\'emarrage de l'application. Cela permet d'am\'eliorer les performances et la r\'eactivit\'e de l'application, car le navigateur ne t\'el\'echarge et n'ex\'ecute que le code n\'ecessaire pour afficher la vue actuelle), et cr\'eer des biblioth\`eques r\'eutilisables.
+			L'un des avantages cl\'es d'Angular est le fait qu'il a \'et\'e conçu pour fonctionner avec TypeScript. Il est tout fait possible d'utiliser le TypeScript pour React, Vue ou Svelte, d'autres frameworks puissants dans la conception d'application web, mais Angular a \'et\'e conçu pour ce langage, donc son int\'egration est plus profonde.
+			Sachant que TypeScript permet de r\'eduire consid\'erablement le nombre d'erreurs au moment de l'ex\'ecution, car il v\'erifie la coh\'erence et la compatibilit\'e des types, les propri\'et\'es des objets, les arguments des fonctions, et d'autres aspects du code avant qu'il ne soit ex\'ecut\'e. TypeScript peut \'egalement utiliser des outils d'analyse statique, comme TSLint ou ESLint,  pour am\'eliorer la qualit\'e et la lisibilit\'e du code.
+			
+			
+			
+			\begin{table}[t]
+				\centering
+				\begin{tabular}[pos]{ | b | m{0.2\textwidth} | m{0.3\textwidth} |}
+					\rowcolor{lightgray}
+					
+					& \textbf{\textsc{\large{Type}}} & \textbf{\textsc{\large{Commentaires}}}\\
+					\hline
+					HTML & Langage de balisage & Permet de d\'efinir la structure et le contenu des pages web\\
+					\hline
+					CSS & Langage de style & Permet de modifier l'apparence et la mise en forme des pages web\\
+					\hline
+					JavaScript & Langage de script & Permet de cr\'eer des interactions et des animations sur les pages web\\
+					\hline
+					TypeScript & Langage de script & Permet d'ajouter des fonctionnalit\'es \`a JavaScript, comme le typage statique, les classes, les modules, etc.\\
+					\hline
+				\end{tabular}
+				\caption{Tableau r\'esumant les outils et technologies de conception Front-End}
+				\label{TabTechFront}
+			\end{table}
+
+	\section{D\'eploiement }
+		\subsection{Docker  \includegraphics[height=2ex]{Pictures/dockerLogo.jpeg}}
+			Docker est une technologie permettant de cr\'eer des environement virtuels, nomm\'es conteners. Il est tr\`es utilis\'e pour d\'evelopper ou d\'eployer des applications.\\
+			En ce qui nous concerne, il permet de d\'efinir des environnements de production isol\'es, sur un m\^eme ordinateur pour le d\'eploiement des diff\'erents serveurs.
+		
+		\subsection{Nginx \includegraphics[height=2ex]{Pictures/nginxLogo.jpeg}}
+			Nginx [engine x] est un serveur HTTP et proxy inverse, un serveur proxy de messagerie et un serveur proxy TCP/UDP g\'en\'erique\cite{nginx}.\\
+			Nous l'utilisons comme serveur HTTP pour distribuer les ressources de notre application sur le Web.	
+			
+			
+			\begin{table}[!ht]
+				\centering
+				\begin{tabular}[pos]{ | b | m{0.2\textwidth} | m{0.3\textwidth} |}
+					\rowcolor{lightgray}
+					
+					& \textbf{\textsc{\large{Type}}} & \textbf{\textsc{\large{Commentaires}}}\\
+					\hline
+					Docker & logiciel & Permet de d\'efinir des environnements de production isol\'es sur un m\^eme ordinateur\\
+					\hline
+					Nginx & Serveur web & Permet de distribuer les ressources sur le web\\
+					\hline
+					\hline
+				\end{tabular}
+				\caption{Tableau r\'esumant les outils et technologies utilis\'es dans le d\'eploiement du site}
+				\label{TabTechDeploiement}
+			\end{table}
