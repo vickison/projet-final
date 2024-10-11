@@ -14,7 +14,7 @@ export class AboutDialogService {
 
     this.dialog.open(AboutDialogComponent,
       {
-        width: '30%',
+        width: '35%',
       }
     );
   }
