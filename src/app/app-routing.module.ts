@@ -23,7 +23,8 @@ const routes: Routes = [
   {path: 'admin/dashboard/documents', component: ManageDocumentComponent},
   {path: 'admin/dashboard/tags', component: ManageLabelComponent},
   //{path: 'root/admin/register', component: SuperAdminComponent},
-  { path: ':categorieID/:documentID', component: ClientComponent },
+  //{ path: ':categorieID/:documentID', component: ClientComponent },
+  
   
 ];
 

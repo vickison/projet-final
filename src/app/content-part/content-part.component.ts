@@ -117,6 +117,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   pageSizeOptions: number[] = [5, 10, 20];
   paginatedDocuments: Document[] = [];
 
+  selectedCardId: number | undefined; // Track the selected card ID
+
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
   private orderSubscription: Subscription = new Subscription();
@@ -147,6 +149,30 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.displayWelcome = true;
+
+    this.route.queryParams.subscribe(params => {
+      const illustrationId = params['illustration'];
+      this.selectedCardId = +illustrationId;
+      if (illustrationId) {
+        // Fetch the document by ID
+        this.documentService.fetchDocumentById(+illustrationId).subscribe(
+          (document: Document | null) => {
+            if (document) {
+              this.documentClicked.emit(document); // Emit only if document is not null
+            } else {
+              console.error('Document not found');
+              // Optionally emit an event for null case or handle it accordingly
+              // this.documentClicked.emit(undefined); // Uncomment if you need to emit undefined
+            }
+          },
+          (error) => {
+            console.error('Error fetching document:', error);
+            // Handle error case, such as showing a notification or fallback
+          }
+        );
+      }
+    });
+    
 
     
   
@@ -444,10 +470,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     console.log('URL:',this.router.url);
     this.navigationService.setPreviousUrl(this.router.url);
     this.documentClicked.emit(document);
-    // setTimeout(() => {
-    //   this.router.navigate([`/${this.categoryID}/${document.documentID}`]);
-    // }, 0);
-    window.history.pushState({}, '', `/${this.categoryID}/${document.documentID}`);
+    this.selectedCardId = document.documentID;
+    this.router.navigate([], { 
+        queryParams: {illustration: document.documentID }, 
+        queryParamsHandling: 'merge' 
+    });
     
   }
 
@@ -520,8 +547,8 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   //   });
   // }
 
-  copyLink() {
-    const url = window.location.href;
+  copyLink(documentID: number | undefined) {
+    const url = window.location.href+"?illustration="+documentID;
     const tempInput = document.createElement('input');
     tempInput.value = url;
     document.body.appendChild(tempInput);
@@ -577,7 +604,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     return item.documentID
   }
 
-
-
-
+  isActiveCard(cardId: number | undefined): boolean {
+    return this.selectedCardId === cardId;
+  }
 }

@@ -14,7 +14,13 @@ height: 100%;
 //  border-radius: 15%; /* On arrondit les bordures du card */
   height: 100%;
   position: inherit;
+  cursor: pointer;
 
+}
+
+.card:hover{
+  box-shadow: 0 6px 15px rgba(66, 66, 66, 0.5); // Soft gray shadow
+  transition: box-shadow 0.3s ease; // Smooth transition for shadow effect
 }
 
 .card-header {
@@ -291,6 +297,11 @@ mat-paginator {
 .mat-paginator-icon {
   font-size: 1.5rem; /* Augmente la taille des icônes */
   font-weight: bold; /* Renforce les icônes */
+}
+
+.active-card {
+  box-shadow: 0 6px 15px rgba(66, 66, 66, 0.5); // Soft gray shadow
+  transition: box-shadow 0.3s ease; // Smooth transition for shadow effect
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {

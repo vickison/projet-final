@@ -41,34 +41,34 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   }
 
   ngOnInit(): void {
-    // this.documentService.getSelectedDocument().subscribe((document: Document | null) => {
-    //   this.selectedDocument = document;
-    //   console.log("Selected document: ", document);
-    //   this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
-    //   this.documentID = this.selectedDocument?.documentID;
-    // });
-
-  
     
-    
-    
-
     this.subscription.add(
       this.documentService.selectedDocument$.subscribe((document: Document | null) => {
         this.selectedDocument = document;
-        //console.log("Selected document: ", document);
 
-        // Met à jour l'URL et l'ID du document
+        // Update the document URL and ID
         if (this.selectedDocument) {
           this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument.documentID);
           this.documentID = this.selectedDocument.documentID;
         } else {
-          // Si aucun document n'est sélectionné, réinitialiser l'URL et l'ID
+          // Reset URL and ID if no document is selected
           this.documentUrl = null;
           this.documentID = undefined;
         }
       })
     );
+
+    this.route.queryParams.subscribe(params => {
+      const illustrationId = params['illustration'];
+      if (illustrationId) {
+        // Fetch the document by ID
+        this.router.navigate([], {
+          queryParams: { illustration: illustrationId },
+          queryParamsHandling: 'merge' // Keep other existing query parameters
+        });
+      }
+    });
+
 
   }
 
@@ -91,12 +91,13 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   closeViewerPage(): void {
 
     this.closeViewer.emit();
-    const previousUrl = this.navigationService.getPreviousUrl();
-    if (previousUrl) {
-      console.log(previousUrl);
-      //this.router.navigate([previousUrl]);
-      window.history.pushState({}, '', previousUrl);
-    }
+    // const previousUrl = this.navigationService.getPreviousUrl();
+    // if (previousUrl) {
+    //   console.log(previousUrl);
+    //   //this.router.navigate([previousUrl]);
+    //   window.history.pushState({}, '', previousUrl);
+    // }
+    this.router.navigate([], { queryParams: { illustration: null }, queryParamsHandling: 'merge' });
   }
 
   isAudioFormat(format: string): boolean {

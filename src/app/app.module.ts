@@ -87,6 +87,7 @@ import { LikeButtonComponent } from './like-button/like-button.component';
 import { SnackBarLikeComponent } from './snack-bar-like/snack-bar-like.component';
 import { httpErrorInterceptorProviders } from './helper/http-error.interceptor';
 //import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CommonModule } from '@angular/common';
 
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
@@ -163,6 +164,7 @@ export function HttpLoaderFactory(http:HttpClient){
     MatProgressSpinnerModule,
     NgxMatFileInputModule ,
     FlexLayoutModule,
+    CommonModule,
     TranslateModule.forRoot(
       {
       loader:{

@@ -43,6 +43,16 @@ export class DocumentService {
     return this.http.get<Document>(url);
   }
 
+  fetchDocumentById(documentID?: number): Observable<Document | null> {
+    return this.http.get<Document>(`${this.apiUrl}/documents/public/document/${documentID}`).pipe(
+      catchError((error) => {
+        console.error('Error fetching document:', error);
+        return of(null); // Return null or handle the error appropriately
+      })
+    );
+  }
+  
+
    getDocumentsByCategorie(categorieID?: number): Observable<Document[]> {
     const url = `${this.apiUrl}/categories/public/${categorieID}/documents`;
     return this.http.get<Document[]>(url);

@@ -30,7 +30,10 @@
 </div>
 
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
-    <mat-card class="card" *ngFor="let document of paginatedDocuments; trackBy: trackById">
+    <mat-card 
+      class="card"
+      *ngFor="let document of paginatedDocuments; trackBy: trackById" 
+    >
     
       <mat-card-header (click)="onDocumentClicked(document)"  style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
 
@@ -93,7 +96,7 @@
             <mat-icon svgIcon="telecharger"></mat-icon>
         </button>
           
-        <button mat-icon-button (click)="copyLink()" style="cursor: copy;">
+        <button mat-icon-button (click)="copyLink(document.documentID)" style="cursor: copy;">
             <mat-icon svgIcon="partage"></mat-icon>
         </button>
 
