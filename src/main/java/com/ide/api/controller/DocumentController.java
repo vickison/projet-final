@@ -276,6 +276,18 @@ public class DocumentController {
 
     }
 
+    @GetMapping(value = "/public/document/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Document> recupererUnDocumentParId(@PathVariable Integer id) {
+        Optional<Document> optionalDocument = documentService.findDocument(id);
+        if (optionalDocument.isPresent()) {
+            Document document = optionalDocument.get();
+            return ResponseEntity.ok(document); // Return the Document as JSON
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
+        }
+    }
+
+
 //    @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<StreamingResponseBody> recupererUnDocument(@PathVariable Integer id) {
 //        Optional<Document> optionalDocument = documentService.findDocument(id);
