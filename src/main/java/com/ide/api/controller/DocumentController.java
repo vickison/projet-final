@@ -154,7 +154,7 @@ public class DocumentController {
         String filePath = createFileUrl(file, newTitle, baseDirectory);
 
 
-        fileService.storeFile(updateFileName(file, newTitle), baseDirectory, Base64.getEncoder().encodeToString(file.getBytes()));
+        fileService.storeFileWithReencoding(updateFileName(file, newTitle), baseDirectory, Base64.getEncoder().encodeToString(file.getBytes()));
 
 
         Document document = new Document();
@@ -197,13 +197,39 @@ public class DocumentController {
 //        String fileName = (newTitle != null ? newTitle : file.getOriginalFilename()) + extension;
 //        return basePath + baseDirectory + "\\" + fileName;
 //    }
+//    private String createFileUrl(MultipartFile file, String newTitle, String baseDirectory) {
+//        String contentType = file.getContentType();
+//        String extension = MIME_TO_EXTENSION_MAP.getOrDefault(contentType, getDefaultExtension(file));
+//        String fileName = (newTitle != null ? newTitle + extension : file.getOriginalFilename());
+//        String filePath = Paths.get(baseDirectory, fileName).toString();
+//        return Paths.get(basePath, filePath).toString();
+//    }
+
     private String createFileUrl(MultipartFile file, String newTitle, String baseDirectory) {
+        // Récupération du type MIME du fichier pour déterminer son extension
         String contentType = file.getContentType();
         String extension = MIME_TO_EXTENSION_MAP.getOrDefault(contentType, getDefaultExtension(file));
+
+        // Vérification si le fichier est une vidéo (par exemple, en fonction du contentType)
+        boolean isVideo = contentType != null && contentType.startsWith("video");
+
+        // Déterminez le nom du fichier avec ou sans titre personnalisé
         String fileName = (newTitle != null ? newTitle + extension : file.getOriginalFilename());
+
+        // Si c'est une vidéo et qu'on a réencodé le fichier avec le préfixe LIBEIL_, on conserve le nom avec le préfixe
+        if (isVideo) {
+            fileName = "LIBEIL_" + fileName; // Garder le préfixe LIBEIL_
+        }
+
+        // Construction du chemin complet du fichier
         String filePath = Paths.get(baseDirectory, fileName).toString();
+
+        // Retourne l'URL complète en ajoutant le chemin de base
         return Paths.get(basePath, filePath).toString();
     }
+
+
+
 
     // Obtenir l'extension par défaut si le type MIME n'est pas trouvé
 //    private String getDefaultExtension(MultipartFile file) {
