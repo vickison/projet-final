@@ -48,6 +48,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   flag: boolean = false;
   documentThumbnailUrl?: string;
   displayWelcome: boolean = true;
+  categories: Categorie[] = [];
   
 
 
@@ -149,6 +150,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.displayWelcome = true;
+
+    this.categorieService.getAllCategories().subscribe((data: Categorie[]) => {
+      this.categories = data.filter(cat => !cat.supprimerCategorie);
+      console.log(this.categories);
+    })
 
     this.route.queryParams.subscribe(params => {
       const illustrationId = params['illustration'];
@@ -440,7 +446,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         link.target = '_blank';
 
         const fileExtension = this.getFileExtensionFromUrl(fileName);
-        link.download = `document_${new Date().toISOString()}.${fileExtension}`;
+        link.download = `LIBEIL_${new Date().toISOString()}.${fileExtension}`;
 
         document.body.appendChild(link);
         link.click();
@@ -467,7 +473,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
  
 
   onDocumentClicked(document: Document): void {
-    console.log('URL:',this.router.url);
+    //console.log('URL:',this.router.url);
     this.navigationService.setPreviousUrl(this.router.url);
     this.documentClicked.emit(document);
     this.selectedCardId = document.documentID;

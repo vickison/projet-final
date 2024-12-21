@@ -30,9 +30,9 @@
           </audio>
         </div>
         <div *ngSwitchCase="'video/mp4'" class="iframe-contain">
-          <video controls width="90%" height="auto">
-            <source [src]="getSafeUrl(documentUrl)" type="video/mp4">
-            Your browser does not support the video tag.
+          <video #videoPlayer controls width="90%" height="auto" preload="auto" autoplay>
+            <source [src]="getSafeUrl(documentUrl)" type="video/mp4" />
+            Votre navigateur ne prend pas en charge la balise vidéo.
           </video>
         </div>
         <div *ngSwitchCase="'image/png'" class="iframe-contain">

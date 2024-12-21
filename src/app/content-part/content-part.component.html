@@ -1,10 +1,19 @@
 <div class="contenu">
 
 <div *ngIf="tempDocuments.length === 0" class="welcome-container">
-  <div class="welcome-message animate__animated animate__fadeInUp">
+  <div *ngFor="let categorie of categories">
+    <h3>{{ categorie?.nom}}</h3>
+    <div *ngFor="let catDoc of categorie.categorieDocuments">
+      <div *ngIf="catDoc.document">
+        <p>{{ catDoc.document.titre }} | {{ catDoc.document.typeFichier }} | {{ catDoc.document.thumbnail }} | {{ catDoc.document.url }}</p>
+      </div>
+      <br>
+    </div>
+  </div>
+  <!-- <div class="welcome-message animate__animated animate__fadeInUp"> -->
     <!-- Remplacez "Hello!!!" par l'icône animée -->
     
-    <p class="animate__animated animate__fadeIn animate__delay-1s" style="font-size: 1.5em;">
+    <!-- <p class="animate__animated animate__fadeIn animate__delay-1s" style="font-size: 1.5em;">
       {{ 'Hello'|translate }}
       <mat-icon svgIcon="hand-hello" class="hand-rotation hand-icon"></mat-icon>
     </p>
@@ -25,8 +34,8 @@
         <mat-icon svgIcon="hand-gauche" class="icon-left hand-icon"></mat-icon>
         {{'Explorer les catégories d\'illustrations ici'|translate}}.
       </li>
-    </ul>
-  </div>
+    </ul> -->
+  <!-- </div> -->
 </div>
 
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 

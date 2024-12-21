@@ -18,6 +18,11 @@ export class CategorieService {
 
 	constructor(private http: HttpClient) { }
 
+  getAllCategoriesWhithDocuments(): Observable<any>{
+    const url = `${this.apiUrl}/categories/public/categorie/documents`;
+    return this.http.get(url);
+  }
+
 	getAllCategories(): Observable<Categorie[]> {
     	const url = `${this.apiUrl}/categories/public`;
     	return this.http.get<Categorie[]>(url);
@@ -59,6 +64,7 @@ export class CategorieService {
   supCategorie(categorieID: number | undefined, categorie: Categorie): Observable<Categorie>{
     return this.http.put<Categorie>(`${this.apiUrl}/categories/admin/delete/${categorieID}`, categorie);
   }
+
 
   getFlag(): boolean{
     return this.flag;

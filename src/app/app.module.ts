@@ -89,6 +89,12 @@ import { httpErrorInterceptorProviders } from './helper/http-error.interceptor';
 //import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { CommonModule } from '@angular/common';
 
+
+import {VgCoreModule} from '@videogular/ngx-videogular/core';
+import {VgControlsModule} from '@videogular/ngx-videogular/controls';
+import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
+import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
+
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
 }
@@ -174,7 +180,11 @@ export function HttpLoaderFactory(http:HttpClient){
       }
     
     }
-    )
+    ),
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule
   ],
   providers: [AboutDialogService, HttpClient, DetailDialogService, authInterceptorProviders, httpErrorInterceptorProviders],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation, EventEmitter, Output, Inject } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewEncapsulation, EventEmitter, Output, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
@@ -11,6 +11,8 @@ import { SnackBarLikeComponent } from '../snack-bar-like/snack-bar-like.componen
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationService } from '../services/navigation.service';
+import Plyr from 'plyr';
+import videojs from 'video.js';
 
 @Component({
   selector: 'app-document-viewer',
@@ -18,7 +20,18 @@ import { NavigationService } from '../services/navigation.service';
   styleUrls: ['./document-viewer.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DocumentViewerComponent implements OnInit, OnChanges{
+export class DocumentViewerComponent implements OnInit, OnChanges, AfterViewInit{
+
+  private player: any;
+  currentVideo: Document | null = null;
+  video: any;
+  percentage: any;
+  videoPlaying?: boolean;
+
+  @ViewChild('videoPlayer') videoPlayer: any;  // Référence à l'élément vidéo
+  currentTime: number = 0;
+  duration: number = 0;
+  isMuted: boolean = false;
  
   @Input() selectedDocument: Document | null = null;
   @Output() closeViewer = new EventEmitter<void>();
@@ -27,6 +40,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   isDocumentLiked: boolean | undefined;
   likeButtonVisible: boolean = false;
   private subscription: Subscription = new Subscription();
+  
 
   constructor(
     private documentService: DocumentService,
@@ -41,11 +55,10 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   }
 
   ngOnInit(): void {
-    
+
     this.subscription.add(
       this.documentService.selectedDocument$.subscribe((document: Document | null) => {
         this.selectedDocument = document;
-
         // Update the document URL and ID
         if (this.selectedDocument) {
           this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument.documentID);
@@ -72,6 +85,71 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
 
   }
 
+  ngAfterViewInit(): void {
+    if (this.videoPlayer) {
+      this.duration = this.videoPlayer.nativeElement.duration;
+
+      // Mettre à jour le temps actuel de la vidéo
+      setInterval(() => {
+        this.currentTime = this.videoPlayer.nativeElement.currentTime;
+      }, 1000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log("-----------------------");
+    
+    // Détruire le lecteur Video.js lorsque le composant est détruit
+    if (this.player) {
+      this.player.dispose();
+    }
+  }
+
+    // Lecture/Pause
+  togglePlay(): void {
+    if (this.videoPlayer.nativeElement.paused) {
+      this.videoPlayer.nativeElement.play();
+    } else {
+      this.videoPlayer.nativeElement.pause();
+    }
+  }
+
+  // Mise en sourdine
+  toggleMute(): void {
+    this.isMuted = !this.isMuted;
+    this.videoPlayer.nativeElement.muted = this.isMuted;
+  }
+
+  // Contrôler la barre de recherche
+  onSeek(event: any): void {
+    const seekTime = event.target.value;
+    this.videoPlayer.nativeElement.currentTime = seekTime;
+  }
+
+
+
+  private initializePlayer(): void {
+    try {
+      if (this.selectedDocument) {
+        this.player = videojs('video-file', {
+          autoplay: true,              // Autoplay
+          controls: true,              // Contrôles du lecteur
+          responsive: true,            // Rendre la vidéo responsive
+          preload: 'auto',             // Précharger la vidéo
+          sources: [{
+            src: this.documentService.getDocumentUrl(this.selectedDocument.documentID),  // URL dynamique
+            type: this.selectedDocument.format  // Type dynamique
+          }]
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'initialisation de la vidéo:', error);
+    }
+  }
+
+ 
+
+
   loadDocument(categoryID: number, documentID: number): void {
     // Supposez que vous ayez une méthode pour obtenir le document par ID
     this.documentService.getDocument(documentID).subscribe(doc => {
@@ -83,6 +161,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedDocument'] && this.selectedDocument) {
       this.documentUrl = this.documentService.getDocumentUrl(this.selectedDocument?.documentID);
+      //this.initializePlayer();
     }
   }
 
