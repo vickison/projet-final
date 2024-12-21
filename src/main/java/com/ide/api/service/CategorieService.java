@@ -189,6 +189,10 @@ public class CategorieService {
         }
     }
 
+    public List<Categorie> getCategoriesWithDocuments() {
+        return categorieRepository.findAllCategoriesWithDocuments();
+    }
+
 
 
 }

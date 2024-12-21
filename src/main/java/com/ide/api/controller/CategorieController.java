@@ -150,4 +150,9 @@ public class CategorieController {
             throw new RuntimeException("Erreur lors de la suppression de la catégorie avec ID: " + categorieID, e);
         }
     }
+
+    @GetMapping("/public/categorie/documents")
+    public List<Categorie> getCategoriesWithDocuments() {
+        return categorieService.getCategoriesWithDocuments();
+    }
 }

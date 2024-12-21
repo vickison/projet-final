@@ -216,6 +216,7 @@ public class DocumentController {
         // Déterminez le nom du fichier avec ou sans titre personnalisé
         String fileName = (newTitle != null ? newTitle + extension : file.getOriginalFilename());
 
+
         // Si c'est une vidéo et qu'on a réencodé le fichier avec le préfixe LIBEIL_, on conserve le nom avec le préfixe
         if (isVideo) {
             fileName = "LIBEIL_" + fileName; // Garder le préfixe LIBEIL_
