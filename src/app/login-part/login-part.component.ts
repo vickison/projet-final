@@ -22,6 +22,7 @@ export class LoginPartComponent implements OnInit{
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
+  isSubmitting = false;
 
 
   credentials = { username: '', password: '' };
@@ -52,6 +53,9 @@ export class LoginPartComponent implements OnInit{
   }
 
   onSubmit(): void{
+
+    this.isSubmitting = true;
+
     const { username, password } = this.form;
     this.authService.login(username, password).subscribe({
       next: data =>{
@@ -69,6 +73,9 @@ export class LoginPartComponent implements OnInit{
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
         this.reloadPage();
+      },
+      complete: () => {
+        this.isSubmitting = false; // Réactive le bouton lorsque la requête est terminée (réussie ou avec erreur)
       }
     });
   }

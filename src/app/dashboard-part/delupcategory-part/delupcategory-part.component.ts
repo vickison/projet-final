@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,9 +13,9 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
   templateUrl: './delupcategory-part.component.html',
   styleUrls: ['./delupcategory-part.component.scss']
 })
-export class DelupcategoryPartComponent {
+export class DelupcategoryPartComponent implements OnInit{
   displayedColumns = ['id', 'nom', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
-  categorySource: MatTableDataSource<Categorie>;
+  categorySource: MatTableDataSource<Categorie> = new MatTableDataSource<Categorie>([]);
   categories: Categorie[] = [];
   adminID: number = 0;
   message: String = '';
@@ -32,22 +32,56 @@ export class DelupcategoryPartComponent {
               private dialog: MatDialog,
               private snackBar: MatSnackBar
             ){
-    const cat: Array<Categorie> = [];
-    this.categorieService.getAllCategories().subscribe(
-      (categories: Categorie[]) =>{
-        for(const category of categories){
-          cat.push(category);
-        }
-        this.categorySource = new MatTableDataSource(cat);
-        this.categorySource.paginator = this.paginator;
-        this.categorySource.sort = this.sort;
-      },
-      (error) => {
-        //console.error('Erreur: ',error);
+    // const cat: Array<Categorie> = [];
+    // this.categorieService.getAllCategories().subscribe(
+    //   (categories: Categorie[]) =>{
+    //     for(const category of categories){
+    //       cat.push(category);
+    //     }
+    //     this.categorySource = new MatTableDataSource(cat);
+    //     this.categorySource.paginator = this.paginator;
+    //     this.categorySource.sort = this.sort;
+    //   },
+    //   (error) => {
+    //     //console.error('Erreur: ',error);
         
-      }
-    );
-    this.categorySource = new MatTableDataSource(this.categories);
+    //   }
+    // );
+    // this.categorySource = new MatTableDataSource(this.categories);
+  }
+
+  ngOnInit(): void {
+    // Charger les categories depuis le service
+    this.categorieService.getAllCategories().subscribe((categories: Categorie[]) => {
+      this.categories = categories;
+      
+      // Initialiser MatTableDataSource avec les données reçues
+      this.categorySource = new MatTableDataSource(this.categories);
+
+      // Appliquer la pagination et le tri
+      this.categorySource.paginator = this.paginator;
+      this.categorySource.sort = this.sort;
+    }, (error) => {
+      console.error('Error fetching documents : ', error);
+    });
+  }
+    
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
+    this.categorySource.filterPredicate = (data: Categorie, filter: string) => {
+      const nom = data.nom ? data.nom.toLowerCase() : ''; // Vérifier si 'nom' existe, sinon on prend une chaîne vide
+      
+      
+      return nom.includes(filter); // Appliquer le filtre
+    };
+  
+    this.categorySource.filter = filterValue; // Applique le filtre aux données de la table
+  
+    // Si le tableau n'affiche plus de résultats après application du filtre
+    if (this.categorySource.paginator) {
+      this.categorySource.paginator.firstPage();
+    }
   }
 
     

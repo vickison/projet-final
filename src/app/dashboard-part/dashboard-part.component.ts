@@ -37,6 +37,7 @@ export class DashboardPartComponent implements OnInit {
   isSuperAdmin: boolean = false;
   //utilisateur: Utilisateur ;
   username?: string;
+  selectedDocument: Document | null = null;
 
   constructor(public dialog: MatDialog, 
     private tokenService: TokenStorageService,
@@ -166,12 +167,23 @@ export class DashboardPartComponent implements OnInit {
           horizontalPosition: 'center',
           verticalPosition: 'top'
         });
+        this.tokenService.signOut();
         this.router.navigate(['/admin/login']);
       },
       error: err =>{
 
       }
-    })
+    });
+
+  }
+  
+  openDocumentViewer(document: Document): void {
+    this.selectedDocument = document;
+    //console.log(this.selectedDocument);
+  }
+
+  closeDocumentViewer(): void {
+    this.selectedDocument = null;
   }
 
 

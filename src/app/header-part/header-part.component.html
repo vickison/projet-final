@@ -14,7 +14,12 @@
     <div class="header_options_secondline">
       <mat-form-field class="header_search" appearance="outline">
         <mat-icon matPrefix ngStyle.xs="padding-right: 0; padding-left:0.2rem;" (click)="onInputChange(searchInput.value)" style="cursor: pointer;">search</mat-icon>
-        <input matInput [(ngModel)]="keywords" placeholder="{{'Rechercher'|translate }}" #searchInput />
+        <input matInput 
+          [(ngModel)]="keywords" 
+          placeholder="{{'Rechercher'|translate }}" 
+          #searchInput
+          (keydown.enter)="onInputChange(searchInput.value)" 
+        />
         <mat-icon matSuffix *ngIf="keywords" (click)="clearSearchKeyword()" style="cursor: pointer;">close</mat-icon>
       </mat-form-field>
 

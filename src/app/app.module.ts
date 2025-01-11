@@ -29,6 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSortModule } from '@angular/material/sort';
 
 
 //import { MainPartComponent } from './main-part/main-part.component';
@@ -94,6 +95,8 @@ import {VgCoreModule} from '@videogular/ngx-videogular/core';
 import {VgControlsModule} from '@videogular/ngx-videogular/controls';
 import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
 import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
+
+import { LayoutModule } from '@angular/cdk/layout';
 
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
@@ -171,6 +174,8 @@ export function HttpLoaderFactory(http:HttpClient){
     NgxMatFileInputModule ,
     FlexLayoutModule,
     CommonModule,
+    MatSortModule,
+    LayoutModule,
     TranslateModule.forRoot(
       {
       loader:{

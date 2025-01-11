@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,9 +13,9 @@ import { Utilisateur } from 'src/app/models/utilisateur';
   templateUrl: './deluptag-part.component.html',
   styleUrls: ['./deluptag-part.component.scss']
 })
-export class DeluptagPartComponent {
+export class DeluptagPartComponent implements OnInit {
   displayedColumns = ['id', 'tag', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
-  tagSource: MatTableDataSource<Tag>;
+  tagSource: MatTableDataSource<Tag> = new MatTableDataSource<Tag>([]);
   tags: Tag[] = [];
   adminID: number = 0;
   utilisateurs: Utilisateur[] = [];
@@ -27,24 +27,58 @@ export class DeluptagPartComponent {
 
   constructor(private tagService: TagService,
               private dialog: MatDialog){
-    const t: Array<Tag>= [];
-    this.tagService.getTags().subscribe(
-      (tags: Tag[]) =>{
-        for(const tag of tags){
-          t.push(tag);
-          //console.log('tag: ', typeof(tag.dateCreationEtiquette))
-        }
-        this.tagSource = new MatTableDataSource(t);
+    // const t: Array<Tag>= [];
+    // this.tagService.getTags().subscribe(
+    //   (tags: Tag[]) =>{
+    //     for(const tag of tags){
+    //       t.push(tag);
+    //       //console.log('tag: ', typeof(tag.dateCreationEtiquette))
+    //     }
+    //     this.tagSource = new MatTableDataSource(t);
+    //     this.tagSource.paginator = this.paginator;
+    //     this.tagSource.sort = this.sort;
+    //   },
+    //   (error) => {
+    //     //console.error('Erreur: ',error);
+        
+    //   }
+    // );
+    // this.tagSource = new MatTableDataSource(this.tags);
+  }
+
+  ngOnInit(): void {
+      // Charger les tags depuis le service
+      this.tagService.getTags().subscribe((tags: Tag[]) => {
+        this.tags = tags;
+        
+        // Initialiser MatTableDataSource avec les données reçues
+        this.tagSource = new MatTableDataSource(this.tags);
+  
+        // Appliquer la pagination et le tri
         this.tagSource.paginator = this.paginator;
         this.tagSource.sort = this.sort;
-      },
-      (error) => {
-        //console.error('Erreur: ',error);
+      }, (error) => {
+        console.error('Error fetching documents : ', error);
+      });
+    }
+  
+    applyFilter(event: Event): void {
+      const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    
+      this.tagSource.filterPredicate = (data: Tag, filter: string) => {
+        const tag = data.tag ? data.tag.toLowerCase() : ''; // Vérifier si 'tag' existe, sinon on prend une chaîne vide
         
+        
+        return tag.includes(filter); // Appliquer le filtre
+      };
+    
+      this.tagSource.filter = filterValue; // Applique le filtre aux données de la table
+    
+      // Si le tableau n'affiche plus de résultats après application du filtre
+      if (this.tagSource.paginator) {
+        this.tagSource.paginator.firstPage();
       }
-    );
-    this.tagSource = new MatTableDataSource(this.tags);
-  }
+    }
 
   openEditModal(tag: Tag): void {
     const dialogRef = this.dialog.open(EditTagModalComponent, {

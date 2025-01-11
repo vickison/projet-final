@@ -22,6 +22,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { DocumentViewerComponent } from '../document-viewer/document-viewer.component';
 import { NavigationService } from '../services/navigation.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CategorieDocument } from '../models/categorie-document.model';
 
 
 @Component({
@@ -38,6 +40,9 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  @Output() categorySelected = new EventEmitter<number>();
+  @Output() documentsOfCategorie = new EventEmitter<Document[]>();
+
   isHovered = false;
   private previewTimer: any;
   private totalPreviewTime: number = 30000;
@@ -49,8 +54,66 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   documentThumbnailUrl?: string;
   displayWelcome: boolean = true;
   categories: Categorie[] = [];
+  private categoryID: number | null= null;
+  documents: Document[] = [];
+  searchResults: Document[] = [];
+  tempDocuments: Document[] = [];
+  catDocuments: Document[] = [];
+  filteredDocuments: Document[] = [];
+  orderedDocuments: Document[] = [];
+  documentID?: number;
+  downloadUrl?: any;
+  fileName?: string;
+  @Input() selectedDocument: Document | undefined;
+  documentUrl: string = '';
+  pdfBlob?: Blob;
+  selectedCategorieID: number = 0;
+  isSearching: boolean = false;
+  @Input() docs: Document[]= [];
+  @Input() categorieID: number | undefined;
+  likeCounts: any = [];
+  unLikeCounts: any = [];
+  likeMap: any = new Map();
+  unLikeMap: any = new Map();
+  @Output() documentClicked = new EventEmitter<Document>();
   
+  like: number = 0;
+  unlike: number = 0;
+  count: number = 0;
 
+  pageSize = 12; // Nombre d'éléments par page
+  pageSizeOptions: number[] = [5, 10, 20];
+  paginatedDocuments: Document[] = [];
+
+  selectedCardId: number | undefined; // Track the selected card ID
+
+  isMobile: boolean = false;
+  isTablet: boolean = false;
+  maxCards: number = 3;
+  activeId: number | undefined;
+  
+  constructor(
+    private documentService: DocumentService,
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private detailDialogService: DetailDialogService,
+    private dialog: MatDialog,
+    private http: HttpClient,
+    private searchService: SearchService,
+    private categorieDocumentsService: CategorieDocumenttsService,
+    private filterService: FilterService,
+    private orderService: OrderService,
+    private router: Router,
+    private categorieService: CategorieService,
+    private refresherService: RefresherService,
+    private snackBar: MatSnackBar,
+    private translateService: TranslateService,
+    private navigationService: NavigationService,
+    private breakpointObserver: BreakpointObserver,
+    
+  ) {
+    
+   }
 
   startVideoPreview(){
     this.playVideo();
@@ -85,40 +148,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   //   this.pdfViewer.pdfViewer.currentPageNumber = 1
   // }
 
-  private categoryID: number | null= null;
-  documents: Document[] = [];
-  searchResults: Document[] = [];
-  tempDocuments: Document[] = [];
-  catDocuments: Document[] = [];
-  filteredDocuments: Document[] = [];
-  orderedDocuments: Document[] = [];
-  documentID?: number;
-  downloadUrl?: any;
-  fileName?: string;
-  @Input() selectedDocument: Document | undefined;
-  documentUrl: string = '';
-  pdfBlob?: Blob;
-  selectedCategorieID: number = 0;
-  isSearching: boolean = false;
-  @Input() docs: Document[]= [];
-  @Input() categorieID: number | undefined;
-  likeCounts: any = [];
-  unLikeCounts: any = [];
-  likeMap: any = new Map();
-  unLikeMap: any = new Map();
-  @Output() documentClicked = new EventEmitter<Document>();
   
-
-  like: number = 0;
-  unlike: number = 0;
-  count: number = 0;
-
-
-  pageSize = 12; // Nombre d'éléments par page
-  pageSizeOptions: number[] = [5, 10, 20];
-  paginatedDocuments: Document[] = [];
-
-  selectedCardId: number | undefined; // Track the selected card ID
 
   private routeSubscription: Subscription = new Subscription();
   private filterSubscription: Subscription = new Subscription();
@@ -126,29 +156,37 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   private refreshSubscription: Subscription = new Subscription();
   
 
-  constructor(
-    private documentService: DocumentService,
-    private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
-    private detailDialogService: DetailDialogService,
-    private dialog: MatDialog,
-    private http: HttpClient,
-    private searchService: SearchService,
-    private categorieDocumentsService: CategorieDocumenttsService,
-    private filterService: FilterService,
-    private orderService: OrderService,
-    private router: Router,
-    private categorieService: CategorieService,
-    private refresherService: RefresherService,
-    private snackBar: MatSnackBar,
-    private translateService: TranslateService,
-    private navigationService: NavigationService,
-    
-  ) {
-    
-   }
+  
 
   ngOnInit(): void {
+
+    this.breakpointObserver.observe([
+      '(max-width: 767px)', // Mobile
+      '(min-width: 768px) and (max-width: 1023px)', // Tablet
+      '(min-width: 1024px)' // Web
+    ]).subscribe(result => {
+      if (result.breakpoints['(max-width: 767px)']) {
+        console.log('Mobile detected');
+        this.maxCards = 1;
+      } else if (result.breakpoints['(min-width: 768px) and (max-width: 1023px)']) {
+        console.log('Tablet detected');
+        this.maxCards = 2;
+      } else if (result.breakpoints['(min-width: 1024px)']) {
+        console.log('Web detected');
+        this.maxCards = 3;
+      } else {
+        console.log('No matching breakpoint detected');
+      }
+    });
+
+    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
+      this.isMobile = result.matches;
+    });
+
+    this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe(result => {
+      this.isTablet = result.matches;
+    });
+
     this.displayWelcome = true;
 
     this.categorieService.getAllCategories().subscribe((data: Categorie[]) => {
@@ -178,9 +216,6 @@ export class ContentPartComponent implements OnInit, OnDestroy{
         );
       }
     });
-    
-
-    
   
     if(!this.categorieService.getFlag()){
       this.displayWelcome = false;
@@ -278,11 +313,39 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       }
       //this.paginateDocuments({ pageIndex: 0, pageSize: 3, length: this.documents.length });
     });
+    
+  }
 
-
+  onBtnPlusClick(categoryID: number | undefined, nom?: string): void {
+    if(categoryID)
+      this.fetchDocuments(categoryID);
 
     
+    // const links = document.querySelectorAll('nav ul li a');
+    // links.forEach(link => link.classList.remove('active'));
     
+    // //const curFlag = this.categorieService.getFlag();
+    // this.categorieService.setFlag(false);
+    // // Add the 'active' class to the clicked link
+    // event.target.classList.add('active');
+    // this.activeId = categoryID;
+    // this.documentService.getDocumentsByCategorie(categoryID)
+    //   .subscribe(documents => {
+    //     this.documents = documents.filter(doc => !doc.supprimerDocument);
+    //     this.documentsOfCategorie.emit(documents);
+    //     //console.log(this.documents);
+    //     this.router.navigate(['', categoryID]);
+    //     //this.reloadPage();
+    // });
+
+
+    this.refresherService.triggerRefresh();
+      
+      
+  }
+
+  getLimitedCards(catDoc: CategorieDocument[] | undefined): CategorieDocument[] | undefined {
+    return catDoc?.slice(0, this.maxCards);
   }
 
 

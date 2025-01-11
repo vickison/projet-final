@@ -1,41 +1,34 @@
 <div class="contenu">
-
-<div *ngIf="tempDocuments.length === 0" class="welcome-container">
-  <div *ngFor="let categorie of categories">
-    <h3>{{ categorie?.nom}}</h3>
-    <div *ngFor="let catDoc of categorie.categorieDocuments">
-      <div *ngIf="catDoc.document">
-        <p>{{ catDoc.document.titre }} | {{ catDoc.document.typeFichier }} | {{ catDoc.document.thumbnail }} | {{ catDoc.document.url }}</p>
+<div *ngIf="tempDocuments.length === 0" id="grid2" class="container2">
+    <div *ngFor="let categorie of categories" class="category-container">
+      <h2 class="category-title">{{ categorie?.nom}}</h2>
+      <div class="card-container2">
+        <mat-card *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments)" class="card2">
+          <div *ngIf="catDoc.document">
+            <mat-card-header class="card-header" (click)="onDocumentClicked(catDoc.document)">
+              <div >
+                <mat-card-title class="titre">{{ catDoc.document.titre }}</mat-card-title>
+              </div>
+            </mat-card-header>
+            <div class="image-container" (click)="onDocumentClicked(catDoc.document)">
+              <img mat-card-image src={{getDocumentThumbnail(catDoc.document.documentID)}} alt="{{ catDoc.document.titre }}" class="image">
+            </div>
+            <div class="buttons">
+              <button mat-icon-button (click)="openDetailDialog(catDoc.document)">
+                <mat-icon svgIcon="telecharger"></mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon svgIcon="partage" (click)="copyLink(catDoc.document.documentID)"></mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card>
+        <div class="card add-card" (click)="onBtnPlusClick(categorie?.categorieID)">
+          <mat-icon class="add-icon">arrow_forward</mat-icon>
+        </div>
       </div>
-      <br>
-    </div>
   </div>
-  <!-- <div class="welcome-message animate__animated animate__fadeInUp"> -->
-    <!-- Remplacez "Hello!!!" par l'icône animée -->
-    
-    <!-- <p class="animate__animated animate__fadeIn animate__delay-1s" style="font-size: 1.5em;">
-      {{ 'Hello'|translate }}
-      <mat-icon svgIcon="hand-hello" class="hand-rotation hand-icon"></mat-icon>
-    </p>
-    <ul class="instructions-list">
-      <li class="desk">
-        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
-        {{ 'Rechercher ou filtrer les illustrations ici'|translate }}.
-      </li>
-      <li class="mob">
-        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
-        {{ 'Explorer les catégories d\'illustrations ici'|translate }}  <mat-icon svgIcon="tbars" style="font-size: smaller;"></mat-icon> <br>
-      </li>
-      <li class="mob">
-        <mat-icon svgIcon="hand-haut" class="icon-up hand-icon"></mat-icon>
-        {{'Rechercher ou filtrer les illustrations ici'|translate}}.
-      </li>
-      <li class="desk">
-        <mat-icon svgIcon="hand-gauche" class="icon-left hand-icon"></mat-icon>
-        {{'Explorer les catégories d\'illustrations ici'|translate}}.
-      </li>
-    </ul> -->
-  <!-- </div> -->
+  
 </div>
 
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
@@ -52,16 +45,6 @@
         <div class="like-dislike-container">
           <mat-card-subtitle style="font-size: smaller; color: rgb(185, 183, 183);">{{ document.typeFichier == 'Document' ? 'pdf' :  document.typeFichier }}</mat-card-subtitle>
         </div>
-        <!-- <div  class="like-dislike-container">
-          <div class="like" >
-              <mat-icon svgIcon="like" ></mat-icon>
-              <span>{{ document.like }}</span>
-          </div>
-          <div class="dislike" >
-              <mat-icon svgIcon="dislike" ></mat-icon>
-              <span >{{ document.unlike }}</span>
-          </div>
-        </div> -->
       </mat-card-header>
       <div (click)="onDocumentClicked(document)">
         <ng-container [ngSwitch]="document.format">
@@ -118,6 +101,7 @@
     </mat-card>
     
   </div>
+</div>
   <mat-paginator
     [length]="documents.length"
     [pageSize]="12"
@@ -127,7 +111,6 @@
     style="font-size: medium; font-weight: bold; color: rgb(24, 49, 83) ; background-color:rgba(236, 247, 253, 0.488); border-top:  0.1px solid rgba(128, 128, 128, 0.26); justify-content: center; display: flex; margin-left: 14%;"
   >
   </mat-paginator>
-</div>
 
 
 

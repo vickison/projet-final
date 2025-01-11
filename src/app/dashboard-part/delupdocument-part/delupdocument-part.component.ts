@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,9 +13,9 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
   templateUrl: './delupdocument-part.component.html',
   styleUrls: ['./delupdocument-part.component.scss']
 })
-export class DelupdocumentPartComponent {
+export class DelupdocumentPartComponent implements OnInit{
   displayedColumns = ['id', 'titre', 'resume', 'format', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le','action'];
-  documentSource: MatTableDataSource<Document>;
+  documentSource: MatTableDataSource<Document> = new MatTableDataSource<Document>([]);
   documents: Document[] = [];
   adminID: number = 0;
   message: String = '';
@@ -30,23 +30,59 @@ export class DelupdocumentPartComponent {
               private dialog: MatDialog,
               private snackBar: MatSnackBar
             ){
-    const doc: Array<Document>=[];
-    this.documentService.getAllDocuments().subscribe(
-      (documents: Document[]) => {
-        for(const document of documents){
-          doc.push(document);
-        }
-        this.documentSource = new MatTableDataSource(doc);
-        this.documentSource.paginator = this.paginator;
-        this.documentSource.sort = this.sort;
-      },
-      (error) => {
-        //console.error('Error fetching documents : ', error);
-      }
-    );
+    // const doc: Array<Document>=[];
+    // this.documentService.getAllDocuments().subscribe(
+    //   (documents: Document[]) => {
+    //     for(const document of documents){
+    //       doc.push(document);
+    //     }
+    //     this.documentSource = new MatTableDataSource(doc);
+    //     this.documentSource.paginator = this.paginator;
+    //     this.documentSource.sort = this.sort;
+    //   },
+    //   (error) => {
+    //     //console.error('Error fetching documents : ', error);
+    //   }
+    // );
 
-    this.documentSource = new MatTableDataSource(this.documents);
+    // this.documentSource = new MatTableDataSource(this.documents);
   }
+
+  ngOnInit(): void {
+    // Charger les documents depuis le service
+    this.documentService.getAllDocuments().subscribe((documents: Document[]) => {
+      this.documents = documents;
+      
+      // Initialiser MatTableDataSource avec les données reçues
+      this.documentSource = new MatTableDataSource(this.documents);
+
+      // Appliquer la pagination et le tri
+      this.documentSource.paginator = this.paginator;
+      this.documentSource.sort = this.sort;
+    }, (error) => {
+      console.error('Error fetching documents : ', error);
+    });
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
+    this.documentSource.filterPredicate = (data: Document, filter: string) => {
+      const titre = data.titre ? data.titre.toLowerCase() : ''; // Vérifier si 'titre' existe, sinon on prend une chaîne vide
+      const resume = data.resume ? data.resume.toLowerCase() : ''; // Vérifier si 'resume' existe, sinon on prend une chaîne vide
+      
+      return titre.includes(filter) || resume.includes(filter); // Appliquer le filtre
+    };
+  
+    this.documentSource.filter = filterValue; // Applique le filtre aux données de la table
+  
+    // Si le tableau n'affiche plus de résultats après application du filtre
+    if (this.documentSource.paginator) {
+      this.documentSource.paginator.firstPage();
+    }
+  }
+  
+
 
   openEditModal(document: Document): void {
     const dialogRef = this.dialog.open(EditDocumentModalComponent, {

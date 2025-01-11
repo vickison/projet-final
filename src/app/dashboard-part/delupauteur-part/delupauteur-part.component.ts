@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,10 +13,10 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
   templateUrl: './delupauteur-part.component.html',
   styleUrls: ['./delupauteur-part.component.scss']
 })
-export class DelupauteurPartComponent {
+export class DelupauteurPartComponent implements OnInit{
 
   displayedColumns = ['id', 'nom', 'prenom', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le', 'action'];
-  auteurSource: MatTableDataSource<Auteur>;
+  auteurSource: MatTableDataSource<Auteur> = new MatTableDataSource<Auteur>([]);
   auteurs: Auteur[] = [];
   filterValue: string = "";
   adminID: number = 0;
@@ -31,22 +31,56 @@ export class DelupauteurPartComponent {
               private dialog: MatDialog,
               private snackBar: MatSnackBar
             ){
-    const aus: Array<Auteur> = [];
-    this.auteurService.getAllAuteurs().subscribe(
-      (auteurs: Auteur[]) =>{
-        for (const auteur of auteurs) {
-          aus.push(auteur);
-        }
-        this.auteurSource = new MatTableDataSource(aus);
-        this.auteurSource.paginator  = this.paginator;
-        this.auteurSource.sort = this.sort;
-      },
-      (error) => {
-        //console.error('Erreur: ', error);
-      }
-    );
+    // const aus: Array<Auteur> = [];
+    // this.auteurService.getAllAuteurs().subscribe(
+    //   (auteurs: Auteur[]) =>{
+    //     for (const auteur of auteurs) {
+    //       aus.push(auteur);
+    //     }
+    //     this.auteurSource = new MatTableDataSource(aus);
+    //     this.auteurSource.paginator  = this.paginator;
+    //     this.auteurSource.sort = this.sort;
+    //   },
+    //   (error) => {
+    //     //console.error('Erreur: ', error);
+    //   }
+    // );
 
-    this.auteurSource = new MatTableDataSource(this.auteurs);
+    // this.auteurSource = new MatTableDataSource(this.auteurs);
+  }
+
+  ngOnInit(): void {
+    // Charger les categories depuis le service
+    this.auteurService.getAllAuteurs().subscribe((auteurs: Auteur[]) => {
+      this.auteurs = auteurs;
+      
+      // Initialiser MatTableDataSource avec les données reçues
+      this.auteurSource = new MatTableDataSource(this.auteurs);
+
+      // Appliquer la pagination et le tri
+      this.auteurSource.paginator = this.paginator;
+      this.auteurSource.sort = this.sort;
+    }, (error) => {
+      console.error('Error fetching documents : ', error);
+    });
+  }
+    
+  applyFilter2(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
+    this.auteurSource.filterPredicate = (data: Auteur, filter: string) => {
+      const nom = data.nom ? data.nom.toLowerCase() : ''; // Vérifier si 'nom' existe, sinon on prend une chaîne vide
+      
+      
+      return nom.includes(filter); // Appliquer le filtre
+    };
+  
+    this.auteurSource.filter = filterValue; // Applique le filtre aux données de la table
+  
+    // Si le tableau n'affiche plus de résultats après application du filtre
+    if (this.auteurSource.paginator) {
+      this.auteurSource.paginator.firstPage();
+    }
   }
 
   ngAfterViewInit() {
