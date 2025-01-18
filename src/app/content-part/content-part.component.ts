@@ -317,31 +317,11 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   }
 
   onBtnPlusClick(categoryID: number | undefined, nom?: string): void {
-    if(categoryID)
+    if(categoryID){
       this.fetchDocuments(categoryID);
-
-    
-    // const links = document.querySelectorAll('nav ul li a');
-    // links.forEach(link => link.classList.remove('active'));
-    
-    // //const curFlag = this.categorieService.getFlag();
-    // this.categorieService.setFlag(false);
-    // // Add the 'active' class to the clicked link
-    // event.target.classList.add('active');
-    // this.activeId = categoryID;
-    // this.documentService.getDocumentsByCategorie(categoryID)
-    //   .subscribe(documents => {
-    //     this.documents = documents.filter(doc => !doc.supprimerDocument);
-    //     this.documentsOfCategorie.emit(documents);
-    //     //console.log(this.documents);
-    //     this.router.navigate(['', categoryID]);
-    //     //this.reloadPage();
-    // });
-
-
-    this.refresherService.triggerRefresh();
-      
-      
+      this.categorieService.setActiveCategory(categoryID);
+    }
+    this.refresherService.triggerRefresh();  
   }
 
   getLimitedCards(catDoc: CategorieDocument[] | undefined): CategorieDocument[] | undefined {

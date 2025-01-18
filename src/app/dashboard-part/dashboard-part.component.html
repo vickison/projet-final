@@ -31,7 +31,7 @@
     <div>
       <app-delupadmin-part *ngIf="selectedOption?.name === 'Admin' and isSuperAdmin === true" ></app-delupadmin-part>
       <app-delupcategory-part *ngIf="selectedOption?.name === 'Catégories'"></app-delupcategory-part>
-      <app-delupdocument-part *ngIf="selectedOption?.name === 'Documents'"></app-delupdocument-part>
+      <app-delupdocument-part *ngIf="selectedOption?.name === 'Documents'" ></app-delupdocument-part>
       <!-- <app-document-viewer [selectedDocument]="selectedDocument" (closeViewer)="closeDocumentViewer()"></app-document-viewer> -->
       <app-delupauteur-part *ngIf="selectedOption?.name === 'Auteurs'"></app-delupauteur-part>
       <app-deluptag-part *ngIf="selectedOption?.name === 'Etiquettes'"></app-deluptag-part>

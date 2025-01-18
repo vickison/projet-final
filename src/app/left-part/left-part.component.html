@@ -12,7 +12,9 @@
             <nav>
                 <ul style="padding-top: 1.5rem">
                     <li *ngFor="let categorie of categories">
-                        <a (click)="onCategoryClick($event,categorie.categorieID)">
+                        <a (click)="onCategoryClick($event,categorie.categorieID)"
+                        [class.active]="categorie.categorieID === activeId" 
+                        >
                             {{ categorie.nom }}
                         </a>
                     </li>

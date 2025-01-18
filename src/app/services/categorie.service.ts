@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Categorie } from '../models/categorie';
 import { CategorieDocument } from '../models/categorie-document.model';
 import { catchError } from 'rxjs/operators';
@@ -16,7 +16,15 @@ export class CategorieService {
 	private apiUrl = environment.apiUrl;
   private flag: boolean = false;
 
+  private activeCategorySubject = new BehaviorSubject<number | null>(null);
+  activeCategory$ = this.activeCategorySubject.asObservable();
+
+
 	constructor(private http: HttpClient) { }
+
+  setActiveCategory(categoryId: number): void {
+    this.activeCategorySubject.next(categoryId);
+  }
 
   getAllCategoriesWhithDocuments(): Observable<any>{
     const url = `${this.apiUrl}/categories/public/categorie/documents`;

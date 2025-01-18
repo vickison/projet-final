@@ -25,7 +25,7 @@ export class LeftPartComponent implements OnInit{
   categorieDocuments?: CategorieDocument[];
   documents?: Document[] = [];
   activeId: number | undefined;
-  flag?: boolean
+  flag?: boolean;
 
   @Output() categorySelected = new EventEmitter<number>();
   @Output() documentsOfCategorie = new EventEmitter<Document[]>();
@@ -59,6 +59,10 @@ export class LeftPartComponent implements OnInit{
       });
 
     this.getAllCategories();
+
+    this.categorieService.activeCategory$.subscribe(activeCategoryId => {
+      this.activeId = activeCategoryId ?? undefined;  // Remplace `null` par `undefined`
+    });
   }
 
   toggleMenu() {
