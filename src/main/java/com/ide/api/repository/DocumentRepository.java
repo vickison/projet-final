@@ -56,4 +56,9 @@ public interface DocumentRepository extends JpaRepository<Document, Integer>, Jp
     //@EntityGraph(attributePaths = {"categorieDocuments", "documentTags", "auteurDocuments", "utilisateurDocuments"})
     Optional<Document> findByDocumentID(Integer documentId);
 
+    @Query(value = "SELECT * FROM tableDocuments" +
+            "ORDER BY RAND()",
+           nativeQuery=true)
+    List<Document> findAllDocuments();
+
 }
