@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -7,6 +7,7 @@ import { TagService } from 'src/app/services/tag.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditTagModalComponent } from './edit-tag-modal/edit-tag-modal.component';
 import { Utilisateur } from 'src/app/models/utilisateur';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-deluptag-part',
@@ -19,32 +20,17 @@ export class DeluptagPartComponent implements OnInit {
   tags: Tag[] = [];
   adminID: number = 0;
   utilisateurs: Utilisateur[] = [];
-  message: String = '';
+  message = '';
   classCss: String = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private tagService: TagService,
-              private dialog: MatDialog){
-    // const t: Array<Tag>= [];
-    // this.tagService.getTags().subscribe(
-    //   (tags: Tag[]) =>{
-    //     for(const tag of tags){
-    //       t.push(tag);
-    //       //console.log('tag: ', typeof(tag.dateCreationEtiquette))
-    //     }
-    //     this.tagSource = new MatTableDataSource(t);
-    //     this.tagSource.paginator = this.paginator;
-    //     this.tagSource.sort = this.sort;
-    //   },
-    //   (error) => {
-    //     //console.error('Erreur: ',error);
-        
-    //   }
-    // );
-    // this.tagSource = new MatTableDataSource(this.tags);
-  }
+              private dialog: MatDialog,
+              private cdRef: ChangeDetectorRef,
+              private snackBar: MatSnackBar
+            ){}
 
   ngOnInit(): void {
       // Charger les tags depuis le service
@@ -115,16 +101,43 @@ export class DeluptagPartComponent implements OnInit {
   
   }
 
+  updateTableAfterDeletion(tagID: number) {
+    // Récupérer les données actuelles sous forme de tableau
+    const data = this.tagSource.data;
+  
+    // Mettre à jour le champ `supprimerUtil` du document pour le marquer comme supprimé
+    const updatedData = data.map(tag => {
+      if (tag.tagID === tagID) {
+        tag.supprimerEtiquette = true;  // Marquer comme supprimé
+      }
+      return tag;
+    });
+  
+    // Mettre à jour la source de données de la table
+    this.tagSource.data = updatedData;
+  
+    // Forcer la détection des changements
+    this.cdRef.detectChanges();
+  }
+
   onDelete(tagID: number, tag: Tag){
+    const config = new MatSnackBarConfig();
+    config.duration = 4000; // Durée de la notification en millisecondes
+    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+    config.panelClass = ['custom-snackbar'];
     this.tagService.supTag(tagID, tag).subscribe({
       next: data => {
-        this.message = 'Suppression du label avec succès';
+        this.message = 'Suppression du label avec succès✅';
         this.classCss = 'success';
+        this.snackBar.open(this.message, 'Fermer', config);
         //console.log("Tag supprimer avec succes: ", data);
+        this.updateTableAfterDeletion(tagID);
       },
       error: err => {
-        this.message = 'Echec de suppression du tag';
+        this.message = 'Echec de suppression du tag❌';
         this.classCss = 'error';
+        this.snackBar.open(this.message, 'Fermer', config);
         //console.error("impossible de supprimer le tag: ", err);
       }
     });

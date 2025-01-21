@@ -50,3 +50,7 @@ mat-row:nth-child(even) {
 mat-cell.action-cell button {
     margin-right: 0; /* Enlevez toute marge à droite du dernier bouton */
 }
+
+.highlight-row {
+  color: #9c9b9b;
+}

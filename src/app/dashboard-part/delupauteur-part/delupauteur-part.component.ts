@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -29,25 +29,9 @@ export class DelupauteurPartComponent implements OnInit{
 
   constructor(private auteurService: AuteurService, 
               private dialog: MatDialog,
-              private snackBar: MatSnackBar
-            ){
-    // const aus: Array<Auteur> = [];
-    // this.auteurService.getAllAuteurs().subscribe(
-    //   (auteurs: Auteur[]) =>{
-    //     for (const auteur of auteurs) {
-    //       aus.push(auteur);
-    //     }
-    //     this.auteurSource = new MatTableDataSource(aus);
-    //     this.auteurSource.paginator  = this.paginator;
-    //     this.auteurSource.sort = this.sort;
-    //   },
-    //   (error) => {
-    //     //console.error('Erreur: ', error);
-    //   }
-    // );
-
-    // this.auteurSource = new MatTableDataSource(this.auteurs);
-  }
+              private snackBar: MatSnackBar,
+              private cdRef: ChangeDetectorRef
+            ){}
 
   ngOnInit(): void {
     // Charger les categories depuis le service
@@ -136,6 +120,25 @@ export class DelupauteurPartComponent implements OnInit{
   
   }
 
+  updateTableAfterDeletion(auteurID: number) {
+    // Récupérer les données actuelles sous forme de tableau
+    const data = this.auteurSource.data;
+  
+    // Mettre à jour le champ `supprimerUtil` du document pour le marquer comme supprimé
+    const updatedData = data.map(au => {
+      if (au.auteurID === auteurID) {
+        au.supprimerAuteur = true;  // Marquer comme supprimé
+      }
+      return au;
+    });
+  
+    // Mettre à jour la source de données de la table
+    this.auteurSource.data = updatedData;
+  
+    // Forcer la détection des changements
+    this.cdRef.detectChanges();
+  }
+
   onDelete(auteurID: number, auteur: Auteur){
 
     const config = new MatSnackBarConfig();
@@ -149,9 +152,7 @@ export class DelupauteurPartComponent implements OnInit{
         this.msg = 'Auteur suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
         //console.log("Suppresion de Auteur: ", data);
-        setTimeout(() => {
-          this.reloadPage();
-        }, 500);
+        this.updateTableAfterDeletion(auteurID);
       },
       error: err => {
         this.msg = 'Échec de Supprimer l\'Auteur❌';

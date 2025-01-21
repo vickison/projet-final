@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -37,7 +37,8 @@ export class DelupadminPartComponent implements OnInit{
 
   constructor( private utilisateurService: UtilisateurService,
                private dialog: MatDialog,
-               private snackBar: MatSnackBar
+               private snackBar: MatSnackBar,
+               private cdRef: ChangeDetectorRef
               ) { 
     
     // Create 100 users
@@ -123,6 +124,25 @@ export class DelupadminPartComponent implements OnInit{
   
   }
 
+  updateTableAfterDeletion(utilisateurID: number) {
+    // Récupérer les données actuelles sous forme de tableau
+    const data = this.usersSource.data;
+  
+    // Mettre à jour le champ `supprimerUtil` du document pour le marquer comme supprimé
+    const updatedData = data.map(user => {
+      if (user.utilisateurID === utilisateurID) {
+        user.supprimerUtil = true;  // Marquer comme supprimé
+      }
+      return user;
+    });
+  
+    // Mettre à jour la source de données de la table
+    this.usersSource.data = updatedData;
+  
+    // Forcer la détection des changements
+    this.cdRef.detectChanges();
+  }
+
   onDelete(utilisateurID: number, utilisateur: Utilisateur){
 
     const config = new MatSnackBarConfig();
@@ -137,9 +157,7 @@ export class DelupadminPartComponent implements OnInit{
         this.msg = 'Admin suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
         //console.log("Suppresion de l'utilisateur: ", data);
-        setTimeout(() => {
-          this.reloadPage();
-        }, 500);
+        this.updateTableAfterDeletion(utilisateurID);
       },
       error: err => {
         this.msg = 'Échec de Supprimer cet Admin❌';

@@ -58,11 +58,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
         
-        <button *ngIf="!row.supprimerUtil" mat-icon-button color="primary" (click)="openEditModal(row)">   
+        <button *ngIf="!row.supprimerEtiquette" mat-icon-button color="primary" (click)="openEditModal(row)">   
             <mat-icon svgIcon="mod"></mat-icon>
         </button>
         <div class="button-separator-vertical"></div>
-        <button *ngIf="!row.supprimerUtil" (click)="onDelete(row.utilisateurID, row)" mat-icon-button color="warn">   
+        <button *ngIf="!row.supprimerEtiquette" (click)="onDelete(row.tagID, row)" mat-icon-button color="warn">   
             <mat-icon svgIcon="sup"></mat-icon>
         </button>
         </mat-cell>
@@ -70,7 +70,7 @@
 
       
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight-row': row.supprimerEtiquette}"></mat-row>
     </mat-table>
   
     <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

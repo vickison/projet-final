@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -30,7 +30,8 @@ export class DelupdocumentPartComponent implements OnInit{
   
   constructor(private documentService: DocumentService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private cdRef: ChangeDetectorRef
             ){
     // const doc: Array<Document>=[];
     // this.documentService.getAllDocuments().subscribe(
@@ -124,6 +125,25 @@ export class DelupdocumentPartComponent implements OnInit{
   
   }
 
+  updateTableAfterDeletion(documenteID: number) {
+    // Récupérer les données actuelles sous forme de tableau
+    const data = this.documentSource.data;
+  
+    // Mettre à jour le champ `supprimerUtil` du document pour le marquer comme supprimé
+    const updatedData = data.map(doc => {
+      if (doc.documentID === documenteID) {
+        doc.supprimerDocument = true;  // Marquer comme supprimé
+      }
+      return doc;
+    });
+  
+    // Mettre à jour la source de données de la table
+    this.documentSource.data = updatedData;
+  
+    // Forcer la détection des changements
+    this.cdRef.detectChanges();
+  }
+
   onDelete(documenteID: number, document: Document){
 
     const config = new MatSnackBarConfig();
@@ -137,10 +157,12 @@ export class DelupdocumentPartComponent implements OnInit{
         this.msg = 'Document suprrimé avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
         //console.log("Document supprimer avec succes: ", data);
-        setTimeout(() => {
-          //this.dialog.closeAll();
-          this.reloadPage();
-        }, 500);
+        // setTimeout(() => {
+        //   //this.dialog.closeAll();
+        //   // this.documentSource.forEach(doc => doc.supprimerDocument = true);
+        //   // this.cdRef.detectChanges();
+        // }, 500);
+        this.updateTableAfterDeletion(documenteID);
       },
       error: err => {
         this.msg = 'Échec de Supprimer Document❌';

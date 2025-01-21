@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, Input, ElementRef, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, Input, ElementRef, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { DocumentService } from '../services/document.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Document } from 'src/app/models/document.model';
@@ -110,6 +110,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private translateService: TranslateService,
     private navigationService: NavigationService,
     private breakpointObserver: BreakpointObserver,
+    private cdRef: ChangeDetectorRef
     
   ) {
     
@@ -321,7 +322,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
       this.fetchDocuments(categoryID);
       this.categorieService.setActiveCategory(categoryID);
     }
-    this.refresherService.triggerRefresh();  
+    //this.refresherService.triggerRefresh();  
   }
 
   getLimitedCards(catDoc: CategorieDocument[] | undefined): CategorieDocument[] | undefined {

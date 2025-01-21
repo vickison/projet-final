@@ -92,6 +92,9 @@ export class LeftPartComponent implements OnInit{
   // }
 
   onCategoryClick(event: any, categoryID?: number, nom?: string): void {
+    if(categoryID !== undefined)
+      this.categorieService.setActiveCategory(categoryID);
+
     const links = document.querySelectorAll('nav ul li a');
     links.forEach(link => link.classList.remove('active'));
     

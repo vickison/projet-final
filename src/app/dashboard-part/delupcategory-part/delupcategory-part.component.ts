@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -30,7 +30,8 @@ export class DelupcategoryPartComponent implements OnInit{
 
   constructor(private categorieService: CategorieService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private cdRef: ChangeDetectorRef
             ){
     // const cat: Array<Categorie> = [];
     // this.categorieService.getAllCategories().subscribe(
@@ -126,6 +127,25 @@ export class DelupcategoryPartComponent implements OnInit{
     });
   
   }
+
+  updateTableAfterDeletion(categorieID: number | undefined) {
+    // Récupérer les données actuelles sous forme de tableau
+    const data = this.categorySource.data;
+  
+    // Mettre à jour le champ `supprimerUtil` du document pour le marquer comme supprimé
+    const updatedData = data.map(cat => {
+      if (cat.categorieID === categorieID) {
+        cat.supprimerCategorie= true;  // Marquer comme supprimé
+      }
+      return cat;
+    });
+  
+    // Mettre à jour la source de données de la table
+    this.categorySource.data = updatedData;
+  
+    // Forcer la détection des changements
+    this.cdRef.detectChanges();
+  }
   
   onDelete(categorie: Categorie){
 
@@ -140,9 +160,7 @@ export class DelupcategoryPartComponent implements OnInit{
         this.msg = 'Catégorie suprrimée avec succès✅';
         this.snackBar.open(this.msg, 'Fermer', config);
         //console.log("Suppresion de la catégorie: ", data);
-        setTimeout(() => {
-          this.reloadPage();
-        }, 500);
+        this.updateTableAfterDeletion(categorie.categorieID);
       },
       error: err => {
         this.msg = 'Échec de Supprimer la Catégorie❌';
