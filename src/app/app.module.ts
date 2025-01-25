@@ -256,6 +256,10 @@ export class AppModule {
       this.matIconRegistry.addSvgIcon("tbars",
         this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/threeBars.svg")
       );
+
+      this.matIconRegistry.addSvgIcon("view",
+        this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/view.svg")
+      );
     }
  }
 

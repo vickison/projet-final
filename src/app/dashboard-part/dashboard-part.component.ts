@@ -14,6 +14,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
+import { Document } from '../models/document.model';
 
 @Component({
   selector: 'app-dashboard-part',

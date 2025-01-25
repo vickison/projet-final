@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -7,6 +7,8 @@ import { Document } from 'src/app/models/document.model';
 import { MatDialog } from '@angular/material/dialog';
 import { EditDocumentModalComponent } from './edit-document-modal/edit-document-modal.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { NavigationService } from 'src/app/services/navigation.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-delupdocument-part',
@@ -14,13 +16,15 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
   styleUrls: ['./delupdocument-part.component.scss']
 })
 export class DelupdocumentPartComponent implements OnInit{
-  displayedColumns = ['id', 'titre', 'resume', 'format', 'cree_par', 'cree_le', 'modifie_par', 'modifie_le','action'];
+  displayedColumns = ['id', 'titre', 'resume', 'cree_par', 'cree_le', 'action'];
   documentSource: MatTableDataSource<Document> = new MatTableDataSource<Document>([]);
   documents: Document[] = [];
   adminID: number = 0;
   message: String = '';
   classCss: String = '';
   msg = '';
+  //selectedDocument: Document | null = null;
+  @Input() selectedDocument: Document | undefined;
 
   @Output() documentClicked = new EventEmitter<Document>();
 
@@ -31,7 +35,9 @@ export class DelupdocumentPartComponent implements OnInit{
   constructor(private documentService: DocumentService,
               private dialog: MatDialog,
               private snackBar: MatSnackBar,
-              private cdRef: ChangeDetectorRef
+              private cdRef: ChangeDetectorRef,
+              private navigationService: NavigationService,
+              private router: Router,
             ){
     // const doc: Array<Document>=[];
     // this.documentService.getAllDocuments().subscribe(
@@ -144,6 +150,19 @@ export class DelupdocumentPartComponent implements OnInit{
     this.cdRef.detectChanges();
   }
 
+
+  onDocumentClicked(document: Document): void {
+    //console.log('URL:',this.router.url);
+    this.navigationService.setPreviousUrl(this.router.url);
+    this.documentClicked.emit(document);
+    //this.selectedCardId = document.documentID;
+    this.router.navigate([], { 
+        queryParams: {illustration: document.documentID }, 
+        queryParamsHandling: 'merge' 
+    });
+    
+  }
+
   onDelete(documenteID: number, document: Document){
 
     const config = new MatSnackBarConfig();
@@ -175,4 +194,6 @@ export class DelupdocumentPartComponent implements OnInit{
   reloadPage(): void{
     window.location.reload();
   }
+
+  
 }
