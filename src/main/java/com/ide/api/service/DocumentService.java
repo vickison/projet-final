@@ -3,6 +3,7 @@ package com.ide.api.service;
 
 import com.ide.api.configurations.FilePaths;
 
+import com.ide.api.dto.DocumentDTO;
 import com.ide.api.entities.*;
 
 import com.ide.api.enums.TypeFichier;
@@ -14,15 +15,15 @@ import com.ide.api.repository.*;
 import com.ide.api.utilities.DocumentSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
-import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -30,11 +31,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 @Service
 public class DocumentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentService.class);
     private DocumentRepository documentRepository;
     private CategorieRepository categorieRepository;
     private CategorieDocumentRepository categorieDocumentRepository;
@@ -44,8 +45,15 @@ public class DocumentService {
     private AuteurDocumentRepository auteurDocumentRepository;
     private LikeIllustrationRepository likeIllustrationRepository;
     private ThumbnailService thumbnailService;
-    public UtilisateurRepository utilisateurRepository;
-    public UtilisateurDocumentRepository utilisateurDocumentRepository;
+    private UtilisateurRepository utilisateurRepository;
+    private UtilisateurDocumentRepository utilisateurDocumentRepository;
+
+    private static final String CAT_WITH_ID = "Catégorie avec identifiant";
+    private static final String DOC_WITH_ID = "Document avec identifiant";
+    private static final String INTROUVABLE = "Introuvable";
+    @Resource
+    private DocumentService documentService;
+
 
 
     String thumbnailBasePath = FilePaths.THUMBNAIL_BASE_PATH;
@@ -75,24 +83,24 @@ public class DocumentService {
         this.utilisateurDocumentRepository = utilisateurDocumentRepository;
     }
 
-    public void addDocument(Document document) throws IOException {
+    public void addDocument(Document document){
         this.documentRepository.save(document);
-        System.out.println(this.documentRepository.save(document));
     }
 
 
     @Transactional
+    @CacheEvict(value = "illustrations", allEntries = true)
     public DocumentCreationResponse creerDocument(Document document,
                                                   List<Integer> idsCategorie,
                                                   List<Integer> idsTag,
-                                                  List<Integer> idsAuteur) throws IOException {
+                                                  List<Integer> idsAuteur){
 
         try {
             Document savedDocument = this.documentRepository.save(document);
             if (idsCategorie != null && !idsCategorie.isEmpty()) {
                 for (Integer idCategorie : idsCategorie) {
                     Categorie categorie = this.categorieRepository.findByCategorieID(idCategorie)
-                            .orElseThrow(() -> new EntityNotFoundException("Categorie avec identifiant: " + idCategorie + " introuvable"));
+                            .orElseThrow(() -> new EntityNotFoundException(CAT_WITH_ID + " "+ idCategorie + " "+INTROUVABLE));
                     CategorieDocument categorieDocument = new CategorieDocument();
                     categorieDocument.setDocument(savedDocument);
                     categorieDocument.setCategorie(categorie);
@@ -103,7 +111,7 @@ public class DocumentService {
             if (idsTag != null && !idsTag.isEmpty()) {
                 for (Integer idTag : idsTag) {
                     Tag tag = this.tagRepository.findById(idTag)
-                            .orElseThrow(() -> new EntityNotFoundException("Etiquette avec identifiant: " + idTag + " introuvable"));
+                            .orElseThrow(() -> new EntityNotFoundException("Etiquette avec identifiant: " + idTag + " "+INTROUVABLE));
 
                     DocumentTag documentTag = new DocumentTag();
                     documentTag.setDocument(savedDocument);
@@ -115,7 +123,7 @@ public class DocumentService {
             if (idsAuteur != null && !idsAuteur.isEmpty()) {
                 for (Integer idAuteur : idsAuteur) {
                     Auteur auteur = this.auteurRepository.findById(idAuteur)
-                            .orElseThrow(() -> new EntityNotFoundException("Auteur avec identifiant: " + idAuteur + " introuvable"));
+                            .orElseThrow(() -> new EntityNotFoundException("Auteur avec identifiant: " + idAuteur + " "+INTROUVABLE));
                     AuteurDocument auteurDocument = new AuteurDocument();
                     auteurDocument.setDocument(savedDocument);
                     auteurDocument.setAuteur(auteur);
@@ -126,30 +134,28 @@ public class DocumentService {
             generateAndSaveThumbnail(savedDocument.getDocumentID(), 300, 300);
             return new DocumentCreationResponse("Document ajouté et mis à jour avec succès ✅");
         } catch (EntityNotFoundException e) {
-            System.err.println("Erreur lors de la recherche d'entité: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.err.println("Erreur inattendue lors de la création du document: " + e.getMessage());
             throw new RuntimeException("Erreur inattendue lors de la création du document.", e);
         }
     }
-    //@Cacheable(value = "documentsCache")
+    @Cacheable(value = "illustrations")
     public List<Document> findDocuments() {
         List<Document> documents = new ArrayList<>();
         try {
             documents = this.documentRepository.findAll();
         } catch (Exception e) {
-            System.err.println("Erreur lors de la récupération des documents: " + e.getMessage());
+           logger.error("Erreur lors de la récupération des documents: {}", e.getMessage());
             documents = Collections.emptyList();
         }
         return documents;
     }
-    //@Cacheable(value = "documentCache", key = "#documentID")
+    @Cacheable(value = "illustrations", key = "#documentID")
     public Optional<Document> findDocument(Integer documentID) {
         try {
             return this.documentRepository.findByDocumentID(documentID);
         } catch (Exception e) {
-            System.err.println("Erreur lors de la recherche du document avec ID " + documentID + ": " + e.getMessage());
+            logger.error("Erreur lors de la recherche du document avec ID {}: {}", documentID, e.getMessage());
             return Optional.empty();
         }
     }
@@ -157,7 +163,7 @@ public class DocumentService {
 
     public byte[] getDocumentData(Integer id) throws IOException {
         try {
-            Optional<Document> optionalDocument = findDocument(id);
+            Optional<Document> optionalDocument = documentService.findDocument(id);
             if (optionalDocument.isPresent()) {
                 Document document = optionalDocument.get();
                 Path filePath = Paths.get(document.getUrl());
@@ -167,33 +173,36 @@ public class DocumentService {
                 throw new RuntimeException("Document not found with id: " + id);
             }
         } catch (NoSuchFileException e) {
-            System.err.println("Fichier non trouvé pour l'ID du document " + id + ": " + e.getMessage());
             throw new IOException("Le fichier associé au document n'existe pas.", e);
         } catch (IOException e) {
-            System.err.println("Erreur de lecture du fichier pour l'ID du document " + id + ": " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.err.println("Erreur inattendue lors de la récupération des données du document avec ID " + id + ": " + e.getMessage());
             throw new RuntimeException("Erreur inattendue lors de la récupération des données du document.", e);
         }
     }
-    //@Cacheable(value = "documentsByCategorieCache", key = "#categorie.categorieID")
+    @Cacheable(value = "illustrations", key = "#categorie.categorieID")
     public List<Document> findDocumentsByCategoryId(Categorie categorie) {
+        long start = System.currentTimeMillis();
         List<Document> documents;
         try {
             documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
+            long end = System.currentTimeMillis();
+            logger.info("Temps écoulé: {} ms", (end-start));
             return documents;
         } catch (Exception e) {
-
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la récupération des documents pour la catégorie ID " + categorie.getCategorieID() + ": " + e.getMessage(), e);
         }
     }
 
     public List<Document> findDocumentsByUtilisateurId(Utilisateur utilisateur) {
+
+        long start = System.currentTimeMillis();
         List<Document> documents;
         try {
             documents = this.documentRepository.findByUtilisateurDocumentsUtilisateurID(utilisateur);
+            long end = System.currentTimeMillis();
+            logger.info("Temps écoulé: {} ms", (end-start));
             return documents;
 
         } catch (Exception e) {
@@ -213,7 +222,7 @@ public class DocumentService {
                     doc.setUnlike(this.likeIllustrationRepository.countUnlikes(doc.getDocumentID()));
                 } catch (Exception e) {
 
-                    System.err.println("Erreur lors de la récupération des likes/unlikes pour le document ID " + doc.getDocumentID() + ": " + e.getMessage());
+                    logger.error("Erreur lors de la récupération des likes/unlikes pour le document ID {}: {}", doc.getDocumentID(), e.getMessage());
                     doc.setLike(0);
                     doc.setUnlike(0);
                 }
@@ -340,16 +349,17 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document updateDocument(Integer documentID, Integer adminID, Document documentData) {
+    @CacheEvict(value = "illustrations", key = "#documentID")
+    public Document updateDocument(Integer documentID, Integer adminID, DocumentDTO documentData) {
         try {
             if (documentID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant du document ou de l'administrateur est nul.");
             }
 
             Utilisateur utilisateur = this.utilisateurRepository.findById(adminID)
-                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " "+INTROUVABLE));
             Document existingDocument = this.documentRepository.findByDocumentID(documentID)
-                    .orElseThrow(() -> new EntityNotFoundException("Document avec identifiant: " + documentID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException(DOC_WITH_ID+" " + documentID + " "+INTROUVABLE));
             existingDocument.setResume(documentData.getResume());
             existingDocument.setLangue(documentData.getLangue());
             existingDocument.setAuteurModificationDocument(utilisateur.getUsername());
@@ -370,9 +380,6 @@ public class DocumentService {
             return documentUpdate;
 
         } catch (Exception e) {
-            // Logger l'erreur et lancer une exception Runtime
-            Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Erreur lors de la mise à jour du document avec ID: {}", documentID, e);
             throw new RuntimeException("Erreur lors de la mise à jour du document avec ID: " + documentID, e);
         }
 
@@ -381,6 +388,7 @@ public class DocumentService {
 
 
     @Transactional
+    @CacheEvict(value = "illustrations", key = "#documentID")
     public Document deleteDocument(Integer documentID, Integer adminID) {
         try {
             if (documentID == null || adminID == null) {
@@ -388,9 +396,9 @@ public class DocumentService {
             }
 
             Utilisateur utilisateur = this.utilisateurRepository.findById(adminID)
-                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " "+INTROUVABLE));
             Document existingDocument = this.documentRepository.findByDocumentID(documentID)
-                    .orElseThrow(() -> new EntityNotFoundException("Document avec identifiant: " + documentID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException(DOC_WITH_ID+" " + documentID + " "+INTROUVABLE));
             existingDocument.setSupprimerDocument(true);
             existingDocument.setAuteurModificationDocument(utilisateur.getUsername());
             final Document documentDelete = this.documentRepository.save(existingDocument);
@@ -409,9 +417,6 @@ public class DocumentService {
             return documentDelete;
 
         } catch (Exception e) {
-            // Logger l'erreur et lancer une exception Runtime
-            Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Erreur lors de la suppression du document avec ID: {}", documentID, e);
             throw new RuntimeException("Erreur lors de la suppression du document avec ID: " + documentID, e);
         }
     }
@@ -434,7 +439,6 @@ public class DocumentService {
             e.printStackTrace();
             throw new RuntimeException("Echec de création de minuature pour le document de l'ID : " + documentId, e);
         } catch (IllegalArgumentException e) {
-            System.err.println("Erreur : " + e.getMessage());
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
@@ -447,15 +451,12 @@ public class DocumentService {
     public List<String> auteursDocument(Integer documentID) {
         try {
             Document document = this.documentRepository.findByDocumentID(documentID)
-                    .orElseThrow(() -> new EntityNotFoundException("Document avec identifiant: " + documentID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException(DOC_WITH_ID+" " + documentID + " "+INTROUVABLE));
             Set<AuteurDocument> auteurDocuments = document.getAuteurDocuments();
             return auteurDocuments.stream()
                     .map(auteurDocument -> auteurDocument.getAuteur().getPrenom()+" "+auteurDocument.getAuteur().getNom())
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            // Logger l'erreur et lancer une exception Runtime
-            Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", documentID, e);
             return Collections.emptyList();
         }
 

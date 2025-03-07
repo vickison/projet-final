@@ -70,14 +70,14 @@ public class Document {
     @Column(name = "unlikes")
     private Integer unlike;
 
-    @OneToMany(mappedBy = "documentID")
+    @OneToMany(mappedBy = "documentID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
-    @OneToMany(mappedBy = "documentID")
+    @OneToMany(mappedBy = "documentID", fetch = FetchType.LAZY)
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
-    @OneToMany(mappedBy = "documentID")
+    @OneToMany(mappedBy = "documentID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
 

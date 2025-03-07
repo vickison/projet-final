@@ -32,11 +32,11 @@ public class Tag {
     private String AdminModificationEtiquette;
     private boolean SupprimerEtiquette;
 
-    @OneToMany(mappedBy = "tagID")
+    @OneToMany(mappedBy = "tagID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<DocumentTag> documentTags = new HashSet<>();
 
-    @OneToMany(mappedBy = "tagID")
+    @OneToMany(mappedBy = "tagID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurTag> utilisateurTags = new HashSet<>();
 

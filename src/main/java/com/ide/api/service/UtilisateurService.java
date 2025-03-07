@@ -1,6 +1,7 @@
 package com.ide.api.service;
 
 import com.ide.api.configurations.JwtTokenProvider;
+import com.ide.api.dto.UtilisateurDTO;
 import com.ide.api.entities.AdminUtilisateur;
 import com.ide.api.entities.Utilisateur;
 import com.ide.api.enums.TypeGestion;

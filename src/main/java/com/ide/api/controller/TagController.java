@@ -13,14 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -32,27 +27,19 @@ public class TagController {
     private UtilisateurService utilisateurService;
     private DocumentService documentService;
     private UtilisateurTagService utilisateurTagService;
-    private DocumentTagService documentTagService;
-    private UtilisateurTagRepository utilisateurTagRepository;
-    private DocumentTagRepository documentTagRepository;
+
     private UtilisateurRepository utilisateurRepository;
 
     public TagController(TagService tagService,
                          UtilisateurService utilisateurService,
                          DocumentService documentService,
                          UtilisateurTagService utilisateurTagService,
-                         DocumentTagService documentTagService,
-                         UtilisateurTagRepository utilisateurTagRepository,
-                         DocumentTagRepository documentTagRepository,
                          TagRepository tagRepository,
                          UtilisateurRepository utilisateurRepository) {
         this.tagService = tagService;
         this.utilisateurService = utilisateurService;
         this.documentService = documentService;
         this.utilisateurTagService = utilisateurTagService;
-        this.documentTagService = documentTagService;
-        this.utilisateurTagRepository = utilisateurTagRepository;
-        this.documentTagRepository = documentTagRepository;
         this.tagRepository = tagRepository;
         this.utilisateurRepository = utilisateurRepository;
     }
@@ -63,7 +50,6 @@ public class TagController {
     public ResponseEntity<ResponseMessage> createTag(@RequestBody TagDTO tagDTO){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer utilisateurID = userDetails.getId();
-        System.out.println(utilisateurID);
         Tag tag = new Tag();
         tag.setTag(tagDTO.getTag());
         String message = "";
@@ -114,7 +100,7 @@ public class TagController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/update/{tagID}")
     public ResponseEntity<Tag> updateTag(@PathVariable Integer tagID,
-                                         @Valid @RequestBody Tag tagDetails){
+                                         @RequestBody TagDTO tagDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         Tag tag = this.tagService.findTag(tagID);
@@ -127,14 +113,12 @@ public class TagController {
             UtilisateurTag utilisateurTag = utilTag.get();
             utilisateurTag.setTypeGestion(TypeGestion.Modifier);
             this.utilisateurTagService.createUtilisateurTag(utilisateurTag);
-            System.out.println("Inside condition");
         }else {
             UtilisateurTag newUtilTag = new UtilisateurTag();
             newUtilTag.setUtilisateurID(utilisateur);
             newUtilTag.setTagID(updatedTag);
             newUtilTag.setTypeGestion(TypeGestion.Modifier);
             utilisateurTagService.createUtilisateurTag(newUtilTag);
-            System.out.println("Not inside condition");
         }
         return ResponseEntity.ok(updatedTag);
     }
@@ -153,14 +137,13 @@ public class TagController {
             UtilisateurTag utilisateurTag = utilTag.get();
             utilisateurTag.setTypeGestion(TypeGestion.Supprimer);
             this.utilisateurTagService.createUtilisateurTag(utilisateurTag);
-            System.out.println("Inside condition");
         }else {
             UtilisateurTag newUtilTag = new UtilisateurTag();
             newUtilTag.setUtilisateurID(utilisateur);
             newUtilTag.setTagID(deletedTag);
             newUtilTag.setTypeGestion(TypeGestion.Supprimer);
             utilisateurTagService.createUtilisateurTag(newUtilTag);
-            System.out.println("Not inside condition");
+
         }
         return ResponseEntity.ok(deletedTag);
     }

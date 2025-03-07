@@ -9,6 +9,7 @@ public class UtilisateurDTO {
     private String email;
     private String username;
     private String password;
+    private String addresseIP;
     private boolean admin;
     private boolean superAdmin;
 
@@ -19,6 +20,7 @@ public class UtilisateurDTO {
                           String prenom,
                           String email,
                           String password,
+                          String addresseIP,
                           String username,
                           boolean admin,
                           boolean superAdmin) {
@@ -26,6 +28,7 @@ public class UtilisateurDTO {
         this.prenom = prenom;
         this.email = email;
         this.password = password;
+        this.addresseIP = addresseIP;
         this.admin = admin;
         this.username = username;
         this.superAdmin = superAdmin;
@@ -85,5 +88,13 @@ public class UtilisateurDTO {
 
     public void setSuperAdmin(boolean superAdmin) {
         this.superAdmin = superAdmin;
+    }
+
+    public String getAddresseIP() {
+        return addresseIP;
+    }
+
+    public void setAddresseIP(String addresseIP) {
+        this.addresseIP = addresseIP;
     }
 }

@@ -49,22 +49,22 @@ public class Utilisateur implements UserDetails {
 
 
 
-    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurAuteur> utilisateurAuteurs = new HashSet<>();
 
-    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
 
-    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
 
-    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurTag> utilisateurTags = new HashSet<>();
-    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilisateurID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<AdminUtilisateur> adminUtilisateurs = new HashSet<>();
 

@@ -6,9 +6,9 @@ import com.ide.api.enums.TypeGestion;
 import com.ide.api.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -44,16 +44,17 @@ public class CategorieService {
     }
 
     @Transactional
-    public void createCategorie(Categorie categorie, Integer idUtilisateur) {
+    @CacheEvict(value = "categories", allEntries = true)
+    public void createCategorie(Categorie categorie, Integer idUt) {
         Logger logger = LoggerFactory.getLogger(getClass());
 
         try {
-            if (categorie == null || idUtilisateur == null) {
+            if (categorie == null || idUt == null) {
                 throw new IllegalArgumentException("La catégorie ou l'identifiant de l'utilisateur ne peut pas être null");
             }
             Categorie categorieSaved = this.categorieRepository.save(categorie);
-            Utilisateur utilisateur = this.utilisateurRepository.findById(idUtilisateur)
-                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant : " + idUtilisateur + " introuvable"));
+            Utilisateur utilisateur = this.utilisateurRepository.findById(idUt)
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
 
 
             UtilisateurCategorie utilisateurCategorie = new UtilisateurCategorie();
@@ -68,7 +69,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la création de la catégorie ou de la relation utilisateur-catégorie", e);
         }
     }
-    //@Cacheable("categoriesCache")
+    @Cacheable(value = "categories")
     public List<Categorie> findAllCategories() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -84,16 +85,16 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la récupération des catégories", e);
         }
     }
-    //@Cacheable(value = "categorieCache", key = "#categorieID")
+    @Cacheable(value = "categories", key = "#categorieID")
     public Categorie findCategory(Integer categorieID) {
         try {
             // Rechercher la catégorie par ID
             return this.categorieRepository.findByCategorieID(categorieID)
-                    .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + categorieID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable"));
         } catch (Exception e) {
             // Logger l'erreur et lancer une exception Runtime
-            Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", categorieID, e);
+//            Logger logger = LoggerFactory.getLogger(getClass());
+//            logger.error("Erreur lors de la recherche de la catégorie avec ID: {}", categorieID, e);
             throw new RuntimeException("Erreur lors de la recherche de la catégorie avec ID: " + categorieID, e);
         }
     }
@@ -118,16 +119,17 @@ public class CategorieService {
         }
     }
     @Transactional
-    public Categorie updateCategorie(Integer categorieID, Integer adminID, Categorie categorieData) {
+    @CacheEvict(value = "categories", key = "#categorieID")
+    public Categorie updateCategorie(Integer categorieID, Integer adminID, CategorieDTO categorieData) {
         try {
             if (categorieID == null || adminID == null) {
                 throw new IllegalArgumentException("L'identifiant de la catégorie ou de l'administrateur est nul.");
             }
 
             Utilisateur utilisateur = this.utilisateurRepository.findById(adminID)
-                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur avec identifiant: " + adminID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
             Categorie existingCategorie = this.categorieRepository.findById(categorieID)
-                    .orElseThrow(() -> new EntityNotFoundException("Catégorie avec identifiant: " + categorieID + " introuvable"));
+                    .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable"));
             existingCategorie.setNom(categorieData.getNom());
             existingCategorie.setAuteurModificationCategorie(utilisateur.getUsername());
             final Categorie categorieUpdate = this.categorieRepository.save(existingCategorie);
@@ -153,6 +155,7 @@ public class CategorieService {
         }
     }
     @Transactional
+    @CacheEvict(value = "categories", key = "#categorieID")
     public Categorie deleteCategorie(Integer categorieID, Integer adminID) {
         try {
             if (categorieID == null || adminID == null) {

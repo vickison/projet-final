@@ -83,39 +83,40 @@ public class UtilisateurController {
     }
 
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value="/admin/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> createUser(@RequestBody Utilisateur utilisateur,
-                                                      HttpServletRequest request){
-        String adresseIP = request.getRemoteAddr();
-        String message = "";
-        try{
-            if(EmailValidator.isValid(utilisateur.getEmail())) {
-                utilisateur.setAdmin(false);
-                utilisateur.setAddresseIP(adresseIP);
-                this.utilisateurService.createUtilisateur(utilisateur);
-                message = "Utilisateur créé avec succès...";
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(new ResponseMessage(message));
-            }else{
-                message = "Email incorrect...";
-                return ResponseEntity
-                        .status(HttpStatus.EXPECTATION_FAILED)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(new ResponseMessage(message));
-            }
-
-        }catch (Exception e){
-            message = "Echec de création d'utilisateur...";
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResponseMessage(message));
-        }
-    }
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping(value="/admin/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<ResponseMessage> createUser(@RequestBody UtilisateurDTO utilisateurDTO,
+//                                                      HttpServletRequest request){
+//        Utilisateur utilisateur = new Utilisateur();
+//        String adresseIP = request.getRemoteAddr();
+//        String message = "";
+//        try{
+//            if(EmailValidator.isValid(utilisateur.getEmail())) {
+//                utilisateur.setAdmin(false);
+//                utilisateur.setAddresseIP(adresseIP);
+//                this.utilisateurService.createUtilisateur(utilisateur);
+//                message = "Utilisateur créé avec succès...";
+//                return ResponseEntity
+//                        .status(HttpStatus.OK)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .body(new ResponseMessage(message));
+//            }else{
+//                message = "Email incorrect...";
+//                return ResponseEntity
+//                        .status(HttpStatus.EXPECTATION_FAILED)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .body(new ResponseMessage(message));
+//            }
+//
+//        }catch (Exception e){
+//            message = "Echec de création d'utilisateur...";
+//            return ResponseEntity
+//                    .status(HttpStatus.EXPECTATION_FAILED)
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .body(new ResponseMessage(message));
+//        }
+//    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     //@PreAuthorize("hasRole('ADMIN')")
@@ -385,7 +386,7 @@ public class UtilisateurController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<Utilisateur> updateUsers(@PathVariable Integer id,
-                                                   @Valid @RequestBody Utilisateur utilisateurDetails){
+                                                   @Valid @RequestBody UtilisateurDTO utilisateurDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);

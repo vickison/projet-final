@@ -35,10 +35,10 @@ public class Categorie{
     private String AuteurModificationCategorie;
     private boolean SupprimerCategorie;
 
-    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
-    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categorieID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurCategorie> utilisateurCategories = new HashSet<>();
 

@@ -36,11 +36,11 @@ public class Auteur{
     private String AuteurModificationAuteur;
     private boolean SupprimerAuteur;
 
-    @OneToMany(mappedBy = "auteurID")
+    @OneToMany(mappedBy = "auteurID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
-    @OneToMany(mappedBy = "auteurID")
+    @OneToMany(mappedBy = "auteurID", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<UtilisateurAuteur> utilisateurAuteurs = new HashSet<>();
 

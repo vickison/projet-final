@@ -85,7 +85,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/documents/admin/**").authenticated()
                 .antMatchers("/auteurs/admin/**").authenticated()
                 .antMatchers("/categories/admin/**").authenticated()
-                .antMatchers("/tags/admin/**").authenticated();
+                .antMatchers("/tags/admin/**").authenticated()
+                .antMatchers("/api/actuator/**").permitAll()
+                .antMatchers("/cache/public/**").permitAll();
+
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.cors().configurationSource(corsConfigurationSource());
         http.headers()

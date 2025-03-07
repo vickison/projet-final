@@ -1,22 +1,26 @@
 <configuration>
+    <!-- Appender pour loguer dans la console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <!-- Appender pour loguer dans un fichier -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/application-errors.log</file> <!-- Nom du fichier de log -->
-        <append>false</append> <!-- 'false' pour écraser le fichier à chaque démarrage -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
         <encoder>
-            <!-- Affiche la date, le niveau de log, le nom de la classe et de la méthode, le message, et la pile d'appel -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{50} - %msg%n%throwable</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Logger racine, capturant les logs de niveau ERROR et plus -->
-    <root level="ERROR">
-        <appender-ref ref="FILE" />
+    <root level="INFO">
+        <appender-ref ref="ERROR_FILE" />
+        <appender-ref ref="CONSOLE" />
     </root>
 
-    <!-- Optionnel : vous pouvez spécifier des loggers pour des packages ou classes spécifiques -->
-    <!-- Ici, nous capturons tous les logs de niveau ERROR dans l'ensemble de l'application -->
-    <logger name="org.springframework" level="ERROR" />
-    <logger name="com.ide.api" level="ERROR" />
 </configuration>

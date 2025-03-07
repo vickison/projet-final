@@ -9,6 +9,7 @@ import com.ide.api.repository.CategorieRepository;
 import com.ide.api.repository.UtilisateurCategorieRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
@@ -36,30 +37,18 @@ import org.slf4j.LoggerFactory;
 public class CategorieController {
     private static final Logger logger = LoggerFactory.getLogger(CategorieController.class);
 
-    //Injection de la couche service
-    private CategorieRepository categorieRepository;
     private CategorieService categorieService;
     private UtilisateurService utilisateurService;
-    private UtilisateurRepository utilisateurRepository;
 
-    private UtilisateurCategorieService utilisateurCategorieService;
     private DocumentService documentService;
-    private CacheManager cacheManager;
 
     public CategorieController(CategorieService categorieService,
                                UtilisateurService utilisateurService,
-                               UtilisateurCategorieService utilisateurCategorieService,
-                               UtilisateurRepository utilisateurRepository,
-                               DocumentService documentService,
-                               CategorieRepository categorieRepository,
-                               CacheManager cacheManager) {
+                               DocumentService documentService
+                               ) {
         this.categorieService = categorieService;
         this.utilisateurService = utilisateurService;
-        this.utilisateurCategorieService = utilisateurCategorieService;
-        this.utilisateurRepository = utilisateurRepository;
         this.documentService = documentService;
-        this.categorieRepository = categorieRepository;
-        this.cacheManager = cacheManager;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -99,6 +88,7 @@ public class CategorieController {
     }
 
     @GetMapping("/public/{categoryID}/documents")
+    @Timed(value = "categories.findDocumentsByCat", description = "Temps pour rechercher des documents d'une categorie")
     public ResponseEntity<List<Document>> findDocumentsByCategoryId(@PathVariable Integer categoryID){
         Categorie categorie = categorieService.findCategory(categoryID);
         List<Document> documents = this.documentService.findDocumentsByCategoryId(categorie);
@@ -106,30 +96,26 @@ public class CategorieController {
     }
 
     @GetMapping(value= "/public", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody List<Categorie> findAllCategories(){
+    public  List<Categorie> findAllCategories(){
         return this.categorieService.findAllCategories();
     }
 
     @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Categorie findCategory(@PathVariable Integer id){
+    public  Categorie findCategory(@PathVariable Integer id){
        return this.categorieService.findCategory(id);
     }
     @PutMapping("/admin/update/{categorieID}")
     @PreAuthorize("hasRole('ADMIN')")
     //@CachePut(value = "categorieCache", key = "#categorieID")
     public Categorie updateCategorie(@PathVariable Integer categorieID,
-                                                     @Valid @RequestBody Categorie categorieDetails){
+                                                     @Valid @RequestBody CategorieDTO categorieDetails){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        String message = "";
         try{
-            Categorie categorie = this.categorieService.updateCategorie(categorieID, adminID, categorieDetails);
+            Categorie finalCategory = this.categorieService.updateCategorie(categorieID, adminID, categorieDetails);
             logger.info("Mise à jour de la catégorie ID {}", categorieID);
-            message = "Categorie mise à jour avec succès...";
-            return categorie;
+            return finalCategory;
         }catch (Exception e){
-            logger.error("Erreur lors de la mise à jour de la catégorie ID {}: {}", categorieID, e.getMessage());
-            message = "Echec de mise à jour de categorie...";
             throw new RuntimeException("Erreur lors de la mise à jour de la catégorie avec ID: " + categorieID, e);
         }
     }
@@ -139,14 +125,10 @@ public class CategorieController {
     public Categorie deleteteCategorie(@PathVariable Integer categorieID){
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
-        String message = "";
         try{
             Categorie categorie = this.categorieService.deleteCategorie(categorieID, adminID);
-            message = "Categorie supprimée avec succès...";
             return categorie;
         }catch (Exception e){
-            logger.error("Erreur lors de la suppression de la catégorie ID {}: {}", categorieID, e.getMessage());
-            message = "Echec de suppression de categorie...";
             throw new RuntimeException("Erreur lors de la suppression de la catégorie avec ID: " + categorieID, e);
         }
     }

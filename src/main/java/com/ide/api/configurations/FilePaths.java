@@ -8,21 +8,21 @@ public final class FilePaths {
     //private static final String BASE_DIR = "libeil";
 
     // Définissez les chemins de fichiers ici
-    public static final String BASE_PATH = "/libeilBack-End/LibEIlH/";
-    //public static final String BASE_PATH = "C:\\Users\\avicky\\libeil\\";
+    //public static final String BASE_PATH = "/libeilBack-End/LibEIlH/";
+    public static final String BASE_PATH = "C:\\Users\\avicky\\libeil\\";
 
 
-    public static final String THUMBNAIL_BASE_PATH = BASE_PATH + "thumbnail/";
-    //public static final String THUMBNAIL_BASE_PATH = BASE_PATH + "thumbnail\\";
+    //public static final String THUMBNAIL_BASE_PATH = BASE_PATH + "thumbnail/";
+    public static final String THUMBNAIL_BASE_PATH = BASE_PATH + "thumbnail\\";
 
 
-    public static final String THUMBNAIL_VIDEO_TEMP_LOC = THUMBNAIL_BASE_PATH + "video/temp_video.mp4";
-    //public static final String THUMBNAIL_VIDEO_TEMP_LOC = THUMBNAIL_BASE_PATH + "video\\temp_video.mp4";
+    //public static final String THUMBNAIL_VIDEO_TEMP_LOC = THUMBNAIL_BASE_PATH + "video/temp_video.mp4";
+    public static final String THUMBNAIL_VIDEO_TEMP_LOC = THUMBNAIL_BASE_PATH + "video\\temp_video.mp4";
 
     public static final Path THUMBNAIL_LOCATION = Paths.get(THUMBNAIL_BASE_PATH);
 
-    public static final String SLASH_VS_ANTI_SLASH = "/";
-    //public static final String SLASH_VS_ANTI_SLASH = "\\";
+    //public static final String SLASH_VS_ANTI_SLASH = "/";
+    public static final String SLASH_VS_ANTI_SLASH = "\\";
 
 
 

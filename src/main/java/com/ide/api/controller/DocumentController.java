@@ -12,6 +12,8 @@ import com.ide.api.message.DocumentCreationResponse;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.*;
 import com.ide.api.service.*;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -47,17 +49,18 @@ import java.util.*;
 @RestController
 @RequestMapping(path = "documents")
 public class DocumentController {
-
-
-
     private static final Map<String, String> MIME_TO_EXTENSION_MAP = new HashMap<>();
+    private static final String IMG_JPEG = "image/jpeg";
+    private static final String UNLIKE = "Illustration non aimée...";
+    private static final String LIKE = "Illustration aimée...";
+    private static final String UNKNOWN = "unknown";
 
     static {
         MIME_TO_EXTENSION_MAP.put("application/pdf", ".pdf");
         MIME_TO_EXTENSION_MAP.put("video/mp4", ".mp4");
         MIME_TO_EXTENSION_MAP.put("audio/mp3", ".mp3");
         MIME_TO_EXTENSION_MAP.put("audio/mpeg", ".mp3");
-        MIME_TO_EXTENSION_MAP.put("image/jpeg", ".jpeg");
+        MIME_TO_EXTENSION_MAP.put(IMG_JPEG, ".jpeg");
         MIME_TO_EXTENSION_MAP.put("image/jpg", ".jpg");
         MIME_TO_EXTENSION_MAP.put("image/png", ".png");
         MIME_TO_EXTENSION_MAP.put("image/gif", ".gif");
@@ -88,7 +91,6 @@ public class DocumentController {
     private ThumbnailService thumbnailService;
     private CacheManager cacheManager;
 
-    //Le contructeur de notre classe
 
     public DocumentController(DocumentService documentService,
                               DocumentRepository documentRepository,
@@ -133,6 +135,7 @@ public class DocumentController {
     @PostMapping(value = "/admin/ajouter",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Timed(value = "documents.createDocument", description = "Temps pour créer un document")
     public ResponseEntity<DocumentCreationResponse> ajouterDocument(
             @ModelAttribute DocumentDTO documentDTO,
             @RequestParam(name = "newTitle", required = false) String newTitle,
@@ -261,10 +264,12 @@ public class DocumentController {
     }
 
     @GetMapping(value = "/public", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "documents.findDocuments", description = "Temps pour récupérer tous les documents")
     public @ResponseBody List<Document> retrieveAllDocuments(){
         return documentService.findDocuments();
     }
     @GetMapping(value = "/public/types/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "documents.findDocumentsByType", description = "Temps pour récupérer tous les documents par type")
     public @ResponseBody List<Document> findDocumentsByType(@PathVariable TypeFichier type){
         return this.documentService.findDocumentsByType(type);
     }
@@ -286,6 +291,7 @@ public class DocumentController {
     }
 
     @GetMapping(value = "/public/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "documents.findDocument", description = "Temps pour récupérer un document")
     public ResponseEntity<Resource> recupererUnDocument(@PathVariable Integer id) throws MalformedURLException {
         Optional<Document> optionalDocument = documentService.findDocument(id);
         if(optionalDocument.isPresent()){
@@ -304,6 +310,7 @@ public class DocumentController {
     }
 
     @GetMapping(value = "/public/document/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "documents.findDocumentId", description = "Temps pour récupérer un document par son ID")
     public ResponseEntity<Document> recupererUnDocumentParId(@PathVariable Integer id) {
         Optional<Document> optionalDocument = documentService.findDocument(id);
         if (optionalDocument.isPresent()) {
@@ -375,7 +382,7 @@ public class DocumentController {
 
             if (resource.exists() || resource.isReadable()) {
                 return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                        .header(HttpHeaders.CONTENT_TYPE, IMG_JPEG)
                         .body(resource);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -386,10 +393,11 @@ public class DocumentController {
     }
 
     @PutMapping(value = "/admin/update/{documentID}")
+    @Timed(value = "documents.updateDocument", description = "Temps pour modifier un document")
     @PreAuthorize("hasRole('ADMIN')")
     //@CachePut(value = "documentCache", key = "#documentID")
     public Document updateDocument(@PathVariable Integer documentID,
-                                   @Valid @RequestBody Document document) throws IOException {
+                                   @RequestBody DocumentDTO document) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer adminID = userDetails.getId();
         String message = "";
@@ -404,6 +412,7 @@ public class DocumentController {
 
     }
     @PutMapping(value = "/admin/delete/{documentID}")
+    @Timed(value = "documents.deleteDocument", description = "Temps pour supprimer un document")
     @PreAuthorize("hasRole('ADMIN')")
     //@CachePut(value = "documentCache", key = "#documentID")
     public Document deleteDocument(@PathVariable Integer documentID) throws IOException{
@@ -421,6 +430,7 @@ public class DocumentController {
     }
 
     @GetMapping(value = "/public/search")
+    @Timed(value = "documents.searchDocument", description = "Temps pour rechercher des documents")
     public @ResponseBody List<Document> searchDocuments(@RequestParam String criteres){
         return this.documentService.rechercherDocument(criteres);
     }
@@ -431,6 +441,7 @@ public class DocumentController {
 //    }
 
     @GetMapping(value = "/public/rechercher")
+    @Timed(value = "documents.rechercheDocument", description = "Temps pour rechercher des documents")
     public @ResponseBody List<Document> rechercherDocuments(@RequestParam String motCles){
         return this.documentService.searchDocument(motCles);
     }
@@ -451,10 +462,10 @@ public class DocumentController {
             LikeIllustration likeIllustration = this.likeIllustrationService.findLikedIllus(id, utilIP);
             if(likeIllustration.getMention() == Mention.like){
                 likeIllustration.setMention(Mention.unlike);
-                likeOrUnlike = "Illustration non aimée...";
+                likeOrUnlike = UNLIKE;
             }else if(likeIllustration.getMention() == Mention.unlike){
                 likeIllustration.setMention(Mention.like);
-                likeOrUnlike = "Illustration aimée...";
+                likeOrUnlike = LIKE;
             }
             this.likeIllustrationService.createLikeIllustration(likeIllustration);
             return ResponseEntity.ok(likeOrUnlike);
@@ -465,9 +476,9 @@ public class DocumentController {
             likeIllustration.setMention(Mention.like);
             this.likeIllustrationService.createLikeIllustration(likeIllustration);
             if(likeIllustration.getMention() == Mention.like){
-                likeOrUnlike = "Illustration aimée...";
+                likeOrUnlike = LIKE;
             }else {
-                likeOrUnlike = "Illustration non aimée...";
+                likeOrUnlike = UNLIKE;
             }
             return ResponseEntity.ok(likeOrUnlike);
         }
@@ -485,10 +496,10 @@ public class DocumentController {
             LikeIllustration likeIllustration = this.likeIllustrationService.findLikedIllus(id, utilIP);
             if(likeIllustration.getMention() == Mention.unlike){
                 likeIllustration.setMention(Mention.like);
-                likeOrUnlike = "Illustration aimée...";
+                likeOrUnlike = LIKE;
             }else if(likeIllustration.getMention() == Mention.like){
                 likeIllustration.setMention(Mention.unlike);
-                likeOrUnlike = "Illustration non aimée...";
+                likeOrUnlike = UNLIKE;
             }
             this.likeIllustrationService.createLikeIllustration(likeIllustration);
             return ResponseEntity.ok(likeOrUnlike);
@@ -499,9 +510,9 @@ public class DocumentController {
             likeIllustration.setMention(Mention.unlike);
             this.likeIllustrationService.createLikeIllustration(likeIllustration);
             if(likeIllustration.getMention() == Mention.unlike){
-                likeOrUnlike = "Illustration non aimée...";
+                likeOrUnlike = UNLIKE;
             }else {
-                likeOrUnlike = "Illustration aimée...";
+                likeOrUnlike = LIKE;
             }
             return ResponseEntity.ok(likeOrUnlike);
         }
@@ -555,7 +566,7 @@ public class DocumentController {
             case "pdf":
                 return "application/pdf";
             case "jpeg":
-                return "image/jpeg";
+                return IMG_JPEG;
             case "png":
                 return "image/png";
             case "gif":
@@ -637,19 +648,19 @@ public class DocumentController {
 
     private String getClientIpAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("HTTP_CLIENT_IP");
         }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
         }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
         }
         return ipAddress;
