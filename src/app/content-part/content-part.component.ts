@@ -597,39 +597,83 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   //   });
   // }
 
+
   copyLink(documentID: number | undefined) {
     const url = window.location.href+"?illustration="+documentID;
-    const tempInput = document.createElement('input');
-    tempInput.value = url;
-    document.body.appendChild(tempInput);
-
-    tempInput.select();
-    tempInput.setSelectionRange(0, 99999); // Pour les appareils mobiles
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(url)
+      .then(() => this.translateService.get("URL copiée dans le presse-papier").subscribe(translateMsg => {
+        this.showSnackBar(translateMsg);
+      }))
+      .catch(err => this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
+        this.showSnackBar(translateMsg);
+      }))
+    }else{
+      this.tryExecCommand(documentID);
+    }
   
+    
+  }
+
+  private tryExecCommand(documentID: number | undefined){
+    const textArea = document.createElement('textarea');
+    textArea.value = window.location.href+"?illustration="+documentID;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
     try {
-      // Essayez de copier le texte dans le presse-papiers
-      const successful = document.execCommand('copy');
-      if (successful) {
-        //console.log('URL copied successfully');
+      const succesfull = document.execCommand('copy');
+      if(succesfull){
         this.translateService.get("URL copiée dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
         });
-      } else {
-        //console.error('Failed to copy URL');
+      }else{
         this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
           this.showSnackBar(translateMsg);
         });
       }
-    } catch (err) {
-      //console.error('Error copying URL:', err);
+    } catch (error) {
       this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
         this.showSnackBar(translateMsg);
       });
     }
-  
-    // Nettoyez l'élément temporaire
-    document.body.removeChild(tempInput);
   }
+
+  // copyLink(documentID: number | undefined) {
+  //   const url = window.location.href+"?illustration="+documentID;
+  //   const tempInput = document.createElement('input');
+  //   tempInput.value = url;
+  //   document.body.appendChild(tempInput);
+
+  //   tempInput.select();
+  //   tempInput.setSelectionRange(0, 99999); // Pour les appareils mobiles
+  
+  //   try {
+  //     // Essayez de copier le texte dans le presse-papiers
+  //     const successful = document.execCommand('copy');
+  //     if (successful) {
+  //       //console.log('URL copied successfully');
+  //       this.translateService.get("URL copiée dans le presse-papier").subscribe(translateMsg => {
+  //         this.showSnackBar(translateMsg);
+  //       });
+  //     } else {
+  //       //console.error('Failed to copy URL');
+  //       this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
+  //         this.showSnackBar(translateMsg);
+  //       });
+  //     }
+  //   } catch (err) {
+  //     //console.error('Error copying URL:', err);
+  //     this.translateService.get("Echec de copier URL dans le presse-papier").subscribe(translateMsg => {
+  //       this.showSnackBar(translateMsg);
+  //     });
+  //   }
+  
+  //   // Nettoyez l'élément temporaire
+  //   document.body.removeChild(tempInput);
+  // }
 
   private showSnackBar(message: string) {
     this.snackBar.open(message, 'Fermer', {

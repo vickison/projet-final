@@ -17,8 +17,11 @@
               <button mat-icon-button (click)="openDetailDialog(catDoc.document)">
                 <mat-icon svgIcon="telecharger"></mat-icon>
               </button>
-              <button mat-icon-button>
-                <mat-icon svgIcon="partage" (click)="copyLink(catDoc.document.documentID)"></mat-icon>
+              <button mat-icon-button (click)="copyLink(catDoc.document.documentID)" style="cursor: copy;">
+                <mat-icon svgIcon="partage"></mat-icon>
+              </button>
+              <button mat-icon-button (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" style="display: flex;" >
+                <mat-icon svgIcon="download"></mat-icon>
               </button>
             </div>
           </div>

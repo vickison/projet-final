@@ -49,6 +49,7 @@ export class ManageDocumentComponent implements OnInit {
    msg = '';
    isUploading: boolean = false;
    isProcessing: boolean = false;
+   statusMessage: String = '';
 
    constructor(
       private fb: FormBuilder,
@@ -138,14 +139,19 @@ export class ManageDocumentComponent implements OnInit {
       config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
       config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
       config.panelClass = ['custom-snackbar'];
-
       this.isUploading = true;
       this.isProcessing = true;
+      this.uploadProgress = 0;
       this.documentService.creerDocument(file, categorieID, tagID, auteurID, resume, langue, titre).subscribe({
         next: (response: any) => {
           if (response.progress !== undefined) {
             this.uploadProgress = response.progress;
-          }if (response.message) {
+            this.statusMessage = 'Sauvegarde du fichier en cours... '+this.uploadProgress+'%';
+            if(this.uploadProgress === 100){
+              this.statusMessage = 'Patientez! Création de l\'image miniature est en cours...'; 
+            }
+          }
+          if (response.message) {
             this.isProcessing = false;
             this.msg = response.message;
             this.snackBar.open(this.msg, 'Fermer', config);

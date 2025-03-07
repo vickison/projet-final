@@ -79,3 +79,23 @@ mat-progress-bar {
   z-index: 1000;           /* Assure que le spinner est au-dessus des autres éléments */
   background: rgba(114, 114, 114, 0.7); /* Optionnel : ajoute un fond semi-transparent */
 }
+
+.spinner-overlay {
+  position: absolute; /* Position absolue pour superposer le formulaire */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Fond semi-transparent */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* S'assurer que le spinner est au-dessus du formulaire */
+}
+
+.spinner-message {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}

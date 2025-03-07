@@ -1,13 +1,13 @@
-
 <div class="head">
   <span><h3>Formulaire Illustration</h3></span>
 </div>
-<div *ngIf="isProcessing" class="spinner-wrapper">
+<div *ngIf="isProcessing" class="spinner-wrapper spinner-overlay">
   <mat-progress-spinner
     mode="indeterminate"
     diameter="100"
     color="warn">
   </mat-progress-spinner>
+  <p class="spinner-message">{{ statusMessage }}</p>
 </div>
 <form [formGroup]="documentForm" (ngSubmit)="addDoc()" class="form" 
           style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 3%;">
