@@ -132,6 +132,16 @@ public class FileService {
         String fileName = nomFichier;
         if (isVideoFile(fileName)) {
             String tempFilePath = basePath + dossierFichier + File.separator + fileName;
+            File inputFile = new File(tempFilePath);
+            if(inputFile.exists()){
+                boolean isDeleted = inputFile.delete();
+                if(isDeleted){
+                    logger.info("Fichier existant supprimé : {}", tempFilePath);
+                }else {
+                    logger.error("Échec de la suppression du fichier existant : {}", tempFilePath);
+                    throw new IOException("Impossible de supprimer le fichier existant : " + tempFilePath);
+                }
+            }
             storeFile(fileName, dossierFichier, base64);
             logger.info("InputPath: {}", tempFilePath );
             if (!isH264Video(tempFilePath)){

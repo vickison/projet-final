@@ -2,6 +2,7 @@ package com.ide.api.service;
 
 import com.ide.api.configurations.FilePaths;
 import com.ide.api.entities.Document;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.ImageType;
@@ -92,21 +93,49 @@ public class ThumbnailService {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             PDPage firstPage = document.getPage(0);
 
-            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 400, ImageType.RGB);
+            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 200, ImageType.RGB);
             BufferedImage thumbnail = resizeImage(bufferedImage, thumbnailWidth, thumbnailHeight);
 
-            byte[] thumbnailData = bufferedImageToBytes(thumbnail, "png");
+            byte[] thumbnailData = bufferedImageToBytes(thumbnail, "jpg");
             saveThumbnailToFileSystem(thumbnailData, thumbnailFileName);
             return thumbnailData;
         }
     }
 
-    private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
-        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
-        g.dispose();
-        return resizedImage;
+//    private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+//        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//        Graphics2D g = resizedImage.createGraphics();
+//        g.drawImage(originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
+//        g.dispose();
+//        return resizedImage;
+//    }
+
+//    public static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+//        // Si l'image a déjà la bonne taille, retournez-la directement
+//        if (originalImage.getWidth() == width && originalImage.getHeight() == height) {
+//            return originalImage;
+//        }
+//
+//        // Créez une nouvelle image redimensionnée
+//        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+//        Graphics2D g = resizedImage.createGraphics();
+//
+//        // Paramètres de rendu pour une meilleure qualité
+//        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//
+//        // Redimensionnez l'image
+//        g.drawImage(originalImage, 0, 0, width, height, null);
+//        g.dispose();
+//
+//        return resizedImage;
+//    }
+
+    public static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) throws IOException {
+        return Thumbnails.of(originalImage)
+                .size(width, height)
+                .asBufferedImage();
     }
 
     private byte[] bufferedImageToBytes(BufferedImage image, String format) throws IOException {

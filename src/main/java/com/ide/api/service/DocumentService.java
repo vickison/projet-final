@@ -51,8 +51,8 @@ public class DocumentService {
     private static final String CAT_WITH_ID = "Catégorie avec identifiant";
     private static final String DOC_WITH_ID = "Document avec identifiant";
     private static final String INTROUVABLE = "Introuvable";
-    @Resource
-    private DocumentService documentService;
+//    @Resource
+//    private DocumentService documentService;
 
 
 
@@ -163,11 +163,11 @@ public class DocumentService {
 
     public byte[] getDocumentData(Integer id) throws IOException {
         try {
-            Optional<Document> optionalDocument = documentService.findDocument(id);
+            Optional<Document> optionalDocument = findDocument(id);
             if (optionalDocument.isPresent()) {
                 Document document = optionalDocument.get();
                 Path filePath = Paths.get(document.getUrl());
-
+                logger.info("File path: {}", filePath);
                 return Files.readAllBytes(filePath);
             } else {
                 throw new RuntimeException("Document not found with id: " + id);
@@ -182,12 +182,9 @@ public class DocumentService {
     }
     @Cacheable(value = "illustrations", key = "#categorie.categorieID")
     public List<Document> findDocumentsByCategoryId(Categorie categorie) {
-        long start = System.currentTimeMillis();
         List<Document> documents;
         try {
             documents = this.documentRepository.findByCategorieDocumentsCategorieID(categorie);
-            long end = System.currentTimeMillis();
-            logger.info("Temps écoulé: {} ms", (end-start));
             return documents;
         } catch (Exception e) {
             e.printStackTrace();

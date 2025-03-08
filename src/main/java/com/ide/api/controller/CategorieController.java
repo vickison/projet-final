@@ -10,10 +10,12 @@ import com.ide.api.repository.UtilisateurCategorieRepository;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import io.micrometer.core.annotation.Timed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,7 @@ public class CategorieController {
     private UtilisateurService utilisateurService;
 
     private DocumentService documentService;
+
 
     public CategorieController(CategorieService categorieService,
                                UtilisateurService utilisateurService,
@@ -88,7 +91,7 @@ public class CategorieController {
     }
 
     @GetMapping("/public/{categoryID}/documents")
-    @Timed(value = "categories.findDocumentsByCat", description = "Temps pour rechercher des documents d'une categorie")
+    //@Timed(value = "categories.findDocumentsByCat", description = "Temps pour rechercher des documents d'une categorie")
     public ResponseEntity<List<Document>> findDocumentsByCategoryId(@PathVariable Integer categoryID){
         Categorie categorie = categorieService.findCategory(categoryID);
         List<Document> documents = this.documentService.findDocumentsByCategoryId(categorie);

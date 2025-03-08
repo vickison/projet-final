@@ -4,6 +4,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.IdClass;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class AuteurDocumentID implements Serializable {
@@ -32,5 +33,19 @@ public class AuteurDocumentID implements Serializable {
 
     public void setDocumentID(Integer documentID) {
         this.documentID = documentID;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuteurDocumentID that = (AuteurDocumentID) o;
+        return Objects.equals(auteurID, that.auteurID) && Objects.equals(documentID, that.documentID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(auteurID, documentID);
     }
 }
