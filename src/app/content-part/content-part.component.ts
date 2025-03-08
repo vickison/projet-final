@@ -43,7 +43,6 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   @Output() categorySelected = new EventEmitter<number>();
   @Output() documentsOfCategorie = new EventEmitter<Document[]>();
 
-  isHovered = false;
   private previewTimer: any;
   private totalPreviewTime: number = 30000;
   private containerWidthInRem: number = 1;
@@ -91,6 +90,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   isTablet: boolean = false;
   maxCards: number = 3;
   activeId: number | undefined;
+  isHovered: number | undefined;
   
   constructor(
     private documentService: DocumentService,
@@ -698,7 +698,21 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     return item.documentID
   }
 
+  trackById2(index: number, item: Categorie): number | undefined{
+    return item.categorieID
+  }
+
   isActiveCard(cardId: number | undefined): boolean {
     return this.selectedCardId === cardId;
+  }
+
+  
+
+  onMouseEnter(documentID: number | undefined) {
+      this.isHovered = documentID;
+  }
+  
+  onMouseLeave() {
+      this.isHovered = undefined;
   }
 }

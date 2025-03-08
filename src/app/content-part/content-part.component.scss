@@ -23,20 +23,30 @@ height: 100%;
 //  border-radius: 15%; /* On arrondit les bordures du card */
   height: 100%;
   position: inherit;
+  // new
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
   cursor: pointer;
 
 }
 
 .card2 {
   background-color: white;
-  border-radius: 5px;
+  //border-radius: 5px;
+  border-radius: 10px;
+  overflow: hidden; // new
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  // new
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
 }
 
-.card:hover{
-  box-shadow: 0 6px 15px rgba(66, 66, 66, 0.5); // Soft gray shadow
-  transition: box-shadow 0.3s ease; // Smooth transition for shadow effect
-}
 
 .card-header {
   display: flex;
@@ -49,6 +59,8 @@ height: 100%;
   padding-top: 0.3rem;
   padding-bottom: 0;
   border-bottom: 0.1px solid rgba(128, 128, 128, 0.26);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   cursor: pointer;
 }
 
@@ -217,6 +229,11 @@ width: auto;
   grid-gap: 5%;
   grid-template-columns: repeat(4, 1fr);
 
+}
+
+.hovered {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 @import url( 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');

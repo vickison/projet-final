@@ -1,9 +1,15 @@
 <div class="contenu">
 <div *ngIf="tempDocuments.length === 0" id="grid2" class="container2">
-    <div *ngFor="let categorie of categories" class="category-container">
+    <div *ngFor="let categorie of categories"  class="category-container">
       <h2 class="category-title">{{ categorie?.nom}}</h2>
       <div class="card-container2">
-        <mat-card *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments)" class="card2">
+        <mat-card 
+        *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments)" 
+        (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
+        (mouseleave)="onMouseLeave()"
+        [class.hovered]="isHovered === catDoc.document?.documentID"
+        class="card2"
+        >
           <div *ngIf="catDoc.document">
             <mat-card-header class="card-header" (click)="onDocumentClicked(catDoc.document)">
               <div >
@@ -11,16 +17,16 @@
               </div>
             </mat-card-header>
             <div class="image-container" (click)="onDocumentClicked(catDoc.document)">
-              <img mat-card-image src={{getDocumentThumbnail(catDoc.document.documentID)}} alt="{{ catDoc.document.titre }}" class="image">
+              <img mat-card-image src={{getDocumentThumbnail(catDoc.document.documentID)}} alt="{{ catDoc.document.titre }}" class="image" loading="lazy">
             </div>
             <div class="buttons">
-              <button mat-icon-button (click)="openDetailDialog(catDoc.document)">
+              <button mat-icon-button (click)="openDetailDialog(catDoc.document)" style="display: flex;" aria-label="Détails">
                 <mat-icon svgIcon="telecharger"></mat-icon>
               </button>
-              <button mat-icon-button (click)="copyLink(catDoc.document.documentID)" style="cursor: copy;">
+              <button mat-icon-button (click)="copyLink(catDoc.document.documentID)" style="cursor: copy;" aria-label="Copier le lien">
                 <mat-icon svgIcon="partage"></mat-icon>
               </button>
-              <button mat-icon-button (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" style="display: flex;" >
+              <button mat-icon-button (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" style="display: flex;" aria-label="Télécharger">
                 <mat-icon svgIcon="download"></mat-icon>
               </button>
             </div>
@@ -38,6 +44,9 @@
     <mat-card 
       class="card"
       *ngFor="let document of paginatedDocuments; trackBy: trackById" 
+      (mouseenter)="onMouseEnter(document?.documentID)" 
+      (mouseleave)="onMouseLeave()"
+      [class.hovered]="isHovered === document?.documentID"
     >
     
       <mat-card-header (click)="onDocumentClicked(document)"  style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
@@ -52,7 +61,7 @@
       <div (click)="onDocumentClicked(document)">
         <ng-container [ngSwitch]="document.format">
           <div *ngSwitchCase="'application/pdf'" class="iframe-container" >
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'audio/mp3'" class="iframe-container">
             <img mat-card-image src="assets/audio.png" alt="Mon image" class="image">
@@ -61,22 +70,22 @@
             <img mat-card-image src="assets/audio.png" alt="Mon image" class="image">
           </div>
           <div *ngSwitchCase="'image/png'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'image/jpg'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'image/jpeg'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'image/gif'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'image/tiff'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchCase="'video/mp4'" class="iframe-container">
-            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image">
+            <img mat-card-image src={{getDocumentThumbnail(document.documentID)}} alt="Mon image" class="image" loading="lazy">
           </div>
           <div *ngSwitchDefault>
             <p>Unknown document type</p>
@@ -87,15 +96,30 @@
       <div  style=" width: 100%; background-color: white; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
         <mat-card-actions class="buttons"style="row-gap: 6%;">
         
-        <button mat-icon-button (click)="openDetailDialog(document)" style="display: flex;" >
+        <button mat-icon-button 
+        (click)="openDetailDialog(document)" 
+        style="display: flex;" 
+        aria-label="Détails"
+        matTooltip="Détails"
+        >
             <mat-icon svgIcon="telecharger"></mat-icon>
         </button>
           
-        <button mat-icon-button (click)="copyLink(document.documentID)" style="cursor: copy;">
+        <button mat-icon-button 
+        (click)="copyLink(document.documentID)" 
+        style="cursor: copy;" 
+        aria-label="Copier le lien"
+        matTooltip="Copier le lien"
+        >
             <mat-icon svgIcon="partage"></mat-icon>
         </button>
 
-        <button mat-icon-button (click)="onDownloadBtnClick(document.titre, document.documentID)" style="display: flex;" >
+        <button mat-icon-button 
+        (click)="onDownloadBtnClick(document.titre, document.documentID)" 
+        style="display: flex;" 
+        aria-label="Télécharger"
+        matTooltip="Télécharger"
+        >
           <mat-icon svgIcon="download"></mat-icon>
         </button>
         

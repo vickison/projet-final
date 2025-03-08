@@ -98,6 +98,8 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
 
 import { LayoutModule } from '@angular/cdk/layout';
 
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
 }
@@ -176,6 +178,7 @@ export function HttpLoaderFactory(http:HttpClient){
     CommonModule,
     MatSortModule,
     LayoutModule,
+    MatTooltipModule,
     TranslateModule.forRoot(
       {
       loader:{
