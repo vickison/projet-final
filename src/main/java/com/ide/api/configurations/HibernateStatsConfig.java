@@ -11,14 +11,14 @@ import javax.persistence.EntityManagerFactory;
 @Configuration
 public class HibernateStatsConfig {
 
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-
-    @Bean
-    public Statistics hibernateStatistics() {
-        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-        Statistics statistics = sessionFactory.getStatistics();
-        statistics.setStatisticsEnabled(true);
-        return statistics;
-    }
+//    @Autowired
+//    private EntityManagerFactory entityManagerFactory;
+//
+//    @Bean
+//    public Statistics hibernateStatistics() {
+//        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+//        Statistics statistics = sessionFactory.getStatistics();
+//        statistics.setStatisticsEnabled(true);
+//        return statistics;
+//    }
 }

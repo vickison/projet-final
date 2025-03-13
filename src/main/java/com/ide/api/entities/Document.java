@@ -75,6 +75,7 @@ public class Document {
     private Set<CategorieDocument> categorieDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "documentID", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<AuteurDocument> auteurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "documentID", fetch = FetchType.LAZY)
@@ -82,6 +83,7 @@ public class Document {
     private Set<UtilisateurDocument> utilisateurDocuments = new HashSet<>();
 
     @OneToMany(mappedBy = "documentID")
+    @JsonIgnore
     private Set<DocumentTag> documentTags = new HashSet<>();
 
 

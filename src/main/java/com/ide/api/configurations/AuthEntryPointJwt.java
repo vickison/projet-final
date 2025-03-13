@@ -15,11 +15,24 @@ import java.io.IOException;
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
+//    @Override
+//    public void commence(HttpServletRequest request,
+//                         HttpServletResponse response,
+//                         AuthenticationException authenticationException) throws IOException, ServletException {
+//        logger.error("Unauthorized error: {}", authenticationException.getMessage());
+//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+//    }
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authenticationException) throws IOException, ServletException {
         logger.error("Unauthorized error: {}", authenticationException.getMessage());
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+
+        if (!response.isCommitted()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+        } else {
+            logger.warn("Response already committed, unable to send error");
+        }
     }
 }

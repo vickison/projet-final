@@ -151,6 +151,7 @@ public class DocumentService {
         return documents;
     }
     @Cacheable(value = "illustrations", key = "#documentID")
+    @Transactional(readOnly = true)
     public Optional<Document> findDocument(Integer documentID) {
         try {
             return this.documentRepository.findByDocumentID(documentID);
