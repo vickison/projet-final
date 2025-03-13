@@ -20,13 +20,28 @@
               <img mat-card-image src={{getDocumentThumbnail(catDoc.document.documentID)}} alt="{{ catDoc.document.titre }}" class="image" loading="lazy">
             </div>
             <div class="buttons">
-              <button mat-icon-button (click)="openDetailDialog(catDoc.document)" style="display: flex;" aria-label="Détails">
+              <button mat-icon-button 
+              (click)="openDetailDialog(catDoc.document)" 
+              style="display: flex;" 
+              aria-label="Détails"
+              matTooltip="{{'Détails' | translate }}"
+              >
                 <mat-icon svgIcon="telecharger"></mat-icon>
               </button>
-              <button mat-icon-button (click)="copyLink(catDoc.document.documentID)" style="cursor: copy;" aria-label="Copier le lien">
+              <button mat-icon-button 
+              (click)="copyLink(catDoc.document.documentID)" 
+              style="cursor: copy;" 
+              aria-label="Copier le lien"
+              matTooltip="{{ 'Copier le lien' | translate }}"
+              >
                 <mat-icon svgIcon="partage"></mat-icon>
               </button>
-              <button mat-icon-button (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" style="display: flex;" aria-label="Télécharger">
+              <button mat-icon-button 
+              (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
+              style="display: flex;" 
+              aria-label="Télécharger"
+              matTooltip="{{ 'Télécharger' | translate }}"
+              >
                 <mat-icon svgIcon="download"></mat-icon>
               </button>
             </div>
@@ -100,7 +115,7 @@
         (click)="openDetailDialog(document)" 
         style="display: flex;" 
         aria-label="Détails"
-        matTooltip="Détails"
+        matTooltip="{{'Détails' | translate }}"
         >
             <mat-icon svgIcon="telecharger"></mat-icon>
         </button>
@@ -109,7 +124,7 @@
         (click)="copyLink(document.documentID)" 
         style="cursor: copy;" 
         aria-label="Copier le lien"
-        matTooltip="Copier le lien"
+        matTooltip="{{ 'Copier le lien' | translate }}"
         >
             <mat-icon svgIcon="partage"></mat-icon>
         </button>
@@ -118,7 +133,7 @@
         (click)="onDownloadBtnClick(document.titre, document.documentID)" 
         style="display: flex;" 
         aria-label="Télécharger"
-        matTooltip="Télécharger"
+        matTooltip="{{ 'Télécharger' | translate }}"
         >
           <mat-icon svgIcon="download"></mat-icon>
         </button>
