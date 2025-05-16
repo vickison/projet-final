@@ -7,6 +7,7 @@ import { UtilisateurService } from 'src/app/services/utilisateur.service';
 import { EditAdminModalComponent } from './edit-admin-modal/edit-admin-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-delupadmin-part',
@@ -143,29 +144,103 @@ export class DelupadminPartComponent implements OnInit{
     this.cdRef.detectChanges();
   }
 
-  onDelete(utilisateurID: number, utilisateur: Utilisateur){
+  // onDelete(utilisateurID: number, utilisateur: Utilisateur){
 
-    const config = new MatSnackBarConfig();
-    config.duration = 4000; // Durée de la notification en millisecondes
-    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-    config.panelClass = ['custom-snackbar'];
+  //   const config = new MatSnackBarConfig();
+  //   config.duration = 4000; // Durée de la notification en millisecondes
+  //   config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+  //   config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+  //   config.panelClass = ['custom-snackbar'];
 
     
-    this.utilisateurService.supUtilisateur(utilisateurID, utilisateur).subscribe({
-      next: data => {
-        this.msg = 'Admin suprrimé avec succès✅';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Suppresion de l'utilisateur: ", data);
-        this.updateTableAfterDeletion(utilisateurID);
-      },
-      error: err => {
-        this.msg = 'Échec de Supprimer cet Admin❌';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Echec de suppresion de l\'utilisateur: ", err);
-      }
-    });
-  }
+  //   this.utilisateurService.supUtilisateur(utilisateurID, utilisateur).subscribe({
+  //     next: data => {
+  //       this.msg = 'Admin suprrimé avec succès✅';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Suppresion de l'utilisateur: ", data);
+  //       this.updateTableAfterDeletion(utilisateurID);
+  //     },
+  //     error: err => {
+  //       this.msg = 'Échec de Supprimer cet Admin❌';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Echec de suppresion de l\'utilisateur: ", err);
+  //     }
+  //   });
+  // }
+
+
+  onDelete(utilisateurID: number, utilisateur: Utilisateur) {
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '450px',
+    disableClose: true,
+    autoFocus: false,
+    data: {
+      title: 'Confirmation de suppression ADMIN',
+      message: this.generateUserDeleteMessage(utilisateur),
+      confirmText: 'Confirmer la suppression',
+      cancelText: 'Annuler',
+      warning: true,
+      isCritical: true
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(confirmed => {
+    if (confirmed) {
+      this.executeUserDeletion(utilisateurID, utilisateur);
+    }
+  });
+}
+
+private generateUserDeleteMessage(utilisateur: Utilisateur): string {
+  let baseMsg = `Vous allez supprimer l'administrateur "${utilisateur.username}".`;
+  
+  // if (utilisateur.role === 'SUPER_ADMIN') {
+  //   baseMsg += '\n\n⚠️ ATTENTION : Cet utilisateur a des privilèges élevés !';
+  // }
+  
+  return baseMsg + '\n\nCette action est irréversible et peut affecter le système.';
+}
+
+private executeUserDeletion(utilisateurID: number, utilisateur: Utilisateur) {
+  // Déclarer explicitement le tableau de classes
+  const basePanelClasses: string[] = ['custom-snackbar'];
+  
+  const config: MatSnackBarConfig = {
+    duration: 6000,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+    panelClass: basePanelClasses // Utilisation du tableau typé
+  };
+
+  //this.isDeleting = true;
+
+  this.utilisateurService.supUtilisateur(utilisateurID, utilisateur).subscribe({
+    next: () => {
+      this.msg = `Administrateur "${utilisateur.username}" supprimé avec succès ✅`;
+      this.snackBar.open(this.msg, 'Fermer', {
+        ...config,
+        panelClass: [...basePanelClasses, 'success'] // Spread du tableau typé
+      });
+      this.updateTableAfterDeletion(utilisateurID);
+      //this.isDeleting = false;
+      
+      // if (this.currentUser.id === utilisateurID) {
+      //   this.authService.logout();
+      // }
+    },
+    error: (err) => {
+      const errorMsg = err.error?.message || 'Erreur système';
+      this.msg = `Échec de suppression : ${errorMsg} ❌`;
+      this.snackBar.open(this.msg, 'Fermer', {
+        ...config,
+        panelClass: [...basePanelClasses, 'error'],
+        duration: 8000
+      });
+      console.error(`Échec suppression admin ID ${utilisateurID}:`, err);
+      //this.isDeleting = false;
+    }
+  });
+}
 
   reloadPage(): void{
     window.location.reload();

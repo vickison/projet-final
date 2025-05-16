@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditTagModalComponent } from './edit-tag-modal/edit-tag-modal.component';
 import { Utilisateur } from 'src/app/models/utilisateur';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-deluptag-part',
@@ -22,6 +23,7 @@ export class DeluptagPartComponent implements OnInit {
   utilisateurs: Utilisateur[] = [];
   message = '';
   classCss: String = '';
+  clsCss='';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -120,25 +122,73 @@ export class DeluptagPartComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
-  onDelete(tagID: number, tag: Tag){
-    const config = new MatSnackBarConfig();
-    config.duration = 4000; // Durée de la notification en millisecondes
-    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-    config.panelClass = ['custom-snackbar'];
+  // onDelete(tagID: number, tag: Tag){
+  //   const config = new MatSnackBarConfig();
+  //   config.duration = 4000; // Durée de la notification en millisecondes
+  //   config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+  //   config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+  //   config.panelClass = ['custom-snackbar'];
+  //   this.tagService.supTag(tagID, tag).subscribe({
+  //     next: data => {
+  //       this.message = 'Suppression du label avec succès✅';
+  //       this.classCss = 'success';
+  //       this.snackBar.open(this.message, 'Fermer', config);
+  //       //console.log("Tag supprimer avec succes: ", data);
+  //       this.updateTableAfterDeletion(tagID);
+  //     },
+  //     error: err => {
+  //       this.message = 'Echec de suppression du tag❌';
+  //       this.classCss = 'error';
+  //       this.snackBar.open(this.message, 'Fermer', config);
+  //       //console.error("impossible de supprimer le tag: ", err);
+  //     }
+  //   });
+  // }
+
+
+  onDelete(tagID: number, tag: Tag) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        title: 'Confirmer la suppression',
+        message: `Vous allez supprimer le tag "${tag.tag}". Cette action affectera tous les éléments associés.`,
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.executeTagDeletion(tagID, tag);
+      }
+    });
+  }
+
+  private executeTagDeletion(tagID: number, tag: Tag) {
+    const config: MatSnackBarConfig = {
+      duration: 4000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar', this.clsCss]
+    };
+
+    //this.isDeleting = true; // Active l'état de chargement
+
     this.tagService.supTag(tagID, tag).subscribe({
-      next: data => {
-        this.message = 'Suppression du label avec succès✅';
+      next: () => {
+        this.message = 'Tag supprimé avec succès ✅';
         this.classCss = 'success';
         this.snackBar.open(this.message, 'Fermer', config);
-        //console.log("Tag supprimer avec succes: ", data);
         this.updateTableAfterDeletion(tagID);
+        //this.isDeleting = false;
       },
-      error: err => {
-        this.message = 'Echec de suppression du tag❌';
+      error: (err) => {
+        this.message = 'Échec de la suppression du tag ❌';
         this.classCss = 'error';
         this.snackBar.open(this.message, 'Fermer', config);
-        //console.error("impossible de supprimer le tag: ", err);
+        console.error('Erreur lors de la suppression du tag:', err);
+        //this.isDeleting = false;
       }
     });
   }

@@ -7,6 +7,7 @@ import { CategorieService } from 'src/app/services/categorie.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditCategoryModalComponent } from './edit-category-modal/edit-category-modal.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-delupcategory-part',
@@ -147,28 +148,78 @@ export class DelupcategoryPartComponent implements OnInit{
     this.cdRef.detectChanges();
   }
   
-  onDelete(categorie: Categorie){
+  // onDelete(categorie: Categorie){
 
-    const config = new MatSnackBarConfig();
-    config.duration = 4000; // Durée de la notification en millisecondes
-    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-    config.panelClass = ['custom-snackbar'];
+  //   const config = new MatSnackBarConfig();
+  //   config.duration = 4000; // Durée de la notification en millisecondes
+  //   config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+  //   config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+  //   config.panelClass = ['custom-snackbar'];
     
-    this.categorieService.supCategorie(categorie.categorieID, categorie).subscribe({
-      next: data => {
-        this.msg = 'Catégorie suprrimée avec succès✅';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Suppresion de la catégorie: ", data);
-        this.updateTableAfterDeletion(categorie.categorieID);
-      },
-      error: err => {
-        this.msg = 'Échec de Supprimer la Catégorie❌';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Echec de suppresion de la catégorie: ", err);
+  //   this.categorieService.supCategorie(categorie.categorieID, categorie).subscribe({
+  //     next: data => {
+  //       this.msg = 'Catégorie suprrimée avec succès✅';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Suppresion de la catégorie: ", data);
+  //       this.updateTableAfterDeletion(categorie.categorieID);
+  //     },
+  //     error: err => {
+  //       this.msg = 'Échec de Supprimer la Catégorie❌';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Echec de suppresion de la catégorie: ", err);
+  //     }
+  //   });
+  // }
+
+
+  onDelete(categorie: Categorie) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        title: 'Confirmation de suppression',
+        message: `Vous êtes sur le point de supprimer la catégorie "${categorie.nom}". Tous les éléments associés pourraient être affectés.`,
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.executeCategoryDeletion(categorie);
       }
     });
   }
+
+private executeCategoryDeletion(categorie: Categorie) {
+  const config: MatSnackBarConfig = {
+    duration: 4000,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+    panelClass: ['custom-snackbar']
+  };
+
+  //this.isDeleting = true; // Si vous utilisez un spinner
+
+  this.categorieService.supCategorie(categorie.categorieID, categorie).subscribe({
+    next: () => {
+      this.snackBar.open('Catégorie supprimée avec succès ✅', 'Fermer', {
+        ...config,
+        panelClass: ['custom-snackbar', 'success']
+      });
+      this.updateTableAfterDeletion(categorie.categorieID);
+      //this.isDeleting = false;
+    },
+    error: (err) => {
+      this.snackBar.open('Échec de la suppression de la catégorie ❌', 'Fermer', {
+        ...config,
+        panelClass: ['custom-snackbar', 'error']
+      });
+      console.error("Échec de suppression de la catégorie: ", err);
+      //this.isDeleting = false;
+    }
+  });
+}
 
   reloadPage(): void{
     window.location.reload();

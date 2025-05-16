@@ -7,6 +7,7 @@ import { AuteurService } from 'src/app/services/auteur.service';
 import { Auteur } from 'src/app/models/auteur.model';
 import { EditAuteurModalComponent } from './edit-auteur-modal/edit-auteur-modal.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-delupauteur-part',
@@ -139,28 +140,96 @@ export class DelupauteurPartComponent implements OnInit{
     this.cdRef.detectChanges();
   }
 
-  onDelete(auteurID: number, auteur: Auteur){
+  // onDelete(auteurID: number, auteur: Auteur){
 
-    const config = new MatSnackBarConfig();
-    config.duration = 4000; // Durée de la notification en millisecondes
-    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-    config.panelClass = ['custom-snackbar'];
+  //   const config = new MatSnackBarConfig();
+  //   config.duration = 4000; // Durée de la notification en millisecondes
+  //   config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+  //   config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+  //   config.panelClass = ['custom-snackbar'];
     
-    this.auteurService.supAuteur(auteurID, auteur).subscribe({
-      next: data => {
-        this.msg = 'Auteur suprrimé avec succès✅';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Suppresion de Auteur: ", data);
-        this.updateTableAfterDeletion(auteurID);
-      },
-      error: err => {
-        this.msg = 'Échec de Supprimer l\'Auteur❌';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Echec de suppresion de l\'auteur: ", err);
+  //   this.auteurService.supAuteur(auteurID, auteur).subscribe({
+  //     next: data => {
+  //       this.msg = 'Auteur suprrimé avec succès✅';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Suppresion de Auteur: ", data);
+  //       this.updateTableAfterDeletion(auteurID);
+  //     },
+  //     error: err => {
+  //       this.msg = 'Échec de Supprimer l\'Auteur❌';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Echec de suppresion de l\'auteur: ", err);
+  //     }
+  //   });
+  // }
+
+  onDelete(auteurID: number, auteur: Auteur) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      disableClose: true,
+      autoFocus: false,
+      data: {
+        title: 'Confirmation de suppression',
+        message: this.generateAuteurDeleteMessage(auteur),
+        confirmText: 'Confirmer la suppression',
+        cancelText: 'Annuler',
+        warning: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.executeAuteurDeletion(auteurID, auteur);
       }
     });
   }
+
+  private generateAuteurDeleteMessage(auteur: Auteur): string {
+    let baseMsg = `Vous allez supprimer l'auteur "${auteur.prenom} ${auteur.nom}".`;
+    
+    // if (auteur.nombreLivres > 0) {
+    //   baseMsg += ` Attention : cet auteur est associé à ${auteur.nombreLivres} livre(s).`;
+    // }
+    
+    return baseMsg + ' Cette action est irréversible.';
+  }
+
+private executeAuteurDeletion(auteurID: number, auteur: Auteur) {
+  // Définir le type explicitement comme tableau de strings
+  const panelClasses: string[] = ['custom-snackbar'];
+  
+  const config: MatSnackBarConfig = {
+    duration: 5000,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+    panelClass: panelClasses // Utilisation du tableau typé
+  };
+
+  //this.isDeleting = true;
+
+  this.auteurService.supAuteur(auteurID, auteur).subscribe({
+    next: () => {
+      this.msg = `Auteur "${auteur.prenom} ${auteur.nom}" supprimé avec succès ✅`;
+      this.snackBar.open(this.msg, 'Fermer', {
+        ...config,
+        panelClass: [...panelClasses, 'success'] // Spread du tableau typé
+      });
+      this.updateTableAfterDeletion(auteurID);
+      //this.isDeleting = false;
+    },
+    error: (err) => {
+      const errorMsg = err.error?.message || 'Une erreur est survenue';
+      this.msg = `Échec de suppression : ${errorMsg} ❌`;
+      this.snackBar.open(this.msg, 'Fermer', {
+        ...config,
+        panelClass: [...panelClasses, 'error'],
+        duration: 7000
+      });
+      console.error(`Échec suppression auteur ID ${auteurID}:`, err);
+      //this.isDeleting = false;
+    }
+  });
+}
 
   reloadPage(): void{
     window.location.reload();

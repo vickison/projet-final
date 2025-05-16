@@ -99,6 +99,7 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
 import { LayoutModule } from '@angular/cdk/layout';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
@@ -140,7 +141,8 @@ export function HttpLoaderFactory(http:HttpClient){
     RegisterPartComponent,
     SuperAdminComponent,
     LikeButtonComponent,
-    SnackBarLikeComponent
+    SnackBarLikeComponent,
+    ConfirmDialogComponent
     
   ],
   imports: [

@@ -54,3 +54,16 @@ mat-cell.action-cell button {
 .highlight-row {
   color: #9c9b9b;
 }
+
+
+
+.custom-snackbar {
+  &.success {
+    background-color: #4caf50;
+    color: white;
+  }
+  &.error {
+    background-color: #f44336;
+    color: white;
+  }
+}

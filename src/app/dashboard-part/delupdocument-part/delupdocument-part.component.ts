@@ -9,6 +9,7 @@ import { EditDocumentModalComponent } from './edit-document-modal/edit-document-
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { Router } from '@angular/router';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-delupdocument-part',
@@ -163,30 +164,75 @@ export class DelupdocumentPartComponent implements OnInit{
     
   }
 
-  onDelete(documenteID: number, document: Document){
+  // onDelete(documenteID: number, document: Document){
 
-    const config = new MatSnackBarConfig();
-    config.duration = 4000; // Durée de la notification en millisecondes
-    config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
-    config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
-    config.panelClass = ['custom-snackbar'];
+  //   const config = new MatSnackBarConfig();
+  //   config.duration = 4000; // Durée de la notification en millisecondes
+  //   config.horizontalPosition = 'center'; // Position horizontale: 'start', 'center', 'end'
+  //   config.verticalPosition = 'top'; // Position verticale: 'top', 'bottom'
+  //   config.panelClass = ['custom-snackbar'];
     
-    this.documentService.supDocument(documenteID, document).subscribe({
-      next: data => {
-        this.msg = 'Document suprrimé avec succès✅';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Document supprimer avec succes: ", data);
-        // setTimeout(() => {
-        //   //this.dialog.closeAll();
-        //   // this.documentSource.forEach(doc => doc.supprimerDocument = true);
-        //   // this.cdRef.detectChanges();
-        // }, 500);
-        this.updateTableAfterDeletion(documenteID);
+  //   this.documentService.supDocument(documenteID, document).subscribe({
+  //     next: data => {
+  //       this.msg = 'Document suprrimé avec succès✅';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Document supprimer avec succes: ", data);
+  //       // setTimeout(() => {
+  //       //   //this.dialog.closeAll();
+  //       //   // this.documentSource.forEach(doc => doc.supprimerDocument = true);
+  //       //   // this.cdRef.detectChanges();
+  //       // }, 500);
+  //       this.updateTableAfterDeletion(documenteID);
+  //     },
+  //     error: err => {
+  //       this.msg = 'Échec de Supprimer Document❌';
+  //       this.snackBar.open(this.msg, 'Fermer', config);
+  //       //console.log("Echec de supprission: ", err);
+  //     }
+  //   });
+  // }
+
+
+  onDelete(documentID: number, document: Document) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        title: 'Confirmation de suppression',
+        message: `Vous êtes sur le point de supprimer le document "${document.titre}". Cette action est irréversible.`,
+        confirmText: 'Supprimer',
+        cancelText: 'Annuler'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.executeDeletion(documentID, document);
+      }
+    });
+  }
+
+  private executeDeletion(documentID: number, document: Document) {
+    const config: MatSnackBarConfig = {
+      duration: 4000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    };
+
+    this.documentService.supDocument(documentID, document).subscribe({
+      next: () => {
+        this.snackBar.open('Document supprimé avec succès ✅', 'Fermer', {
+          ...config,
+          panelClass: ['custom-snackbar', 'success']
+        });
+        this.updateTableAfterDeletion(documentID);
       },
-      error: err => {
-        this.msg = 'Échec de Supprimer Document❌';
-        this.snackBar.open(this.msg, 'Fermer', config);
-        //console.log("Echec de supprission: ", err);
+      error: () => {
+        this.snackBar.open('Échec de la suppression du document ❌', 'Fermer', {
+          ...config,
+          panelClass: ['custom-snackbar', 'error']
+        });
       }
     });
   }

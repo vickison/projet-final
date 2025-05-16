@@ -1,8 +1,8 @@
 <div class="contenu">
 <div *ngIf="tempDocuments.length === 0" id="grid2" class="container2">
     <div *ngFor="let categorie of categories"  class="category-container">
-      <h2 class="category-title">{{ categorie?.nom}}</h2>
-      <div class="card-container2">
+      <h2 class="category-title" *ngIf="!categorie?.supprimerCategorie">{{ categorie?.nom}}</h2>
+      <div class="card-container2" *ngIf="!categorie?.supprimerCategorie">
         <mat-card 
         *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments)" 
         (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
