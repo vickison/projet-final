@@ -1,6 +1,7 @@
 
 
 footer {
+  height: 6rem;
   background-color: #F1F2F2;
   width: 86%;
   border: 0;
@@ -21,6 +22,8 @@ footer {
 .im3,
 .im4
 {
+  border-radius: 5px;
+  height: 80%;
   width: 5%;
 }
 
@@ -38,7 +41,9 @@ footer {
   .im3,
   .im4 
      { 
-       width: 7%;
+      border-radius: 5px;
+      height: 80%;
+      width: 10%;
      }
 }
 
@@ -48,6 +53,7 @@ footer {
 @media screen and (max-width: 767px) { 
   footer {
     background-color: #F1F2F2;
+    height: 6rem;
     width: auto;
     padding: 0;
     margin: 0;
@@ -65,6 +71,8 @@ footer {
     .im3,
     .im4
        {
-         width: 10%;
+        border-radius: 5px;
+        height: 70%;
+         width: 15%;
        }
-  }
+}

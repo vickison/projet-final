@@ -12,8 +12,8 @@
         >
           <div *ngIf="catDoc.document">
             <mat-card-header class="card-header" (click)="onDocumentClicked(catDoc.document)">
-              <div >
-                <mat-card-title class="titre">{{ catDoc.document.titre }}</mat-card-title>
+              <div class="card-content">
+                <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
               </div>
             </mat-card-header>
             <div class="image-container" (click)="onDocumentClicked(catDoc.document)">
@@ -52,7 +52,6 @@
         </div>
       </div>
   </div>
-  
 </div>
 
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
@@ -143,8 +142,7 @@
     </mat-card>
     
   </div>
-</div>
-  <mat-paginator
+  <mat-paginator *ngIf="tempDocuments.length > 0"
     [length]="documents.length"
     [pageSize]="12"
     [hidePageSize]="true"
@@ -153,6 +151,10 @@
     style="font-size: medium; font-weight: bold; color: rgb(24, 49, 83) ; background-color:rgba(236, 247, 253, 0.488); border-top:  0.1px solid rgba(128, 128, 128, 0.26); justify-content: center; display: flex; margin-left: 14%;"
   >
   </mat-paginator>
+</div>
+<app-footer-part></app-footer-part>
+
+  
 
 
 

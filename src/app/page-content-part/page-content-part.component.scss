@@ -16,6 +16,7 @@
 .contenu{
   flex: 1 0 auto;  /*Permet au contenu de prendre tout l'espace disponible */
  // overflow-y: auto;
+ display: flex;
  }
 
  footer{
@@ -32,7 +33,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 93.8vh;
+    height: calc(100dvh - 4rem);
   }
 
 }
@@ -45,6 +46,7 @@
       padding-top: 4rem;
       background-color: #ECF7FD; 
       padding-bottom: 0;
+      height: calc(100dvh - 7.5rem);
     }
 
 }
