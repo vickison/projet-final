@@ -1,7 +1,6 @@
 package com.ide.api.configurations;
 
 import com.ide.api.entities.CustomUserDetails;
-import com.ide.api.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -20,7 +18,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @Component
 public class JwtTokenProvider {
@@ -88,7 +85,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    private Key key(){
+    public Key key(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
@@ -116,13 +113,41 @@ public class JwtTokenProvider {
         } catch (MalformedJwtException e){
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e){
-            logger.error("JWT token is exxpired: {}", e.getMessage());
+            logger.error("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e){
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e){
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
+    }
+
+    public Map<String, Object> validateJwtTokenWithDetails(String authToken) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(authToken);
+
+            response.put("valid", true);
+            response.put("claims", claims.getBody());
+            return response;
+
+        } catch (ExpiredJwtException e) {
+            logger.error("JWT token is expired: {}", e.getMessage());
+            response.put("valid", false);
+            response.put("reason", "expired");
+            response.put("expiredAt", e.getClaims().getExpiration());
+            return response;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+            response.put("valid", false);
+            response.put("reason", "invalid");
+            return response;
+        }
     }
 
     public String generateTokenFromUsername(String username){

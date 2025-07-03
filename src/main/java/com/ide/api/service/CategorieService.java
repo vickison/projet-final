@@ -1,25 +1,19 @@
 package com.ide.api.service;
 
 import com.ide.api.dto.CategorieDTO;
-import com.ide.api.entities.*;
+import com.ide.api.entities.Categorie;
+import com.ide.api.entities.Utilisateur;
+import com.ide.api.entities.UtilisateurCategorie;
 import com.ide.api.enums.TypeGestion;
 import com.ide.api.repository.*;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -44,7 +38,7 @@ public class CategorieService {
     }
 
     @Transactional
-    @CacheEvict(value = "categories", allEntries = true)
+    //@CacheEvict(value = "categories", allEntries = true)
     public void createCategorie(Categorie categorie, Integer idUt) {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -69,7 +63,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la création de la catégorie ou de la relation utilisateur-catégorie", e);
         }
     }
-    @Cacheable(value = "categories")
+    //@Cacheable(value = "categories")
     public List<Categorie> findAllCategories() {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -85,7 +79,7 @@ public class CategorieService {
             throw new RuntimeException("Erreur lors de la récupération des catégories", e);
         }
     }
-    @Cacheable(value = "categories", key = "#categorieID")
+    //@Cacheable(value = "categories", key = "#categorieID")
     public Categorie findCategory(Integer categorieID) {
         try {
             // Rechercher la catégorie par ID
@@ -119,7 +113,7 @@ public class CategorieService {
         }
     }
     @Transactional
-    @CacheEvict(value = "categories", key = "#categorieID")
+    //@CacheEvict(value = "categories", key = "#categorieID")
     public Categorie updateCategorie(Integer categorieID, Integer adminID, CategorieDTO categorieData) {
         try {
             if (categorieID == null || adminID == null) {
@@ -155,7 +149,7 @@ public class CategorieService {
         }
     }
     @Transactional
-    @CacheEvict(value = "categories", key = "#categorieID")
+    //@CacheEvict(value = "categories", key = "#categorieID")
     public Categorie deleteCategorie(Integer categorieID, Integer adminID) {
         try {
             if (categorieID == null || adminID == null) {

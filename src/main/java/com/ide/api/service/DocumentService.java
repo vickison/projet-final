@@ -2,27 +2,21 @@ package com.ide.api.service;
 
 
 import com.ide.api.configurations.FilePaths;
-
 import com.ide.api.dto.DocumentDTO;
 import com.ide.api.entities.*;
-
 import com.ide.api.enums.TypeFichier;
-
 import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.DocumentCreationResponse;
-
 import com.ide.api.repository.*;
 import com.ide.api.utilities.DocumentSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,7 +83,7 @@ public class DocumentService {
 
 
     @Transactional
-    @CacheEvict(value = "illustrations", allEntries = true)
+    //@CacheEvict(value = "illustrations", allEntries = true)
     public DocumentCreationResponse creerDocument(Document document,
                                                   List<Integer> idsCategorie,
                                                   List<Integer> idsTag,
@@ -139,7 +133,7 @@ public class DocumentService {
             throw new RuntimeException("Erreur inattendue lors de la création du document.", e);
         }
     }
-    @Cacheable(value = "illustrations")
+    //@Cacheable(value = "illustrations")
     public List<Document> findDocuments() {
         List<Document> documents = new ArrayList<>();
         try {
@@ -150,7 +144,19 @@ public class DocumentService {
         }
         return documents;
     }
-    @Cacheable(value = "illustrations", key = "#documentID")
+
+    //@Cacheable(value = "illustrations", key = "{#pageable.pageNumber,#pageable.pageSize,#pageable.sort}")
+    public Page<Document> findDocumentsWithPagination(Pageable pageable) {
+        try {
+            return this.documentRepository.findAll(pageable);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération des documents paginés: {}", e.getMessage());
+            return Page.empty(pageable);
+        }
+    }
+
+
+    //@Cacheable(value = "illustrations", key = "#documentID")
     @Transactional(readOnly = true)
     public Optional<Document> findDocument(Integer documentID) {
         try {
@@ -181,7 +187,7 @@ public class DocumentService {
             throw new RuntimeException("Erreur inattendue lors de la récupération des données du document.", e);
         }
     }
-    @Cacheable(value = "illustrations", key = "#categorie.categorieID")
+    //@Cacheable(value = "illustrations", key = "#categorie.categorieID")
     public List<Document> findDocumentsByCategoryId(Categorie categorie) {
         List<Document> documents;
         try {
@@ -190,6 +196,18 @@ public class DocumentService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la récupération des documents pour la catégorie ID " + categorie.getCategorieID() + ": " + e.getMessage(), e);
+        }
+    }
+
+
+    //@Cacheable(value = "illustrations", key = "{#categorie.categorieID, #pageable.pageNumber, #pageable.pageSize, #pageable.sort}")
+    public Page<Document> findDocumentsByCategoryIdWithPagination(Categorie categorie, Pageable pageable) {
+        try {
+            return this.documentRepository.findByCategorieDocumentsCategorieID(categorie, pageable);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération des documents pour la catégorie ID {}: {}",
+                    categorie.getCategorieID(), e.getMessage());
+            return Page.empty(pageable); // Retourne une page vide en cas d'erreur
         }
     }
 
@@ -347,7 +365,7 @@ public class DocumentService {
     }
 
     @Transactional
-    @CacheEvict(value = "illustrations", key = "#documentID")
+    //@CacheEvict(value = "illustrations", key = "#documentID")
     public Document updateDocument(Integer documentID, Integer adminID, DocumentDTO documentData) {
         try {
             if (documentID == null || adminID == null) {
@@ -386,7 +404,7 @@ public class DocumentService {
 
 
     @Transactional
-    @CacheEvict(value = "illustrations", key = "#documentID")
+    //@CacheEvict(value = "illustrations", key = "#documentID")
     public Document deleteDocument(Integer documentID, Integer adminID) {
         try {
             if (documentID == null || adminID == null) {

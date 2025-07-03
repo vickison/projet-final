@@ -3,22 +3,15 @@ package com.ide.api.controller;
 import com.ide.api.configurations.FilePaths;
 import com.ide.api.dto.DocumentDTO;
 import com.ide.api.dto.LikeCountDTO;
-import com.ide.api.dto.LikeIllustrationDTO;
 import com.ide.api.entities.*;
 import com.ide.api.enums.Mention;
 import com.ide.api.enums.TypeFichier;
 import com.ide.api.enums.TypeGestion;
 import com.ide.api.message.DocumentCreationResponse;
-import com.ide.api.message.ResponseMessage;
 import com.ide.api.repository.*;
 import com.ide.api.service.*;
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -29,20 +22,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @CrossOrigin(origins = "*")
@@ -268,6 +253,29 @@ public class DocumentController {
     public @ResponseBody List<Document> retrieveAllDocuments(){
         return documentService.findDocuments();
     }
+
+
+//    @GetMapping(value = "/public", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Timed(value = "documents.findDocuments", description = "Temps pour récupérer tous les documents")
+//    public ResponseEntity<Page<Document>> retrieveAllDocumentsWithPagination(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(required = false) String sort) {
+//
+//        // Gestion du tri optionnel
+//        Pageable pageable;
+//        if (sort != null) {
+//            pageable = PageRequest.of(page, size, Sort.by(sort));
+//        } else {
+//            pageable = PageRequest.of(page, size);
+//        }
+//
+//        Page<Document> documentsPage = documentService.findDocumentsWithPagination(pageable);
+//        return ResponseEntity.ok(documentsPage);
+//    }
+
+
+
     @GetMapping(value = "/public/types/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "documents.findDocumentsByType", description = "Temps pour récupérer tous les documents par type")
     public @ResponseBody List<Document> findDocumentsByType(@PathVariable TypeFichier type){

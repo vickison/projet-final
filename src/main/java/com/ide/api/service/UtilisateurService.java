@@ -1,7 +1,6 @@
 package com.ide.api.service;
 
 import com.ide.api.configurations.JwtTokenProvider;
-import com.ide.api.dto.UtilisateurDTO;
 import com.ide.api.entities.AdminUtilisateur;
 import com.ide.api.entities.Utilisateur;
 import com.ide.api.enums.TypeGestion;
@@ -13,10 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -126,6 +121,7 @@ public class UtilisateurService {
             Utilisateur utilisateur = utilisateurRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Utilisateur not found with id: " + id));
             logger.info("Utilisateur trouvé : {}", utilisateur);
+            //utilisateur.setPassword("******************");
             return utilisateur;
         } catch (EntityNotFoundException e) {
             logger.error("Erreur lors de la récupération de l'utilisateur avec id: {}", id, e);
@@ -260,6 +256,12 @@ public class UtilisateurService {
 
     public boolean isJwtIsValid(String jwt){
         return this.jwtTokenProvider.validateJwtToken(jwt);
+    }
+
+    public boolean verifyPassword(Integer userId, String rawPassword) {
+        return utilisateurRepository.findById(userId)
+                .map(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
+                .orElse(false);
     }
 
 }

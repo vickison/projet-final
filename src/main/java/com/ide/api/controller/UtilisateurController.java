@@ -1,40 +1,37 @@
 package com.ide.api.controller;
 
 import com.ide.api.configurations.JwtTokenProvider;
-import com.ide.api.dto.*;
+import com.ide.api.dto.LoginRequest;
+import com.ide.api.dto.PasswordVerificationRequest;
+import com.ide.api.dto.UtilisateurDTO;
 import com.ide.api.entities.*;
 import com.ide.api.enums.TypeGestion;
-import com.ide.api.message.JwtResponse;
 import com.ide.api.message.ResponseMessage;
 import com.ide.api.message.UserResponse;
 import com.ide.api.repository.UtilisateurRepository;
 import com.ide.api.service.*;
 import com.ide.api.utilities.EmailValidator;
+import io.jsonwebtoken.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
@@ -223,7 +220,9 @@ public class UtilisateurController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Utilisateur findUser(@PathVariable Integer id){
-        return this.utilisateurService.findUtilisateur(id);
+        Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
+        utilisateur.setPassword("******");
+        return utilisateur;
     }
 
     @GetMapping("/{utilisateurID}/documents")
@@ -391,6 +390,15 @@ public class UtilisateurController {
         Integer adminID = userDetails.getId();
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
         Utilisateur admin = this.utilisateurService.findUtilisateur(adminID);
+
+        if (!admin.isSuperAdmin()) {
+            // Règle: Seul un super admin peut modifier un admin ou lui-même
+            if (utilisateur.isAdmin() || utilisateur.getUtilisateurID().equals(admin.getUtilisateurID())) {
+                throw new AccessDeniedException("Seul un Super Admin peut modifier un administrateur");
+            }
+        }
+
+
         utilisateur.setNom(utilisateurDetails.getNom());
         utilisateur.setPrenom(utilisateurDetails.getPrenom());
         utilisateur.setUsername(utilisateurDetails.getUsername());
@@ -411,8 +419,149 @@ public class UtilisateurController {
             newAdmUtil.setTypeGestion(TypeGestion.Modifier);
             this.adminUtilisateurService.createAdminUtilisateur(newAdmUtil);
         }
+        utilisateurUpdated.setPassword("******");
         return ResponseEntity.ok(utilisateurUpdated);
     }
+
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PutMapping("/admin/modif/{id}")
+//    public ResponseEntity<Utilisateur> updateUserV2(
+//            @PathVariable Integer id,
+//            @Valid @RequestBody UtilisateurDTO utilisateurDetails,
+//            @RequestParam(required = false) String currentPassword) {
+//
+//        // 1. Authentification
+//        CustomUserDetails adminDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+//                .getAuthentication().getPrincipal();
+//        Utilisateur admin = this.utilisateurService.findUtilisateur(adminDetails.getId());
+//        Utilisateur targetUser = this.utilisateurService.findUtilisateur(id);
+//
+//        // 2. Vérification des permissions
+//        if (!admin.isSuperAdmin()) {
+//            // Règle: Seul un super admin peut modifier un admin ou lui-même
+//            if (targetUser.isAdmin() || targetUser.getUtilisateurID().equals(admin.getUtilisateurID())) {
+//                throw new AccessDeniedException("Seul un Super Admin peut modifier un administrateur");
+//            }
+//        }
+//
+//        // 3. Vérification du mot de passe pour les actions sensibles
+//        if (isSensitiveAction(utilisateurDetails, targetUser)) {
+//            if (currentPassword == null || !passwordEncoder.matches(currentPassword, admin.getPassword())) {
+//                throw new AccessDeniedException("Confirmation par mot de passe requise");
+//            }
+//        }
+//
+//        // 4. Mise à jour sécurisée
+//        updateUserData(targetUser, utilisateurDetails, admin);
+//
+//        // 5. Sauvegarde et audit
+//        Utilisateur updatedUser = this.utilisateurRepository.save(targetUser);
+//        logAdminAction(admin, targetUser, TypeGestion.Modifier);
+//
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//
+//    private boolean isSensitiveAction(UtilisateurDTO newData, Utilisateur existingUser) {
+//        return newData.getPassword() != null ||  // Changement de mot de passe
+//                newData.isAdmin() != existingUser.isAdmin() ||  // Changement de rôle admin
+//                newData.isSuperAdmin() != existingUser.isSuperAdmin();  // Changement de rôle superAdmin
+//    }
+//
+//    private void updateUserData(Utilisateur target, UtilisateurDTO source, Utilisateur admin) {
+//        // Mise à jour des informations de base
+//        target.setNom(source.getNom());
+//        target.setPrenom(source.getPrenom());
+//        target.setUsername(source.getUsername());
+//        target.setEmail(source.getEmail());
+//        target.setAuteurModificationUtil(admin.getUsername());
+//
+//        // Mise à jour du mot de passe si fourni
+//        if (source.getPassword() != null && !source.getPassword().isEmpty()) {
+//            target.setPassword(passwordEncoder.encode(source.getPassword()));
+//        }
+//
+//        // Seul un superAdmin peut modifier les rôles
+//        if (admin.isSuperAdmin()) {
+//            target.setAdmin(source.isAdmin());
+//            target.setSuperAdmin(source.isSuperAdmin());
+//        }
+//    }
+
+
+    private void logAdminAction(Utilisateur admin, Utilisateur targetUser, TypeGestion actionType) {
+        adminUtilisateurService.findByAdminAndUtil(admin, targetUser)
+                .ifPresentOrElse(
+                        adminUtil -> {
+                            adminUtil.setTypeGestion(actionType);
+                            adminUtilisateurService.createAdminUtilisateur(adminUtil);
+                        },
+                        () -> {
+                            AdminUtilisateur newAdminUtil = new AdminUtilisateur();
+                            newAdminUtil.setUtilisateurID(targetUser);
+                            newAdminUtil.setAdminID(admin);
+                            newAdminUtil.setTypeGestion(actionType);
+                            adminUtilisateurService.createAdminUtilisateur(newAdminUtil);
+                        }
+                );
+    }
+
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/modif/{id}")
+    public ResponseEntity<Utilisateur> updateUserV4(
+            @PathVariable Integer id,
+            @Valid @RequestBody UtilisateurDTO utilisateurDetails,
+            @RequestParam String currentPassword) {  // Mot de passe maintenant obligatoire
+
+        // 1. Authentification
+        CustomUserDetails adminDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        Utilisateur admin = this.utilisateurService.findUtilisateur(adminDetails.getId());
+        Utilisateur targetUser = this.utilisateurService.findUtilisateur(id);
+
+        // 2. Vérification STRICTE : seul un super-admin peut modifier
+        if (!admin.isSuperAdmin()) {
+            //log.warn("Tentative de modification non autorisée par {}", admin.getUsername());
+            throw new AccessDeniedException("Seuls les Super-Admins peuvent modifier les utilisateurs");
+        }
+
+        // 3. Validation du mot de passe admin (obligatoire)
+        if (!passwordEncoder.matches(currentPassword, admin.getPassword())) {
+            throw new BadCredentialsException("Mot de passe administrateur incorrect");
+        }
+
+        // 4. Mise à jour sécurisée (uniquement par super-admin)
+        updateUserDataSuperAdmin(targetUser, utilisateurDetails, admin);
+
+        // 5. Sauvegarde et audit
+        Utilisateur updatedUser = this.utilisateurRepository.save(targetUser);
+        logAdminAction(admin, targetUser, TypeGestion.Modifier);
+
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    private void updateUserDataSuperAdmin(Utilisateur target,
+                                          UtilisateurDTO source,
+                                          Utilisateur admin) {
+        // Champs modifiables
+        target.setNom(source.getNom());
+        target.setPrenom(source.getPrenom());
+        target.setUsername(source.getUsername());
+        target.setEmail(source.getEmail());
+        target.setAuteurModificationUtil(admin.getUsername());
+
+        // Mot de passe
+        if (source.getPassword() != null && !source.getPassword().isEmpty()) {
+            target.setPassword(passwordEncoder.encode(source.getPassword()));
+        }
+
+        // Rôles (seul un super-admin peut les modifier)
+        target.setAdmin(source.isAdmin());
+        target.setSuperAdmin(source.isSuperAdmin());
+    }
+
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/delete/{id}")
@@ -421,6 +570,13 @@ public class UtilisateurController {
         Integer adminID = userDetails.getId();
         Utilisateur utilisateur = this.utilisateurService.findUtilisateur(id);
         Utilisateur admin = this.utilisateurService.findUtilisateur(adminID);
+
+        // 2. Vérification STRICTE : seul un super-admin peut modifier
+        if (!admin.isSuperAdmin()) {
+            //log.warn("Tentative de modification non autorisée par {}", admin.getUsername());
+            throw new AccessDeniedException("Seuls les Super-Admins peuvent modifier les utilisateurs");
+        }
+
         utilisateur.setSupprimerUtil(true);
         utilisateur.setAuteurModificationUtil(admin.getUsername());
         final Utilisateur utilisateurDeleted = this.utilisateurRepository.save(utilisateur);
@@ -436,7 +592,106 @@ public class UtilisateurController {
             newAdmUtil.setTypeGestion(TypeGestion.Supprimer);
             this.adminUtilisateurService.createAdminUtilisateur(newAdmUtil);
         }
+        utilisateurDeleted.setPassword("******");
         return ResponseEntity.ok(utilisateurDeleted);
+    }
+
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody PasswordVerificationRequest request) {
+        boolean isValid = utilisateurService.verifyPassword(request.getUserId(), request.getPassword());
+        return ResponseEntity.ok().body(Map.of("isValid", isValid));
+    }
+
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<?> validateToken(HttpServletRequest request) {
+        String token = jwtTokenProvider.getJwtFromCookie(request);
+
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("status", "no_token"));
+        }
+
+        Map<String, Object> validation = jwtTokenProvider.validateJwtTokenWithDetails(token);
+
+        if (!(boolean) validation.get("valid")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(validation);
+        }
+
+        return ResponseEntity.ok(validation);
+    }
+
+//    @GetMapping("/validate")
+//    public ResponseEntity<Map<String, Object>> validateTokenV2(HttpServletRequest request) {
+//        String token = jwtTokenProvider.getJwtFromCookie(request);
+//        Map<String, Object> response = new HashMap<>();
+//
+//        if (token == null) {
+//            response.put("valid", false);
+//            response.put("reason", "no_token");
+//            return ResponseEntity.status(401).body(response);
+//        }
+//
+//        try {
+//            Jws<Claims> claims = Jwts.parserBuilder()
+//                    .setSigningKey(jwtTokenProvider.key())
+//                    .build()
+//                    .parseClaimsJws(token);
+//
+//            response.put("valid", true);
+//            response.put("username", claims.getBody().getSubject());
+//            return ResponseEntity.ok(response);
+//
+//        } catch (ExpiredJwtException e) {
+//            response.put("valid", false);
+//            response.put("reason", "expired");
+//            return ResponseEntity.status(401).body(response);
+//        } catch (JwtException | IllegalArgumentException e) {
+//            response.put("valid", false);
+//            response.put("reason", "invalid");
+//            return ResponseEntity.status(401).body(response);
+//        }
+//    }
+
+
+
+
+    @GetMapping("/validate")
+    public ResponseEntity<Map<String, Object>> validateTokenV2(HttpServletRequest request) {
+        String token = jwtTokenProvider.getJwtFromCookie(request);
+        Map<String, Object> response = new HashMap<>();
+
+        if (token == null) {
+            response.put("valid", false);
+            response.put("reason", "no_token");
+            response.put("status", "unauthorized");  // Ajout d'un champ status dans la réponse
+            return ResponseEntity.ok(response);
+        }
+
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtTokenProvider.key())
+                    .build()
+                    .parseClaimsJws(token);
+
+            response.put("valid", true);
+            response.put("username", claims.getBody().getSubject());
+            response.put("status", "authorized");  // Ajout d'un champ status dans la réponse
+            return ResponseEntity.ok(response);
+
+        } catch (ExpiredJwtException e) {
+            response.put("valid", false);
+            response.put("reason", "expired");
+            response.put("status", "unauthorized");  // Ajout d'un champ status dans la réponse
+            return ResponseEntity.ok(response);
+        } catch (JwtException | IllegalArgumentException e) {
+            response.put("valid", false);
+            response.put("reason", "invalid");
+            response.put("status", "unauthorized");  // Ajout d'un champ status dans la réponse
+            return ResponseEntity.ok(response);
+        }
     }
 
 }

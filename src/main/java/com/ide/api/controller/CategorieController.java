@@ -1,21 +1,16 @@
 package com.ide.api.controller;
 
 import com.ide.api.dto.CategorieDTO;
-import com.ide.api.entities.*;
-import com.ide.api.enums.TypeGestion;
+import com.ide.api.entities.Categorie;
+import com.ide.api.entities.CustomUserDetails;
+import com.ide.api.entities.Document;
+import com.ide.api.entities.Utilisateur;
 import com.ide.api.message.ResponseMessage;
-import com.ide.api.repository.CategorieDocumentRepository;
-import com.ide.api.repository.CategorieRepository;
-import com.ide.api.repository.UtilisateurCategorieRepository;
-import com.ide.api.repository.UtilisateurRepository;
-import com.ide.api.service.*;
-import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
+import com.ide.api.service.CategorieService;
+import com.ide.api.service.DocumentService;
+import com.ide.api.service.UtilisateurService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PostUpdate;
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -97,6 +85,29 @@ public class CategorieController {
         List<Document> documents = this.documentService.findDocumentsByCategoryId(categorie);
         return ResponseEntity.ok(documents);
     }
+
+
+//    @GetMapping("/public/{categoryID}/documents")
+//    public ResponseEntity<Page<Document>> findDocumentsByCategoryIdWithPagination(
+//            @PathVariable Integer categoryID,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(required = false) String sort) {
+//
+//        // Validation de l'ID de catégorie
+//        Categorie categorie = categorieService.findCategory(categoryID);
+//        if (categorie == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        // Création du Pageable avec tri optionnel
+//        Pageable pageable = (sort != null)
+//                ? PageRequest.of(page, size, Sort.by(sort))
+//                : PageRequest.of(page, size);
+//
+//        Page<Document> documentsPage = documentService.findDocumentsByCategoryIdWithPagination(categorie, pageable);
+//        return ResponseEntity.ok(documentsPage);
+//    }
 
     @GetMapping(value= "/public", produces = MediaType.APPLICATION_JSON_VALUE)
     public  List<Categorie> findAllCategories(){
