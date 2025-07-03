@@ -17,6 +17,8 @@
 "Équipe de projet":"Project team",
 "Tuteur":"Tutor",
 "Réalisateur":"Directed by",
+"Tuteurs":"Tutors",
+"Réalisateurs":"Directed by",
 "Titre":"Title",
 "Auteur": "Author",
 "Format": "Format",
@@ -29,6 +31,16 @@
 "URL copiée dans le pressse-papier": "URL copied in the clipboard",
 "Echec de copier URL dans le presse-papier": "Failed to copy URL to clipboard",
 "Télécharger": "Download",
-"Copier le lien":  "Copy the link"
+"Copier le lien":  "Copy the link",
+"CATEGORIES": {
+    "construction": "Construction",
+    "mines": "Mines",
+    "santé": "Health",
+    "équité des genres": "Gender Equality",
+    "sante": "Health",
+    "equite des genres": "Gender Equality",
+    "gestion des risques": "Risk Management",
+    "newcategory": "new category"
+}
 
 }

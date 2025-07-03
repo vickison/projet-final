@@ -7,11 +7,11 @@
    viewBox="0 0 264.58332 264.58334"
    version="1.1"
    id="svg5"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
+   xmlns="https://www.w3.org/2000/svg"
+   xmlns:svg="https://www.w3.org/2000/svg"
+   xmlns:rdf="https://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="https://creativecommons.org/ns#"
+   xmlns:dc="https://purl.org/dc/elements/1.1/">
   <defs
      id="defs2" />
   <metadata
@@ -25,17 +25,17 @@
           </cc:Agent>
         </dc:creator>
         <cc:license
-           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+           rdf:resource="https://creativecommons.org/publicdomain/zero/1.0/" />
         <dc:description>Thank you for using this artwork. Feel free to visit our page https://www.pinterest.com.au/inspirestudiobox for more designs. We wish you have a wonderful day, everyday. Amitabha</dc:description>
       </cc:Work>
       <cc:License
-         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+         rdf:about="https://creativecommons.org/publicdomain/zero/1.0/">
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+           rdf:resource="https://creativecommons.org/ns#Reproduction" />
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
+           rdf:resource="https://creativecommons.org/ns#Distribution" />
         <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+           rdf:resource="https://creativecommons.org/ns#DerivativeWorks" />
       </cc:License>
     </rdf:RDF>
   </metadata>

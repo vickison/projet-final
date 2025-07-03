@@ -54,6 +54,22 @@ export class DashboardPartComponent implements OnInit {
   isSmallScreen: boolean = false;
 
   ngOnInit(): void {
+    this.utilisateurService.startTokenValidation();
+    
+    // Vérification immédiate au chargement
+    this.utilisateurService.validateToken().subscribe(isValid => {
+      console.log("Is Valid: ", isValid)
+        if (!isValid) {
+          this.snackBar.open('Connexion invalidée. Veuillez vous reconnecter.', 'Fermer', {
+            duration: 5000, 
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+          this.authService.logout();
+          this.router.navigate(['/admin/login']);
+      }
+    });
+
     if(!this.tokenService.isLoggedIn()){
       this.router.navigate(['/admin/login']);
     }
@@ -71,13 +87,30 @@ export class DashboardPartComponent implements OnInit {
         if(data.superAdmin){
           this.isSuperAdmin = true;
         }
-        
+        console.log(data);
       },
       error: err => {
-        //console.log('Error fetching User: ', err);
-        
+        console.error('Erreur lors de la récupération de l\'utilisateur:', err);
       }
     })
+
+    // this.utilisateurService.getUser(Number(this.tokenService.getIdUser())).subscribe({
+    //   next: data => {
+    //     if(data.superAdmin){
+    //       this.isSuperAdmin = true;
+    //     }
+    //     // Créer une version sécurisée des données sans le mot de passe
+    //     const safeUserData = {
+    //       ...data,
+    //       password: '*****' // Masquer le mot de passe
+    //     };
+    //     console.log('Utilisateur:', safeUserData);
+    //   },
+    //   error: err => {
+    //     console.error('Erreur lors de la récupération de l\'utilisateur:', err);
+    //   }
+    // })
+
   }
 
   selectOption(option: any) {

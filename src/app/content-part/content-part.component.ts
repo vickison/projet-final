@@ -24,6 +24,8 @@ import { NavigationService } from '../services/navigation.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CategorieDocument } from '../models/categorie-document.model';
+import { TranslationHelperService } from '../services/translation-helper.service';
+import { LanguageService } from '../services/language.service';
 
 
 @Component({
@@ -110,7 +112,10 @@ export class ContentPartComponent implements OnInit, OnDestroy{
     private translateService: TranslateService,
     private navigationService: NavigationService,
     private breakpointObserver: BreakpointObserver,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    //private refresherService: RefresherService,
+    private translateHelper: TranslationHelperService,
+    private lService: LanguageService,
     
   ) {
     
@@ -160,7 +165,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   
 
   ngOnInit(): void {
-
+    
     this.breakpointObserver.observe([
       '(max-width: 767px)', // Mobile
       '(min-width: 768px) and (max-width: 1023px)', // Tablet
@@ -190,10 +195,39 @@ export class ContentPartComponent implements OnInit, OnDestroy{
 
     this.displayWelcome = true;
 
-    this.categorieService.getAllCategories().subscribe((data: Categorie[]) => {
-      this.categories = data.filter(cat => !cat.supprimerCategorie);
-      console.log(this.categories);
-    })
+    // this.categorieService.getAllCategories().subscribe((data: Categorie[]) => {
+    //   this.categories = data.filter(cat => !cat.supprimerCategorie);
+    //   for(let i=0; i <this.categories.length; i++){
+    //     //console.log(this.categories[i].categorieDocuments);
+    //     //console.log(this.categories[i].categorieDocuments)
+    //   }
+    //   console.log(this.categories)
+    // })
+
+    this.categorieService.getAllCategories().pipe(
+            switchMap(data => {
+                // Filtrer les données une fois
+                const filteredData = data.filter(cat => !cat.supprimerCategorie);
+                
+                // Combiner avec les changements de langue
+                return this.lService.currentLanguage$.pipe(
+                    switchMap(() => {
+                        // Traduire les noms à chaque changement de langue
+                        const translatedCategories = filteredData.map(cat => ({
+                            ...cat,
+                            nom: this.translateHelper.getTranslatedName(cat?.nom) || cat.nom
+                        }));
+                        return of(translatedCategories);
+                    })
+                );
+            })
+        ).subscribe({
+            next: (translatedCategories) => {
+                this.categories = translatedCategories;
+                //console.log(this.categories?.map(cat => cat.nom));
+            },
+            // error: (e) => console.error(e)
+        });
 
     this.route.queryParams.subscribe(params => {
       const illustrationId = params['illustration'];
@@ -474,6 +508,7 @@ export class ContentPartComponent implements OnInit, OnDestroy{
   // }
 
   getDocumentThumbnail(documentId?: number): string {
+    //console.log("Thumbnail URL: ", this.documentService.getDocumentThumbnail(documentId))
     return this.documentService.getDocumentThumbnail(documentId);
   }
 

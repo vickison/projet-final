@@ -10,6 +10,7 @@ import { FilterService } from '../services/filter.service';
 import { OrderDocumentsService } from '../services/order-documents.service';
 import { OrderService } from '../services/order.service';
 import { MenuService } from '../services/menu-service.service';
+import { LanguageService } from '../services/language.service';
 
 interface Language{
   value: string;
@@ -55,8 +56,11 @@ export class HeaderPartComponent implements OnInit {
     localStorage.setItem('lang', selectedLanguage);
 
     this.translateService.use(selectedLanguage);
+    this.lService.setLanguage(selectedLanguage);
 
   }
+
+
 
 
 
@@ -87,7 +91,8 @@ export class HeaderPartComponent implements OnInit {
   private sarchService: SearchService,
   private filterService: FilterService,
   private orderService: OrderService,
-  private menuService: MenuService) {
+  private menuService: MenuService,
+  private lService: LanguageService) {
     this.documentForm = this.fb.group({
       keysword: ['', Validators.required]
     });
@@ -116,26 +121,26 @@ export class HeaderPartComponent implements OnInit {
 
   ngOnInit(): void {
 
-  this.lang = localStorage.getItem('lang') || 'ht';
+    this.lang = localStorage.getItem('lang') || 'ht';
 
 
-  this.breakpointObserver.observe([Breakpoints.Handset])
-  .subscribe(result => {
-    this.isMobile = result.matches;
-    // if (this.isMobile) {
-    //   console.log("Mobile détectée.");
-    //   }
+    this.breakpointObserver.observe([Breakpoints.Handset])
+    .subscribe(result => {
+      this.isMobile = result.matches;
+      // if (this.isMobile) {
+      //   console.log("Mobile détectée.");
+      //   }
 
-  });
+    });
 
-  this.breakpointObserver.observe([Breakpoints.Tablet])
-  .subscribe(result => {
-    this.isTablet = result.matches;
-    // if (this.isTablet) {
-    //   //console.log("Tablette détectée.");
-    //   }
+    this.breakpointObserver.observe([Breakpoints.Tablet])
+    .subscribe(result => {
+      this.isTablet = result.matches;
+      // if (this.isTablet) {
+      //   //console.log("Tablette détectée.");
+      //   }
 
-  });
+    });
 
   
   }

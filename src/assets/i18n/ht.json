@@ -16,7 +16,9 @@
     "Ordre Alphabétique":"lòd alfabetik",
     "Équipe de projet":"Ekip pwojè an",
     "Tuteur":"Akonpanyatè",
+    "Tuteurs":"Akonpanyatè yo",
     "Réalisateur":"Reyalizatè",
+    "Réalisateurs":"Reyalizatè yo",
     "Titre":"Tit",
     "Auteur": "Otè",
     "Format": "Fòma",
@@ -29,5 +31,15 @@
     "URL copiée dans le pressse-papier": "URL la kopye nan clipboard la",
     "Echec de copier URL dans le presse-papier": "Echwe pou kopye la URL nan clipboard",
     "Télécharger": "Telechaje",
-    "Copier le lien":  "Kopye lyen an"
+    "Copier le lien":  "Kopye lyen an",
+    "CATEGORIES": {
+        "construction": "Construction",
+        "mines": "Min yo",
+        "sante": "Lasante",
+        "equite des genres": "Ekite nan Jan",
+        "santé": "Lasante",
+        "équité des genres": "Ekite nan Jan",
+        "gestion des risques": "Jere Ris yo",
+        "newcategory": "Nouvo kategori"
     }
+}

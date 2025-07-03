@@ -5,6 +5,7 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AboutDialogService } from '../services/about-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login-part',
@@ -33,7 +34,8 @@ export class LoginPartComponent implements OnInit{
     private router: Router,
     private route: ActivatedRoute,
     private aboutDialogService: AboutDialogService,
-    private translateService:TranslateService
+    private translateService:TranslateService,
+    private snackBar: MatSnackBar,
 
     ){
       this.translateService.use('fr');
@@ -70,8 +72,15 @@ export class LoginPartComponent implements OnInit{
         
       },
       error: err => {
-        this.errorMessage = err.error.message;
+        console.log("Erreur: ", err)
+        //this.errorMessage = err.error.message;
         this.isLoginFailed = true;
+        this.snackBar.open('Connexion échouée. password ou username invalide.', 'Fermer', {
+          duration: 5000, 
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+        console.log("Erreur: ", err)
         this.reloadPage();
       },
       complete: () => {

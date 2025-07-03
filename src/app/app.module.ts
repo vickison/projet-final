@@ -100,6 +100,8 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { PasswordConfirmDialogComponent } from './password-confirm-dialog/password-confirm-dialog.component';
+import { NotificationComponent } from './notification/notification.component';
 
 export function HttpLoaderFactory(http:HttpClient){
   return new TranslateHttpLoader(http);
@@ -142,7 +144,9 @@ export function HttpLoaderFactory(http:HttpClient){
     SuperAdminComponent,
     LikeButtonComponent,
     SnackBarLikeComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    PasswordConfirmDialogComponent,
+    NotificationComponent
     
   ],
   imports: [

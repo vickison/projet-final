@@ -10,6 +10,10 @@ import { CategorieDocumenttsService } from '../services/categorie-documentts.ser
 import { MenuService } from '../services/menu-service.service';
 import { FilterService } from '../services/filter.service';
 import { RefresherService } from '../services/refresher.service';
+import { TranslationHelperService } from '../services/translation-helper.service';
+import { LanguageService } from '../services/language.service';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-left-part',
@@ -41,6 +45,8 @@ export class LeftPartComponent implements OnInit{
     private menuService: MenuService,
     private categorieDocumenttsService: CategorieDocumenttsService,
     private refresherService: RefresherService,
+    private translateHelper: TranslationHelperService,
+    private lService: LanguageService,
   ) { }
 
   ngOnInit() {
@@ -63,6 +69,8 @@ export class LeftPartComponent implements OnInit{
     this.categorieService.activeCategory$.subscribe(activeCategoryId => {
       this.activeId = activeCategoryId ?? undefined;  // Remplace `null` par `undefined`
     });
+
+    
   }
 
   toggleMenu() {
@@ -71,16 +79,70 @@ export class LeftPartComponent implements OnInit{
     //console.log('menuOpen:', this.isMenuOpen);
   }
 
+  // getAllCategories(): void {
+  //   this.categorieService.getAllCategories()
+  //     .subscribe({
+  //       next: (data) => {
+  //         this.categories = data.filter(cat => !cat.supprimerCategorie);
+  //         //console.log(this.categories);
+  //         this.lService.currentLanguage$.subscribe(() =>{
+  //           console.log(data.map(cat => this.translateHelper.getTranslatedName(cat?.nom)))
+  //         }); 
+  //       },
+  //       //error: (e) => console.error(e)
+  //     });
+  // }
+
+  // getAllCategories(): void {
+  //   this.categorieService.getAllCategories()
+  //     .subscribe({
+  //       next: (data) => {
+
+  //         // On réagit au changement de langue pour mettre à jour les noms traduits
+  //         this.lService.currentLanguage$.subscribe(() => {
+  //           // On garde seulement les données brutes (non supprimées) dans this.categories
+  //         this.categories = data.filter(cat => !cat.supprimerCategorie);
+  //           //console.log(data.map(cat => this.translateHelper.getTranslatedName(cat?.nom)))
+  //           if (this.categories) { // Vérification contre undefined
+  //             this.categories = this.categories.map(cat => ({
+  //               ...cat,
+  //               nom: this.translateHelper.getTranslatedName(cat?.nom) || cat.nom
+  //             }));
+  //             //console.log(this.categories.map(cat => cat?.nom)); // Safe avec ?.
+  //           }
+  //         }); 
+  //       },
+  //       // error: (e) => console.error(e)
+  //     });
+  // }
+
+
   getAllCategories(): void {
-    this.categorieService.getAllCategories()
-      .subscribe({
-        next: (data) => {
-          this.categories = data.filter(cat => !cat.supprimerCategorie);
-          //console.log(this.categories);
+    this.categorieService.getAllCategories().pipe(
+        switchMap(data => {
+            // Filtrer les données une fois
+            const filteredData = data.filter(cat => !cat.supprimerCategorie);
+            
+            // Combiner avec les changements de langue
+            return this.lService.currentLanguage$.pipe(
+                switchMap(() => {
+                    // Traduire les noms à chaque changement de langue
+                    const translatedCategories = filteredData.map(cat => ({
+                        ...cat,
+                        nom: this.translateHelper.getTranslatedName(cat?.nom) || cat.nom
+                    }));
+                    return of(translatedCategories);
+                })
+            );
+        })
+    ).subscribe({
+        next: (translatedCategories) => {
+            this.categories = translatedCategories;
+            //console.log(this.categories?.map(cat => cat.nom));
         },
-        //error: (e) => console.error(e)
-      });
-  }
+        // error: (e) => console.error(e)
+    });
+}
 
   // setActive(event: any) {
   //   // Remove the 'active' class from all links

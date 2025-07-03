@@ -16,7 +16,9 @@
     "Ordre Alphabétique":"Ordre Alphabétique",
     "Équipe de projet":"Équipe de projet",
     "Tuteur":"Tuteur",
+    "Tuteurs":"Tuteurs",
     "Réalisateur":"Réalisateur",
+    "Réalisateurs":"Réalisateurs",
     "Titre":"Titre",
     "Auteur":"Auteur",
     "Format":"Format",
@@ -29,7 +31,17 @@
     "URL copiée dans le pressse-papier": "URL copiée dans le pressse-papier",
     "Echec de copier URL dans le presse-papier": "Echec de copier URL dans le presse-papier",
     "Télécharger": "Télécharger",
-    "Copier le lien":  "Copier le lien"
+    "Copier le lien":  "Copier le lien",
+    "CATEGORIES": {
+        "construction": "Construction",
+        "mines": "Mines",
+        "santé": "Santé",
+        "équité des genres": "Equité des Genres",
+        "sante": "Santé",
+        "equite des genres": "Equité des Genres",
+        "gestion des risques": "Gestion des Risques",
+        "newcategory": "Nouvelle catégorie"
+    }
 
 
 }

@@ -1,59 +1,254 @@
 <div class="contenu">
 <div *ngIf="tempDocuments.length === 0" id="grid2" class="container2">
-    <div *ngFor="let categorie of categories"  class="category-container">
-      <h2 class="category-title" *ngIf="!categorie?.supprimerCategorie">{{ categorie?.nom}}</h2>
-      <div class="card-container2" *ngIf="!categorie?.supprimerCategorie">
-        <mat-card 
-        *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments)" 
-        (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
-        (mouseleave)="onMouseLeave()"
-        [class.hovered]="isHovered === catDoc.document?.documentID"
-        class="card2"
-        >
-          <div *ngIf="catDoc.document">
-            <mat-card-header class="card-header" (click)="onDocumentClicked(catDoc.document)">
-              <div class="card-content">
-                <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
+
+  <!------------------------cat1----------------------------------------->
+
+  <div *ngFor="let categorie of categories"  class="category-container">
+      <h2 class="category-title" 
+      *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['new category', 'nouvelle categorie', 'nouvo kotegori','mines','minas','min yo'].includes(categorie?.nom?.toLowerCase() || '')">{{ categorie?.nom}}</h2>
+      <div class="card-container2" 
+     *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['new category', 'nouvelle categorie', 'nouvo kotegori','mines','minas','min yo'].includes(categorie?.nom?.toLowerCase() || '')">
+        <ng-container *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments || []); let i = index">
+          <mat-card 
+          *ngIf="!catDoc.document?.supprimerDocument"
+          (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
+          (mouseleave)="onMouseLeave()"
+          [class.hovered]="isHovered === catDoc.document?.documentID"
+          class="image-card card2"
+          >
+            
+            <div *ngIf="catDoc.document">
+              <!-- <mat-card-header *ngIf="!catDoc.document.supprimerDocument" class="card-header" (click)="onDocumentClicked(catDoc.document)" style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
+                <div class="card-content">
+                  <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
+                </div>
+              </mat-card-header> -->
+              <div style="height: 100%;" 
+              *ngIf="['new category', 'nouvelle categorie', 'nouvo kotegori','mines','minas','min yo'].includes(categorie?.nom?.toLowerCase() || '') && !catDoc.document.supprimerDocument" 
+              class="image-container" (click)="onBtnPlusClick(categorie?.categorieID)">
+                <img mat-card-image [src]="'assets/mines' + (1+i) + '.jpg'" 
+                alt="{{ catDoc.document.titre }}" 
+                class="image responsive-image" 
+                loading="lazy">
               </div>
-            </mat-card-header>
-            <div class="image-container" (click)="onDocumentClicked(catDoc.document)">
-              <img mat-card-image src={{getDocumentThumbnail(catDoc.document.documentID)}} alt="{{ catDoc.document.titre }}" class="image" loading="lazy">
+              <!-- <div *ngIf="['new category', 'nouvelle categorie', 'nouvo kotegori','mines','minas','min yo'].includes(categorie?.nom?.toLowerCase() || '') && !catDoc.document.supprimerDocument" 
+              class="buttons">
+                <button mat-icon-button 
+                (click)="openDetailDialog(catDoc.document)" 
+                style="display: flex;" 
+                aria-label="Détails"
+                matTooltip="{{'Détails' | translate }}"
+                >
+                  <mat-icon svgIcon="telecharger"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="copyLink(catDoc.document.documentID)" 
+                style="cursor: copy;" 
+                aria-label="Copier le lien"
+                matTooltip="{{ 'Copier le lien' | translate }}"
+                >
+                  <mat-icon svgIcon="partage"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
+                style="display: flex;" 
+                aria-label="Télécharger"
+                matTooltip="{{ 'Télécharger' | translate }}"
+                >
+                  <mat-icon svgIcon="download"></mat-icon>
+                </button>
+              </div> -->
             </div>
-            <div class="buttons">
-              <button mat-icon-button 
-              (click)="openDetailDialog(catDoc.document)" 
-              style="display: flex;" 
-              aria-label="Détails"
-              matTooltip="{{'Détails' | translate }}"
-              >
-                <mat-icon svgIcon="telecharger"></mat-icon>
-              </button>
-              <button mat-icon-button 
-              (click)="copyLink(catDoc.document.documentID)" 
-              style="cursor: copy;" 
-              aria-label="Copier le lien"
-              matTooltip="{{ 'Copier le lien' | translate }}"
-              >
-                <mat-icon svgIcon="partage"></mat-icon>
-              </button>
-              <button mat-icon-button 
-              (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
-              style="display: flex;" 
-              aria-label="Télécharger"
-              matTooltip="{{ 'Télécharger' | translate }}"
-              >
-                <mat-icon svgIcon="download"></mat-icon>
-              </button>
-            </div>
-          </div>
-        </mat-card>
+          </mat-card>
+        </ng-container>
         <div class="card add-card" (click)="onBtnPlusClick(categorie?.categorieID)">
           <mat-icon class="add-icon">arrow_forward</mat-icon>
         </div>
       </div>
   </div>
-</div>
+  <!------------------------cat2----------------------------------------->
+  <div *ngFor="let categorie of categories"  class="category-container">
+      <h2 class="category-title" 
+      *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['category 1', 'santé', 'salud','health','lasante'].includes(categorie?.nom?.toLowerCase() || '')">{{ categorie?.nom}}</h2>
+      <div class="card-container2" *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['category 1', 'santé', 'salud','health','lasante'].includes(categorie?.nom?.toLowerCase() || '')">
+        <ng-container *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments || []); let i = index">
+          <mat-card 
+          *ngIf="!catDoc.document?.supprimerDocument"
+          (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
+          (mouseleave)="onMouseLeave()"
+          [class.hovered]="isHovered === catDoc.document?.documentID"
+          class="image-card card2"
+          >
+            
+            <div *ngIf="catDoc.document">
+              <!-- <mat-card-header *ngIf="!catDoc.document.supprimerDocument" class="card-header" (click)="onDocumentClicked(catDoc.document)" style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
+                <div class="card-content">
+                  <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
+                </div>
+              </mat-card-header> -->
+              <div style="height: 100%;" *ngIf="['category 1', 'santé', 'salud','health','lasante'].includes(categorie?.nom?.toLowerCase() || '')" class="image-container" (click)="onBtnPlusClick(categorie?.categorieID)">
+                <img mat-card-image [src]="'assets/sante' + (1+i) + '.jpg'" 
+                alt="{{ catDoc.document.titre }}" 
+                class="image responsive-image" 
+                loading="lazy">
+              </div>
+              <div *ngIf="!catDoc.document.supprimerDocument && ['category 1', 'santé', 'salud','health','lasante'].includes(categorie?.nom?.toLowerCase() || '')" class="buttons">
+                <button mat-icon-button 
+                (click)="openDetailDialog(catDoc.document)" 
+                style="display: flex;" 
+                aria-label="Détails"
+                matTooltip="{{'Détails' | translate }}"
+                >
+                  <mat-icon svgIcon="telecharger"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="copyLink(catDoc.document.documentID)" 
+                style="cursor: copy;" 
+                aria-label="Copier le lien"
+                matTooltip="{{ 'Copier le lien' | translate }}"
+                >
+                  <mat-icon svgIcon="partage"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
+                style="display: flex;" 
+                aria-label="Télécharger"
+                matTooltip="{{ 'Télécharger' | translate }}"
+                >
+                  <mat-icon svgIcon="download"></mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-card>
+        </ng-container>
+        <div class="card add-card" (click)="onBtnPlusClick(categorie?.categorieID)">
+          <mat-icon class="add-icon">arrow_forward</mat-icon>
+        </div>
+      </div>
+  </div>
+  <!------------------------cat3----------------------------------------->
 
+  <div *ngFor="let categorie of categories"  class="category-container">
+      <h2 class="category-title" *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['category 2', 'equité des genres', 'equidad de género','gender equality','ekite nan jan'].includes(categorie?.nom?.toLowerCase() || '')">{{ categorie?.nom}}</h2>
+      <div class="card-container2" *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['category 2', 'equité des genres', 'equidad de género','gender equality','ekite nan jan'].includes(categorie?.nom?.toLowerCase() || '')">
+        <ng-container *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments || []); let i = index">
+          <mat-card 
+          *ngIf="!catDoc.document?.supprimerDocument"
+          (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
+          (mouseleave)="onMouseLeave()"
+          [class.hovered]="isHovered === catDoc.document?.documentID"
+          class="image-card card2"
+          >
+            
+            <div *ngIf="catDoc.document">
+              <!-- <mat-card-header *ngIf="!catDoc.document.supprimerDocument" class="card-header" (click)="onDocumentClicked(catDoc.document)" style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
+                <div class="card-content">
+                  <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
+                </div>
+              </mat-card-header> -->
+              <div style="height: 100%;" *ngIf="['category 2', 'equité des genres', 'equidad de género','gender equality','ekite nan jan'].includes(categorie?.nom?.toLowerCase() || '')" class="image-container" (click)="onBtnPlusClick(categorie?.categorieID)">
+                <img mat-card-image [src]="'assets/equite' + (1+i) + '.jpg'" 
+                alt="{{ catDoc.document.titre }}" 
+                class="image responsive-image" 
+                loading="lazy">
+              </div>
+              <!-- <div *ngIf="!catDoc.document.supprimerDocument && ['category 2', 'equité des genres', 'equidad de género','gender equality','ekite nan jan'].includes(categorie?.nom?.toLowerCase() || '')" class="buttons">
+                <button mat-icon-button 
+                (click)="openDetailDialog(catDoc.document)" 
+                style="display: flex;" 
+                aria-label="Détails"
+                matTooltip="{{'Détails' | translate }}"
+                >
+                  <mat-icon svgIcon="telecharger"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="copyLink(catDoc.document.documentID)" 
+                style="cursor: copy;" 
+                aria-label="Copier le lien"
+                matTooltip="{{ 'Copier le lien' | translate }}"
+                >
+                  <mat-icon svgIcon="partage"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
+                style="display: flex;" 
+                aria-label="Télécharger"
+                matTooltip="{{ 'Télécharger' | translate }}"
+                >
+                  <mat-icon svgIcon="download"></mat-icon>
+                </button>
+              </div> -->
+            </div>
+          </mat-card>
+        </ng-container>
+        <div class="card add-card" (click)="onBtnPlusClick(categorie?.categorieID)">
+          <mat-icon class="add-icon">arrow_forward</mat-icon>
+        </div>
+      </div>
+  </div>
+
+  <!------------------------cat4----------------------------------------->
+
+  <div *ngFor="let categorie of categories"  class="category-container">
+      <h2 class="category-title" *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['gestion des risques', 'gestión de riesgos','risk management','jere ris yo'].includes(categorie?.nom?.toLowerCase() || '')">{{ categorie?.nom}}</h2>
+      <div class="card-container2" *ngIf="!categorie?.supprimerCategorie && (categorie?.categorieDocuments ?? []).length > 0 && ['gestion des risques', 'gestión de riesgos','risk management','jere ris yo'].includes(categorie?.nom?.toLowerCase() || '')">
+        <ng-container *ngFor="let catDoc of getLimitedCards(categorie.categorieDocuments || []); let i = index">
+          <mat-card 
+          *ngIf="!catDoc.document?.supprimerDocument"
+          (mouseenter)="onMouseEnter(catDoc.document?.documentID)" 
+          (mouseleave)="onMouseLeave()"
+          [class.hovered]="isHovered === catDoc.document?.documentID"
+          class="image-card card2" 
+          >
+            
+            <div *ngIf="catDoc.document">
+              <!-- <mat-card-header *ngIf="!catDoc.document.supprimerDocument" class="card-header" (click)="onDocumentClicked(catDoc.document)" style="background-color:  rgb(24, 49, 83); width: 100%; border-top-right-radius: 5px; border-top-left-radius: 5px; ">
+                <div class="card-content">
+                  <mat-card-title class="titre" style="color: aqua; font-size: 0.9rem;">{{ catDoc.document.titre }}</mat-card-title>
+                </div>
+              </mat-card-header> -->
+              <div style="height: 100%;" *ngIf="['gestion des risques', 'gestión de riesgos','risk management','jere ris yo'].includes(categorie?.nom?.toLowerCase() || '')" class="image-container" (click)="onBtnPlusClick(categorie?.categorieID)">
+                <img mat-card-image [src]="'assets/risques' + (1+i) + '.jpg'" 
+                alt="{{ catDoc.document.titre }}" 
+                class="image responsive-image" 
+                loading="lazy">
+              </div>
+              <!-- <div *ngIf="!catDoc.document.supprimerDocument && ['gestion des risques', 'gestión de riesgos','risk management','jere ris yo'].includes(categorie?.nom?.toLowerCase() || '')" class="buttons">
+                <button mat-icon-button 
+                (click)="openDetailDialog(catDoc.document)" 
+                style="display: flex;" 
+                aria-label="Détails"
+                matTooltip="{{'Détails' | translate }}"
+                >
+                  <mat-icon svgIcon="telecharger"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="copyLink(catDoc.document.documentID)" 
+                style="cursor: copy;" 
+                aria-label="Copier le lien"
+                matTooltip="{{ 'Copier le lien' | translate }}"
+                >
+                  <mat-icon svgIcon="partage"></mat-icon>
+                </button>
+                <button mat-icon-button 
+                (click)="onDownloadBtnClick(catDoc.document.titre, catDoc.document.documentID)" 
+                style="display: flex;" 
+                aria-label="Télécharger"
+                matTooltip="{{ 'Télécharger' | translate }}"
+                >
+                  <mat-icon svgIcon="download"></mat-icon>
+                </button>
+              </div> -->
+            </div>
+          </mat-card>
+        </ng-container>
+        <div class="card add-card" (click)="onBtnPlusClick(categorie?.categorieID)">
+          <mat-icon class="add-icon">arrow_forward</mat-icon>
+        </div>
+      </div>
+  </div>
+
+</div>
 <div *ngIf="tempDocuments.length > 0" class="container" id="grid"> 
     <mat-card 
       class="card"
@@ -151,7 +346,7 @@
     style="font-size: medium; font-weight: bold; color: rgb(24, 49, 83) ; background-color:rgba(236, 247, 253, 0.488); border-top:  0.1px solid rgba(128, 128, 128, 0.26); justify-content: center; display: flex; margin-left: 14%;"
   >
   </mat-paginator>
-</div>
+
 <app-footer-part></app-footer-part>
 
   

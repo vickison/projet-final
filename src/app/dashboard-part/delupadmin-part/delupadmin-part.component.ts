@@ -86,6 +86,7 @@ export class DelupadminPartComponent implements OnInit{
   }
 
   openEditModal(utilisateur: Utilisateur): void {
+    utilisateur.password = '';
     const dialogRef = this.dialog.open(EditAdminModalComponent, {
       width: '40%',
      // data: {user} // Passer les données de l'utilisateur à éditer

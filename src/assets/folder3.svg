@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 50 50" xmlns="https://www.w3.org/2000/svg">
  <g enable-background="new" stroke="#000">
   <g transform="matrix(.4436 .18922 -.18632 .43681 -103.08 -284.85)" enable-background="new">
    <path d="m485.68 455.24-3.1368 63.502 46.25 1.9992 1.9829-48.24-14.595-16.377-30.501-0.88402z" fill="#fff" stroke-width="3.5433"/>

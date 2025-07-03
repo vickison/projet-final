@@ -17,6 +17,8 @@
     "Équipe de projet":"Equipo de proyecto",
     "Tuteur":"Tutor",
     "Réalisateur":"Realizado por",
+    "Tuteurs":"Tutor",
+    "Réalisateurs":"Realizado por",
     "Titre":"Título",
     "Auteur": "Autor",
     "Format": "Formato",
@@ -29,5 +31,15 @@
     "URL copiée dans le pressse-papier": "URL copiada en el portapapeles",
     "Echec de copier URL dans le presse-papier": "No se pudo copiar la URL en el portapapeles",
     "Télécharger": "Descargar",
-    "Copier le lien":  "Copiar el enlace"
+    "Copier le lien":  "Copiar el enlace",
+    "CATEGORIES": {
+        "construction": "Construcción",
+        "mines": "Minas",
+        "sante": "Salud",
+        "equite des genres": "Equidad de Género",
+        "santé": "Salud",
+        "équité des genres": "Equidad de Género",
+        "gestion des risques": "Gestión de Riesgos",
+        "newcategory": "Nueva Categria"
     }
+}

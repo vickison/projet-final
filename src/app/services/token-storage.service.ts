@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -11,10 +12,16 @@ const USER_KEY = 'auth-user';
 
 export class TokenStorageService {
 
-  constructor() { }
+  constructor(private router: Router,) { }
+
+  // Récupère le token JWT
+  public getToken(): string | null {
+    return window.sessionStorage.getItem(TOKEN_KEY);
+  }
 
   signOut(): void{
     window.sessionStorage.clear();
+    this.router.navigate(['/admin/login']);
   }
 
   public saveUser(user: any): void {
@@ -35,6 +42,7 @@ export class TokenStorageService {
 
   public getIdUser(): any{
     const user = window.sessionStorage.getItem(USER_KEY);
+    
     if(user){
       const userObj = JSON.parse(user);
       userObj.id = Number(userObj.id);
@@ -54,8 +62,38 @@ export class TokenStorageService {
     }
   }
 
-  getTokenExpirationDate(){
-    
+  // Vérifie si le token est expiré (gère le cas null)
+  public isTokenExpired(token: string | null): boolean {
+    const tokenToCheck = token ?? this.getToken();
+    if (!tokenToCheck) return true;
+
+    try {
+      const decoded: any = jwtDecode(tokenToCheck);
+      return decoded.exp < Date.now() / 1000;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  public getTokenExpirationDate(token: string): Date | null{
+    try {
+      const decoded: any = jwtDecode(token);
+      if (decoded.exp === undefined) return null;
+      return new Date(decoded.exp * 1000);
+    } catch (e) {
+      return null;
+    }
+  }
+
+   // Récupère le temps restant avant expiration (en ms)
+   public getTokenRemainingTime(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const expirationDate = this.getTokenExpirationDate(token);
+    if (!expirationDate) return null;
+
+    return expirationDate.getTime() - Date.now();
   }
 
   
